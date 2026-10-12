@@ -1412,7 +1412,8 @@ function rLogin(msg=''){
     <div style="font-size:22px;font-weight:800;color:#2f2a24">תקציב משפחתי</div>
     <div style="font-size:13px;color:#7d7265;margin-bottom:8px">התחבר כדי לראות את הנתונים שלך</div>
     <button id="gLogin" style="${BTN}">התחבר עם Google</button>
-    <div id="loginErr" style="color:#cf5a3e;font-size:12px;max-width:280px">${msg}</div>`);
+    <div id="loginErr" style="color:#cf5a3e;font-size:12px;max-width:280px">${msg}</div>
+    <a href="privacy.html" style="font-size:12px;color:#a39686;margin-top:14px">מדיניות פרטיות</a>`);
   g('gLogin').onclick=async()=>{
     if(!auth){g('loginErr').textContent='השרת עוד נטען, נסה שוב בעוד רגע';return;}
     const prov=new _A.GoogleAuthProvider();prov.setCustomParameters({prompt:'select_account'});
@@ -1423,6 +1424,19 @@ function rLogin(msg=''){
       g('loginErr').textContent=e.code==='auth/unauthorized-domain'?'הכתובת של האתר לא מאושרת ב-Firebase (Authorized domains)':e.code==='auth/operation-not-allowed'?'התחברות עם Google לא הופעלה ב-Firebase':'ההתחברות נכשלה: '+(e.code||e.message);
     }
   };
+}
+// Delete this Google account's data on the server (see api/delete-account.js), then everything on this device
+async function deleteAccount(){
+  if(!confirm('למחוק את החשבון?\n\nכל הנתונים שלך יימחקו לצמיתות: הוצאות, הכנסות, אירועים והגדרות. פרופיל שמשותף עם אחרים יישאר אצלם, ורק את/ה תוסר/י ממנו.'))return;
+  if(prompt('כדי לאשר, כתוב/י: מחק')?.trim()!=='מחק')return;
+  try{
+    const r=await fetch('/api/delete-account',{method:'POST',headers:{'Authorization':'Bearer '+await auth.currentUser.getIdToken()}});
+    if(!r.ok)throw new Error((await r.json().catch(()=>({}))).error||'המחיקה נכשלה');
+  }catch(e){alert(e.message||'המחיקה נכשלה, בדוק את החיבור לאינטרנט');return;}
+  try{Object.keys(localStorage).filter(k=>k.startsWith('bdg_')).forEach(k=>localStorage.removeItem(k));}catch{}
+  try{await _A.signOut(auth);}catch{}
+  alert('החשבון והנתונים נמחקו');
+  location.reload();
 }
 async function fbSignOut(){
   ['bdg_auth','bdg_profiles','bdg_cur_user'].forEach(k=>{try{localStorage.removeItem(k);}catch{}});
@@ -1699,6 +1713,10 @@ function rUserMod(view=null,_=null,switchId=null){
           <span style="flex:1;font-size:12px;color:#7d7265;direction:ltr;text-align:left">${myEmail()}</span>
           <button id="signOut" style="padding:7px 14px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#cf5a3e;font-size:12px;font-weight:700;cursor:pointer">התנתק</button>
         </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px">
+          <a href="privacy.html" target="_blank" style="font-size:12px;color:#a39686">מדיניות פרטיות</a>
+          <button id="delAcc" style="padding:6px 10px;border-radius:8px;border:none;background:transparent;color:#cf5a3e;font-size:12px;cursor:pointer;text-decoration:underline">מחיקת החשבון והנתונים</button>
+        </div>
 
       </div>
     </div></div>`);
@@ -1734,6 +1752,7 @@ function rUserMod(view=null,_=null,switchId=null){
       if(b.dataset.em===myEmail())location.reload();else rUserMod('edit');
     });
     g("signOut").onclick=fbSignOut;
+    g("delAcc").onclick=deleteAccount;
     g("mailSum").onchange=()=>{cu.mailSummary=g("mailSum").checked;saveUsers();};
     // Personal key for /api/ingest, kept on the profile (only its members can read it)
     const setIngest=async k=>{

@@ -8,8 +8,9 @@ const HAS_FALLBACKS = /^claude-(opus-5|fable-5|sonnet-5-5)/.test(MODEL);
 
 class Refused extends Error {}
 
-async function askClaude(prompt, schema, maxTokens = 8000) {
-  const client = new Anthropic();
+// opts: { timeout (ms), maxRetries } for callers with a time budget, like the daily mail job
+async function askClaude(prompt, schema, maxTokens = 8000, opts) {
+  const client = new Anthropic(opts || {});
   const params = {
     model: MODEL,
     max_tokens: maxTokens,

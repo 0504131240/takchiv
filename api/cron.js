@@ -18,21 +18,37 @@ function db() {
   return admin.firestore();
 }
 
+// The whole run must finish within the function's 60 seconds, and each Claude analysis takes
+// 10-30s, so profiles are handled several at a time and the analysis is skipped (the summary
+// still goes out) once the time budget is used up.
+const CONCURRENCY = 8;
+const AI_DEADLINE_MS = 40e3; // no new analyses after this point of the run
+const AI_TIMEOUT_MS = 30e3;
+
+// Run fn over items with at most n in flight
+async function pool(items, n, fn) {
+  let i = 0;
+  await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => {
+    while (i < items.length) await fn(items[i++]);
+  }));
+}
+
 module.exports = async (req, res) => {
   if (!process.env.CRON_SECRET || req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'unauthorized' });
   }
+  const started = Date.now();
   const fdb = db();
-  const mail = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD } });
+  const mail = nodemailer.createTransport({ service: 'gmail', pool: true, maxConnections: 3, auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD } });
   const from = `"תקציב משפחתי" <${process.env.GMAIL_USER}>`;
   const t = N.israelToday();
   const log = [];
 
   const profiles = await fdb.collection('profiles').get();
-  for (const doc of profiles.docs) {
+  await pool(profiles.docs, CONCURRENCY, async doc => {
     const p = doc.data();
     const to = (p.emails || []).join(',');
-    if (!to || p.lastMailDay === t.str) continue; // already handled today
+    if (!to || p.lastMailDay === t.str) return; // already handled today
     let sent = 0;
     try {
       const due = N.dueReminders(p.reminders, t);
@@ -48,10 +64,12 @@ module.exports = async (req, res) => {
         ]);
         const s = N.summarize(yDoc.exists ? yDoc.data() : null, eDoc.exists ? eDoc.data().events : [], cycle);
         const label = N.monthLabel(cycle.month, p.monthStart);
-        // Claude's analysis of the month; the summary goes out without it if the call fails
+        // Claude's analysis of the month; the summary goes out without it if the call fails or time is short
         let ai = null;
-        if (process.env.ANTHROPIC_API_KEY) {
-          try { ai = await askClaude(N.monthlyPrompt(label, cycle.year, s), N.AI_SUMMARY_SCHEMA, 4000); } catch (e) { console.error('monthly ai', doc.id, e.message); }
+        if (process.env.ANTHROPIC_API_KEY && Date.now() - started < AI_DEADLINE_MS) {
+          const left = Math.min(AI_TIMEOUT_MS, 55e3 - (Date.now() - started));
+          try { ai = await N.withTimeout(askClaude(N.monthlyPrompt(label, cycle.year, s), N.AI_SUMMARY_SCHEMA, 4000, { timeout: left, maxRetries: 0 }), left); }
+          catch (e) { console.error('monthly ai', doc.id, e.message); }
         }
         await mail.sendMail({ from, to, subject: `📊 סיכום חודש ${label} ${cycle.year}`, html: N.summaryHtml(p.name, label, cycle.year, s, ai) });
         sent++;
@@ -62,6 +80,7 @@ module.exports = async (req, res) => {
       console.error('profile', doc.id, e);
       log.push({ profile: doc.id, error: String(e.message || e) });
     }
-  }
-  res.status(200).json({ day: t.str, log });
+  });
+  mail.close?.();
+  res.status(200).json({ day: t.str, ms: Date.now() - started, log });
 };

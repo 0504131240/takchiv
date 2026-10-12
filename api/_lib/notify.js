@@ -160,5 +160,8 @@ function aiBoxHtml(ai) {
   </div>`;
 }
 
-module.exports = { MO, israelToday, dueReminders, endingCycle, monthLabel, summarize, summaryHtml, remindersHtml,
+// Rejects after ms, so one slow call can't hold up the whole run
+const withTimeout = (promise, ms) => Promise.race([promise, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms).unref?.())]);
+
+module.exports = { withTimeout, MO, israelToday, dueReminders, endingCycle, monthLabel, summarize, summaryHtml, remindersHtml,
   monthlyPrompt, AI_SUMMARY_SCHEMA, addDays };
