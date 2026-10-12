@@ -345,6 +345,9 @@ function ld(){
           S.cats=(ps.cats||DF.map(c=>({...c}))).map(c=>({...c}));
           S.mData=iMD(S.cats);
           const pm=ps.mData||{};
+          // Recurring income still active at the end of last year continues in every month
+          (pm[11]?.income||[]).filter(e=>e.recurring).forEach(e=>{const bid=e.id-11*1000;
+            for(let nm=0;nm<12;nm++)S.mData[nm].income.push({id:bid+nm*1000,desc:e.desc,amount:e.amount,date:adjDate(e.date,nm,S.year),recurring:true});});
           S.cats.forEach(cat=>{
             const seen=new Set();
             for(let m=0;m<12;m++){(pm[m]?.[cat.id]?.entries||[]).filter(e=>e.recurring).forEach(e=>{const bid=e.id-m*1000;if(!seen.has(bid)){seen.add(bid);for(let nm=0;nm<12;nm++){if(S.mData[nm]?.[cat.id])S.mData[nm][cat.id].entries.push({id:bid+nm*1000,desc:e.desc,amount:e.amount,date:adjDate(e.date,nm,S.year),recurring:true,subCat:e.subCat||null});}}});}
@@ -488,6 +491,20 @@ async function editYear(fy,fn,onlyExisting){
   try{localStorage.setItem(sk(fy),JSON.stringify(d));}catch{}
   if(!db)setPend('y'+fy,true);
   if(db)_setDoc(pDoc('y'+fy),d).catch(e=>console.warn('FB year save:',e));
+}
+// Like applyToFutureYears, for the income list of each month in the years already created
+function forIncomeFutureYears(baseId,fn){
+  for(let fy=S.year+1;fy<=S.year+10;fy++){
+    editYear(fy,fd=>{
+      let chg=false;
+      for(let m=0;m<12;m++){
+        if(!fd.mData[m])continue;
+        const r=fn(fd.mData[m].income||[],baseId+m*1000,m,fy);
+        if(r!==undefined){fd.mData[m].income=r;chg=true;}
+      }
+      return chg;
+    },true);
+  }
 }
 function applyToFutureYears(baseId,catId,fn){
   for(let fy=S.year+1;fy<=S.year+10;fy++){
@@ -1118,8 +1135,9 @@ function rIncMod(){
     ?`<div style="text-align:center;color:#756a5c;font-size:14px;padding:20px 0">אין הכנסות עדיין</div>`
     :inc.map((e,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:${i%2===0?'#faf6ef':'#fff'};margin-bottom:3px">
         <span style="font-size:11px;color:#756a5c;flex-shrink:0">${fmDate(e.date)}</span>
-        <span style="font-size:13px;color:#6f6457;flex:1">${e.desc||'—'}</span>
+        <span style="font-size:13px;color:#6f6457;flex:1">${e.recurring?'<span title="הכנסה קבועה" aria-label="הכנסה קבועה">&#128260;</span> ':''}${e.desc||'—'}</span>
         <span style="font-size:14px;font-weight:700;color:#3f7356">&#8362;${fm(e.amount)}</span>
+        <button class="eInc" data-e="${e.id}" aria-label="עריכת סכום" style="background:transparent;border:none;cursor:pointer;font-size:14px;color:#6f6457;padding:3px">&#9998;</button>
         <button class="dInc" data-e="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:15px;color:#b0472e;padding:3px">&#128465;</button>
       </div>`).join("");
   ih("m1",`<div class="overlay" id="incO"><div class="modal">
@@ -1133,6 +1151,9 @@ function rIncMod(){
       <input class="inp" id="iA" type="number" placeholder="&#8362;" style="flex:1;min-width:70px;padding:8px 10px;font-size:15px;font-weight:700"/>
       <input class="inp" id="iDt" type="date" value="${today()}" style="flex:1;min-width:100px;padding:8px 6px;font-size:12px"/>
       <button id="iAdd" style="padding:8px 14px;border-radius:10px;border:none;color:#fff;background:linear-gradient(135deg,#3d7556,#3f7356);font-size:20px;cursor:pointer">+</button>
+      <label style="display:flex;align-items:center;gap:7px;width:100%;font-size:13px;color:#5e554a;cursor:pointer;margin-top:4px">
+        <input type="checkbox" id="iRec" style="width:17px;height:17px;accent-color:#3f7356"/> &#128260; הכנסה קבועה — תיכנס כל חודש (למשל משכורת, קצבה)
+      </label>
     </div>
     <div style="max-height:260px;overflow-y:auto">${list}</div>
     ${inc.length>0?`<div style="margin-top:10px;border-top:1px solid #ece4d8;padding-top:10px;display:flex;justify-content:space-between"><span style="color:#756a5c;font-size:12px">${inc.length} הכנסות</span><span style="font-weight:700;color:#3f7356">&#8362;${fm(tot)}</span></div>`:""}
@@ -1143,13 +1164,50 @@ function rIncMod(){
   g("iA").onkeydown=e=>{if(e.key==="Enter")g("iAdd").click();};
   g("iAdd").onclick=()=>{
     const a=parseFloat(g("iA").value);if(!a)return;
-    if(!S.mData[S.month].income)S.mData[S.month].income=[];
-    S.mData[S.month].income.push({id:Date.now(),desc:(g("iD").value||"").trim(),amount:a,date:g("iDt").value||today()});
-    sv();rIncMod();
+    const desc=(g("iD").value||"").trim(),date=g("iDt").value||today();
+    if(g("iRec").checked){
+      // Recurring income: this month to the end of the year, and the years already created
+      // (same id scheme as recurring expenses: baseId + month*1000)
+      const baseId=Date.now();
+      for(let m=S.month;m<12;m++){
+        if(!S.mData[m])S.mData[m]={income:[]};if(!S.mData[m].income)S.mData[m].income=[];
+        S.mData[m].income.push({id:baseId+m*1000,desc,amount:a,date:bucketDate(date,S.year,m),recurring:true});
+      }
+      sv();
+      forIncomeFutureYears(baseId,(list,relId,m,fy)=>list.some(e=>e.id===relId)?undefined:[...list,{id:relId,desc,amount:a,date:adjDate(date,m,fy),recurring:true}]);
+    }else{
+      if(!S.mData[S.month].income)S.mData[S.month].income=[];
+      S.mData[S.month].income.push({id:Date.now(),desc,amount:a,date});
+      sv();
+    }
+    rIncMod();
   };
+  // Change the amount; for recurring income, from this month on (a raise, a new allowance…)
+  document.querySelectorAll(".eInc").forEach(b=>b.onclick=()=>{
+    const id=parseInt(b.dataset.e),entry=(S.mData[S.month].income||[]).find(e=>e.id===id);if(!entry)return;
+    const v=prompt(entry.recurring?'סכום חדש להכנסה הקבועה (מהחודש הזה והלאה):':'סכום חדש:',entry.amount);
+    const a=parseFloat(v);if(v===null||!a)return;
+    if(entry.recurring){
+      const bid=id-S.month*1000;
+      for(let m=S.month;m<12;m++)(S.mData[m]?.income||[]).forEach(e=>{if(e.id===bid+m*1000)e.amount=a;});
+      sv();
+      forIncomeFutureYears(bid,(list,relId)=>list.some(e=>e.id===relId)?list.map(e=>e.id===relId?{...e,amount:a}:e):undefined);
+    }else{entry.amount=a;sv();}
+    rIncMod();
+  });
   document.querySelectorAll(".dInc").forEach(b=>b.onclick=()=>{
-    S.mData[S.month].income=S.mData[S.month].income.filter(e=>e.id!==parseInt(b.dataset.e));
-    sv();rIncMod();
+    const id=parseInt(b.dataset.e),entry=(S.mData[S.month].income||[]).find(e=>e.id===id);
+    if(entry?.recurring){
+      if(!confirm('זו הכנסה קבועה. למחוק אותה מהחודש הזה והלאה?\n(בחודשים הקודמים היא תישאר)'))return;
+      const bid=id-S.month*1000;
+      for(let m=S.month;m<12;m++)if(S.mData[m]?.income)S.mData[m].income=S.mData[m].income.filter(e=>e.id!==bid+m*1000);
+      sv();
+      forIncomeFutureYears(bid,(list,relId)=>list.some(e=>e.id===relId)?list.filter(e=>e.id!==relId):undefined);
+    }else{
+      S.mData[S.month].income=S.mData[S.month].income.filter(e=>e.id!==id);
+      sv();
+    }
+    rIncMod();
   });
 }
 
