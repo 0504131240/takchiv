@@ -43,39 +43,50 @@ html.dark .overlay{background:rgba(0,0,0,.6)}
 .tlbRow{display:flex;align-items:center;gap:8px;padding:4px 16px 10px;overflow-x:auto;scrollbar-width:none}
 .tlbRow::-webkit-scrollbar{display:none}
 .chip{flex-shrink:0;padding:7px 14px;border-radius:12px;border:1px solid #e6dccd;background:#fffdf9;color:#2f2a24;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
-.qbtn{background:#fffdf9;border:1px solid #ece4d8;border-radius:10px;color:#7d7265;cursor:pointer}
+.qbtn{background:#fffdf9;border:1px solid #ece4d8;border-radius:10px;color:#6f6457;cursor:pointer}
 button,input{font-family:inherit}
+/* Keyboard focus is always visible */
+:focus-visible{outline:3px solid #1f5fbf!important;outline-offset:2px}
+html.dark :focus-visible{outline-color:#8ab4ff!important}
+.modal:focus{outline:none}
+.skip{position:absolute;right:8px;top:-60px;z-index:300;background:#2f2a24;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
+.skip:focus{top:8px}
+html.hc body{filter:contrast(1.35)}
+html.rm *,html.rm *::before,html.rm *::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+html.ul a,html.ul button{text-decoration:underline!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 input[type=number]{-moz-appearance:textfield}
 input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 input[type=date]{color-scheme:light}
 .inp{width:100%;background:#fffdf9;border:1px solid #ece4d8;border-radius:12px;padding:9px 12px;color:#2f2a24;font-size:14px;outline:none;text-align:right;direction:rtl}
-.inp:focus{border-color:#5b7f6b;box-shadow:0 0 0 3px rgba(91,127,107,.12)}
+.inp:focus{border-color:#527461;box-shadow:0 0 0 3px rgba(91,127,107,.12)}
 .overlay{position:fixed;inset:0;background:rgba(47,42,36,.45);display:flex;align-items:center;justify-content:center;z-index:100;direction:rtl}
 .modal{background:#fffdf9;border-radius:24px;padding:24px;width:92vw;max-width:440px;border:1px solid #ece4d8;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(91,127,107,.15)}
 .csw{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;display:inline-block}
 .csw.on{border:3px solid #2f2a24}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{padding:10px 8px;color:#7d7265;font-weight:600;text-align:center;font-size:12px;background:#faf6ef}
-#installBar{display:none;position:fixed;bottom:0;left:0;right:0;background:#fffdf9;border-top:2px solid #5b7f6b;padding:12px 16px;z-index:200;align-items:center;justify-content:space-between;gap:10px;direction:rtl;box-shadow:0 -2px 12px rgba(91,127,107,.12)}
+th{padding:10px 8px;color:#6f6457;font-weight:600;text-align:center;font-size:12px;background:#faf6ef}
+#installBar{display:none;position:fixed;bottom:0;left:0;right:0;background:#fffdf9;border-top:2px solid #527461;padding:12px 16px;z-index:200;align-items:center;justify-content:space-between;gap:10px;direction:rtl;box-shadow:0 -2px 12px rgba(91,127,107,.12)}
 </style>
 </head>
 <body>
+<a class="skip" href="#cnt">דלג לתוכן הראשי</a>
 <div id="top"><div id="hdr"></div><div id="tlb"></div></div>
-<div id="cnt" style="padding:0 16px 96px;max-width:640px;margin:0 auto"></div>
+<main id="cnt" tabindex="-1" style="padding:0 16px 96px;max-width:640px;margin:0 auto"></main>
 <div id="m1"></div>
 <div id="m2"></div>
 <div id="m3"></div>
 
 <div id="installBar">
   <div style="display:flex;align-items:center;gap:10px;flex:1">
-    <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#5b7f6b,#6f9480);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">&#8362;</div>
+    <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#527461,#4f735f);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">&#8362;</div>
     <div>
       <div style="font-weight:700;color:#2f2a24;font-size:14px">התקן כאפליקציה</div>
-      <div style="font-size:11px;color:#a39686">גישה מהירה מהמסך הביתי</div>
+      <div style="font-size:11px;color:#756a5c">גישה מהירה מהמסך הביתי</div>
     </div>
   </div>
-  <button onclick="installApp()" style="padding:8px 18px;border-radius:10px;border:none;color:#fff;font-weight:700;font-size:13px;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer;white-space:nowrap">התקן</button>
-  <button onclick="document.getElementById('installBar').style.display='none'" style="background:transparent;border:none;color:#a39686;font-size:22px;cursor:pointer;padding:0 4px;line-height:1">&times;</button>
+  <button onclick="installApp()" style="padding:8px 18px;border-radius:10px;border:none;color:#fff;font-weight:700;font-size:13px;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer;white-space:nowrap">התקן</button>
+  <button onclick="document.getElementById('installBar').style.display='none'" style="background:transparent;border:none;color:#756a5c;font-size:22px;cursor:pointer;padding:0 4px;line-height:1">&times;</button>
 </div>
 
 <script type="module">
@@ -237,7 +248,7 @@ function fbListen(year){
     setSyncDot(true);
   },e=>{console.warn('FB listen:',e);setSyncDot(false);});
 }
-function setSyncDot(ok){const el=g('syncDot');if(el)el.style.background=ok?'#4f8a68':'#cf5a3e';}
+function setSyncDot(ok){const el=g('syncDot');if(el)el.style.background=ok?'#3d7556':'#b0472e';}
 
 function getCfg(){try{return JSON.parse(localStorage.getItem('bdg_cfg_'+CUR_UID)||'{}');}catch{return{};}}
 function saveCfg(c){try{localStorage.setItem('bdg_cfg_'+CUR_UID,JSON.stringify({...getCfg(),...c}));}catch{}}
@@ -280,23 +291,23 @@ function cycleRangeLabel(m){
   if(start<=1)return '';
   return `${start} ${MO[m]} – ${start-1} ${MO[(m+1)%12]}`;
 }
-const CL=["#6366f1","#0ea5e9","#f59e0b","#10b981","#8b5cf6","#ef4444","#f97316","#14b8a6","#ec4899","#84cc16"];
+const CL=["#4f46e5","#0ea5e9","#f59e0b","#10b981","#8b5cf6","#ef4444","#f97316","#14b8a6","#ec4899","#84cc16"];
 const DF=[
-  {id:1,name:"מזון וקניות",budget:3000,color:"#5b7f6b"},
+  {id:1,name:"מזון וקניות",budget:3000,color:"#527461"},
   {id:2,name:"חשבונות ותשלומים",budget:2000,color:"#0ea5e9"},
   {id:3,name:"תחבורה",budget:1000,color:"#f59e0b"},
-  {id:4,name:"בריאות",budget:800,color:"#4f8a68"},
-  {id:5,name:"חינוך",budget:1500,color:"#6f9480"},
+  {id:4,name:"בריאות",budget:800,color:"#3d7556"},
+  {id:5,name:"חינוך",budget:1500,color:"#4f735f"},
 ];
 
-let S={year:new Date().getFullYear(),month:new Date().getMonth(),view:"monthly",cats:[],mData:{},aCat:null,eCat:null,nc:{name:"",budget:"",budgetRec:"",color:"#5b7f6b",isRec:false},sortEnt:"date",editEntId:null,expFilter:"variable",chartIdx:0};
+let S={year:new Date().getFullYear(),month:new Date().getMonth(),view:"monthly",cats:[],mData:{},aCat:null,eCat:null,nc:{name:"",budget:"",budgetRec:"",color:"#527461",isRec:false},sortEnt:"date",editEntId:null,expFilter:"variable",chartIdx:0};
 let deferredPrompt=null,touchStartX=0,touchStartY=0,touchStartTarget=null;
 
 // "צדקה" is a built-in category: always present (found by flag or name), used for maaser
 function charityCat(){return S.cats.find(c=>c.builtin==='charity')||S.cats.find(c=>(c.name||'').trim()==='צדקה');}
 function ensureCharity(){
   let c=charityCat();
-  if(!c){c={id:Math.max(0,...S.cats.map(x=>x.id))+1,name:'צדקה',color:'#b56b7c'};S.cats.push(c);}
+  if(!c){c={id:Math.max(0,...S.cats.map(x=>x.id))+1,name:'צדקה',color:'#a85a6b'};S.cats.push(c);}
   c.builtin='charity';
   eC(S.cats,S.mData);
 }
@@ -366,16 +377,97 @@ function g(id){return document.getElementById(id);}
 // Dark mode (per device): swap the light palette for a warm dark one in everything rendered
 let DARK=false;try{DARK=localStorage.getItem('bdg_dark')==='1';}catch{}
 const DK={'#f5efe6':'#17140f','#fffdf9':'#221e18','#ffffff':'#221e18','#f7f1e8':'#2a251e','#faf6ef':'#2a251e','#f3ece2':'#2a251e','#efe7db':'#302a22',
- '#ece4d8':'#3a332a','#e6dccd':'#3a332a','#f0e8dc':'#332d25','#d6ccbe':'#5d554a','#c4b8a8':'#6a6155','#2f2a24':'#ede6db','#5e554a':'#cfc5b8',
- '#7d7265':'#a89d8f','#8a7f72':'#a89d8f','#a39686':'#8c8172','#5b7f6b':'#7fa58f','#6f9480':'#8fb39f','#4a6b58':'#8fbf9f','#3f7356':'#86c09c','#4f8a68':'#6fae86',
+ '#ece4d8':'#3a332a','#e6dccd':'#3a332a','#f0e8dc':'#332d25','#d6ccbe':'#5d554a','#6f6457':'#6a6155','#2f2a24':'#ede6db','#5e554a':'#cfc5b8',
+ '#6f6457':'#a89d8f','#6f6457':'#a89d8f','#756a5c':'#a89d8f','#b0472e':'#e07a62','#fef2f2':'#3a2620','#fff7ed':'#352c1a','#f0eff8':'#26243a','#4f46e5':'#a5b4fc','#9a3412':'#f0956f','#a14b06':'#f0a35e','#3d7556':'#6fae86','#a85a6b':'#d59aa8','#527461':'#7fa58f','#4f735f':'#8fb39f','#4a6b58':'#8fbf9f','#3f7356':'#86c09c','#3d7556':'#6fae86',
  '#e9f0eb':'#26332b','#eef3ef':'#26332b','#eef5ef':'#26332b','#e4efe6':'#26332b','#d4e4d8':'#35473b','#c9d9ce':'#35473b','#d8e6dc':'#35473b','#d5e2d9':'#35473b','#f3f7f4':'#26332b',
- '#fbe9e2':'#3a2620','#f8e4dc':'#3a2620','#fbefe9':'#3a2620','#f0cfc2':'#5a3a2e','#ebb9a8':'#5a3a2e','#f8eef0':'#36262a','#e2bcc5':'#5a3c44','#9e5868':'#d59aa8','#b56b7c':'#d59aa8',
+ '#fbe9e2':'#3a2620','#f8e4dc':'#3a2620','#fbefe9':'#3a2620','#f0cfc2':'#5a3a2e','#ebb9a8':'#5a3a2e','#f8eef0':'#36262a','#e2bcc5':'#5a3c44','#9e5868':'#d59aa8','#a85a6b':'#d59aa8',
  '#fffbeb':'#352c1a','#fde68a':'#5c4a22','#fef3c7':'#352c1a'};
+// Accent colors used as a background behind white text keep a deep shade in dark mode
+const DKBG={'#527461':'#3f6b52','#4f735f':'#3a634c','#b0472e':'#a8432b','#9e5868':'#8e4e5d','#a85a6b':'#8e4e5d','#3f7356':'#3a634c','#4a6b58':'#3a634c'};
 function darken(h){
-  return h.replace(/background:#fff(?![0-9a-fA-F])/g,'background:#221e18').replace(/#[0-9a-fA-F]{6}\b/g,c=>DK[c.toLowerCase()]||c);
+  return h.replace(/background:#fff(?![0-9a-fA-F])/g,'background:#221e18')
+    .replace(/background(?:-color)?:[^;"`]*/g,d=>d.replace(/#[0-9a-fA-F]{6}\b/g,c=>DKBG[c.toLowerCase()]||c))
+    .replace(/#[0-9a-fA-F]{6}\b/g,c=>DK[c.toLowerCase()]||c);
 }
 function applyDark(){document.documentElement.classList.toggle('dark',DARK);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=DARK?'#17140f':'#f5efe6';}
-function ih(id,h){const e=g(id);if(e)e.innerHTML=DARK?darken(h):h;}
+// Colors saved with older categories, swapped at render for the accessible palette (4.5:1 contrast)
+const OLDC={'#a39686':'#756a5c','#7d7265':'#6f6457','#8a7f72':'#6f6457','#cf5a3e':'#b0472e','#5b7f6b':'#527461','#6f9480':'#4f735f','#4f8a68':'#3d7556','#b56b7c':'#a85a6b','#c4b8a8':'#6f6457','#6366f1':'#4f46e5','#c2410c':'#9a3412'};
+function ih(id,h){const e=g(id);if(!e)return;h=h.replace(/#[0-9a-fA-F]{6}\b/g,c=>OLDC[c.toLowerCase()]||c);e.innerHTML=DARK?darken(h):h;a11ySoon();}
+// Some screens write HTML directly (search results, login, AI box…): give those the same colors and pass
+const recolor=h=>{h=h.replace(/#[0-9a-fA-F]{6}\b/g,c=>OLDC[c.toLowerCase()]||c);return DARK?darken(h):h;};
+new MutationObserver(ms=>{
+  let added=false;
+  for(const m of ms){
+    const els=m.type==='attributes'?[m.target]:[...m.addedNodes].filter(n=>n.nodeType===1).flatMap(n=>[n,...n.querySelectorAll('[style]')]);
+    if(m.type==='childList'&&els.length)added=true;
+    els.forEach(el=>{const st=el.getAttribute&&el.getAttribute('style');if(st&&/#[0-9a-f]{3,6}/i.test(st)){const n=recolor(st);if(n!==st)el.setAttribute('style',n);}});
+  }
+  if(added)a11ySoon();
+}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
+
+// ---------- Accessibility (Israeli standard IS 5568 / WCAG 2.0 AA) ----------
+// Screens are built as HTML strings with click handlers attached afterwards, so one pass after each
+// render gives every control a keyboard role and an accessible name, and every window dialog semantics.
+const ICON_NAMES={'×':'סגור','✕':'סגור','✎':'עריכה','🗑':'מחיקה','+':'הוספה','←':'חזרה','→':'חזרה','‹':'הקודם','›':'הבא'};
+const ID_NAMES={prevMon:'החודש הקודם',nextMon:'החודש הבא',dC:'מחיקת קטגוריה',eC:'עריכת קטגוריה',editEnt:'עריכת הוצאה',dEn:'מחיקת הוצאה',addRem:'הוספת תזכורת',backToProfile:'חזרה'};
+let _a11yT=0,_dlgStack=[];
+function a11ySoon(){clearTimeout(_a11yT);_a11yT=setTimeout(a11yPass,0);}
+function a11yPass(){
+  const roots=['hdr','tlb','cnt','m1','m2','m3'].map(g).filter(Boolean);
+  roots.forEach(r=>r.querySelectorAll('*').forEach(el=>{
+    const tag=el.tagName;
+    // Clickable non-button elements: reachable and operable from the keyboard
+    if(el.onclick&&!/^(BUTTON|A|INPUT|SELECT|TEXTAREA|LABEL|SUMMARY|OPTION)$/.test(tag)&&!el.hasAttribute('role')&&!el.classList.contains('overlay')){el.setAttribute('role','button');el.tabIndex=0;}
+    if(tag==='BUTTON'&&!el.getAttribute('aria-label')){
+      const t=el.textContent.trim();
+      if(!/[א-תA-Za-z0-9]/.test(t)){const n=ID_NAMES[el.id]||ID_NAMES[el.className]||ICON_NAMES[t]||(/X$/.test(el.id)?'סגור':'');if(n)el.setAttribute('aria-label',n);}
+    }
+    // Form fields named by their placeholder, or by the short text just before them
+    if(/^(INPUT|SELECT|TEXTAREA)$/.test(tag)&&el.type!=='hidden'&&!el.getAttribute('aria-label')&&!el.closest('label')&&!(el.id&&document.querySelector('label[for="'+el.id+'"]'))){
+      const prev=el.previousElementSibling;
+      const n=el.placeholder||el.title||(prev&&prev.textContent.trim().length<40?prev.textContent.trim():'')||(tag==='SELECT'?'בחירה':'');
+      if(n)el.setAttribute('aria-label',n.replace(/[:…]+$/,''));
+    }
+    // Color swatches: named and marked when chosen
+    if(el.classList.contains('csw')){el.setAttribute('aria-label','צבע '+([...el.parentElement.querySelectorAll('.csw')].indexOf(el)+1));el.setAttribute('aria-pressed',el.classList.contains('on')?'true':'false');}
+    if(tag==='svg'&&!el.hasAttribute('role')){el.setAttribute('role','img');el.setAttribute('aria-label','תרשים');}
+  }));
+  // Windows: dialog semantics; focus moves in, and back out when they close
+  document.querySelectorAll('.overlay').forEach(o=>{
+    const m=o.querySelector('.modal')||o.firstElementChild;if(!m||m.getAttribute('role')==='dialog')return;
+    m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.tabIndex=-1;
+    const ttl=[...m.querySelectorAll('span,div,h1,h2,h3')].find(e=>parseFloat(getComputedStyle(e).fontSize)>=16&&e.textContent.trim()&&e.children.length<=1);
+    if(ttl){ttl.id=ttl.id||'dlgT'+Math.random().toString(36).slice(2,8);m.setAttribute('aria-labelledby',ttl.id);}
+    _dlgStack.push({o,back:document.activeElement});
+    // Focus the window itself (not a field, so phones don't pop up the keyboard), unless the screen already focused something inside
+    if(!m.contains(document.activeElement))m.focus({preventScroll:true});
+  });
+  _dlgStack=_dlgStack.filter(d=>{if(d.o.isConnected)return true;if(d.back&&d.back.isConnected)d.back.focus({preventScroll:true});return false;});
+}
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  // Enter / Space activate role=button elements like real buttons
+  if((e.key==='Enter'||e.key===' ')&&t.getAttribute&&t.getAttribute('role')==='button'&&t.tagName!=='BUTTON'){e.preventDefault();t.click();return;}
+  const top=_dlgStack[_dlgStack.length-1];if(!top||!top.o.isConnected)return;
+  if(e.key==='Escape'){
+    const x=[...top.o.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')==='סגור'||/X$/.test(b.id));
+    if(x){e.preventDefault();x.click();}
+  }else if(e.key==='Tab'){
+    // Keep keyboard focus inside the open window
+    const f=[...top.o.querySelectorAll('button,a[href],input,select,textarea,[tabindex="0"]')].filter(x=>!x.disabled&&x.offsetParent!==null);
+    if(!f.length)return;const a=f[0],z=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();}
+    else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}
+  }
+});
+// Display preferences (per device): text size, high contrast, no animations, underlined links
+function a11yPrefs(){try{return JSON.parse(localStorage.getItem('bdg_a11y')||'{}');}catch{return{};}}
+function applyA11y(){
+  const p=a11yPrefs(),h=document.documentElement;
+  h.style.zoom=p.size&&p.size!==1?String(p.size):'';
+  h.classList.toggle('hc',!!p.hc);h.classList.toggle('rm',!!p.rm);h.classList.toggle('ul',!!p.ul);
+}
+
 
 function adjDate(dateStr,month,year){
   if(!dateStr)return today();
@@ -457,9 +549,9 @@ function trendHTML(catId){
   const curr=ct(S.month,catId),prev=ct((S.month-1+12)%12,catId);
   if(!prev||!curr)return"";
   const pct=Math.round(((curr-prev)/prev)*100);
-  if(pct>5)return`<span style="font-size:10px;color:#cf5a3e">&#9650;${pct}%</span>`;
-  if(pct<-5)return`<span style="font-size:10px;color:#4f8a68">&#9660;${Math.abs(pct)}%</span>`;
-  return`<span style="font-size:10px;color:#a39686">&rarr;</span>`;
+  if(pct>5)return`<span style="font-size:10px;color:#b0472e">&#9650;${pct}%</span>`;
+  if(pct<-5)return`<span style="font-size:10px;color:#3d7556">&#9660;${Math.abs(pct)}%</span>`;
+  return`<span style="font-size:10px;color:#756a5c">&rarr;</span>`;
 }
 
 function rPie(){
@@ -474,10 +566,10 @@ function rPie(){
     angle+=pct*2*Math.PI;
     if(pct>0.999){paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${s.cat.color}"/>`;}
     else{const x1=(cx+r*Math.cos(sa)).toFixed(1),y1=(cy+r*Math.sin(sa)).toFixed(1),x2=(cx+r*Math.cos(angle)).toFixed(1),y2=(cy+r*Math.sin(angle)).toFixed(1);paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${pct>0.5?1:0},1 ${x2},${y2} Z" fill="${s.cat.color}"/>`;}
-    legend+=`<div style="display:flex;align-items:center;gap:4px"><div style="width:7px;height:7px;border-radius:50%;background:${s.cat.color};flex-shrink:0"></div><span style="font-size:10px;color:#7d7265">${s.cat.name}</span><span style="font-size:10px;font-weight:700;color:#2f2a24">${Math.round(pct*100)}%</span></div>`;
+    legend+=`<div style="display:flex;align-items:center;gap:4px"><div style="width:7px;height:7px;border-radius:50%;background:${s.cat.color};flex-shrink:0"></div><span style="font-size:10px;color:#6f6457">${s.cat.name}</span><span style="font-size:10px;font-weight:700;color:#2f2a24">${Math.round(pct*100)}%</span></div>`;
   });
   return`<div style="background:#f3f7f4;border-radius:14px;padding:14px 16px;border:1px solid #d5e2d9">
-    <div style="font-size:12px;color:#5b7f6b;font-weight:700;margin-bottom:10px">&#128202; פילוח הוצאות</div>
+    <div style="font-size:12px;color:#527461;font-weight:700;margin-bottom:10px">&#128202; פילוח הוצאות</div>
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <svg viewBox="0 0 124 124" width="100" height="100" style="flex-shrink:0">${paths}</svg>
       <div style="display:flex;flex-direction:column;gap:5px">${legend}</div>
@@ -493,15 +585,15 @@ function rLineChart(){
   const line=pts.map(p=>p.join(',')).join(' ');
   const area=`${W-px},${py+ih} ${line} ${px},${py+ih}`;
   const [cx,cy]=pts[S.month];
-  const lbls=MO.map((m,i)=>{const[x]=pts[i];return`<text x="${x.toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" fill="${i===S.month?'#5b7f6b':'#a39686'}">${m[0]}</text>`;}).join('');
-  const dots=pts.map(([x,y],i)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i===S.month?5:2.5}" fill="${i===S.month?'#5b7f6b':'#6f9480'}" stroke="#fff" stroke-width="1.5"/>`).join('');
-  const tip=vals[S.month]?`<text x="${cx.toFixed(1)}" y="${(cy-9).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="#5b7f6b">&#8362;${fm(vals[S.month])}</text>`:'';
+  const lbls=MO.map((m,i)=>{const[x]=pts[i];return`<text x="${x.toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" fill="${i===S.month?'#527461':'#756a5c'}">${m[0]}</text>`;}).join('');
+  const dots=pts.map(([x,y],i)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${i===S.month?5:2.5}" fill="${i===S.month?'#527461':'#4f735f'}" stroke="#fff" stroke-width="1.5"/>`).join('');
+  const tip=vals[S.month]?`<text x="${cx.toFixed(1)}" y="${(cy-9).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="#527461">&#8362;${fm(vals[S.month])}</text>`:'';
   return`<div style="background:#f3f7f4;border-radius:14px;padding:10px 12px;border:1px solid #d5e2d9">
-    <div style="font-size:12px;color:#5b7f6b;font-weight:700;margin-bottom:8px">&#128200; מגמת הוצאות שנתית</div>
+    <div style="font-size:12px;color:#527461;font-weight:700;margin-bottom:8px">&#128200; מגמת הוצאות שנתית</div>
     <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block">
-      <defs><linearGradient id="lgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5b7f6b" stop-opacity=".25"/><stop offset="100%" stop-color="#5b7f6b" stop-opacity="0"/></linearGradient></defs>
+      <defs><linearGradient id="lgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#527461" stop-opacity=".25"/><stop offset="100%" stop-color="#527461" stop-opacity="0"/></linearGradient></defs>
       <polygon points="${area}" fill="url(#lgA)"/>
-      <polyline points="${line}" fill="none" stroke="#5b7f6b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <polyline points="${line}" fill="none" stroke="#527461" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
       ${dots}${tip}${lbls}
     </svg>
   </div>`;
@@ -511,12 +603,12 @@ function rStackedBar(){
   const max=Math.max(...Array.from({length:12},(_,m)=>mt(m)),1);
   const slot=iw/12,bw=slot-3;
   const bars=Array.from({length:12},(_,m)=>{const x=px+m*slot+1.5;let y=py+ih;return S.cats.map(cat=>{const v=ct(m,cat.id);if(!v)return'';const h=(v/max)*ih;y-=h;return`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="${cat.color}" rx="1" opacity="${m===S.month?1:.65}"/>`;}).join('');}).join('');
-  const lbls=MO.map((mo,i)=>`<text x="${(px+i*slot+slot/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" fill="${i===S.month?'#5b7f6b':'#a39686'}">${mo[0]}</text>`).join('');
-  const legend=S.cats.map(cat=>`<div style="display:flex;align-items:center;gap:3px"><div style="width:6px;height:6px;border-radius:2px;background:${cat.color}"></div><span style="font-size:9px;color:#7d7265">${cat.name}</span></div>`).join('');
+  const lbls=MO.map((mo,i)=>`<text x="${(px+i*slot+slot/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" fill="${i===S.month?'#527461':'#756a5c'}">${mo[0]}</text>`).join('');
+  const legend=S.cats.map(cat=>`<div style="display:flex;align-items:center;gap:3px"><div style="width:6px;height:6px;border-radius:2px;background:${cat.color}"></div><span style="font-size:9px;color:#6f6457">${cat.name}</span></div>`).join('');
   return`<div style="background:#f3f7f4;border-radius:14px;padding:14px 16px;border:1px solid #d5e2d9">
-    <div style="font-size:12px;color:#5b7f6b;font-weight:700;margin-bottom:8px">&#128293; הוצאות לפי חודש</div>
+    <div style="font-size:12px;color:#527461;font-weight:700;margin-bottom:8px">&#128293; הוצאות לפי חודש</div>
     <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block">
-      <rect x="${(px+S.month*slot).toFixed(1)}" y="${py}" width="${slot.toFixed(1)}" height="${ih}" fill="#5b7f6b" rx="2" opacity=".08"/>
+      <rect x="${(px+S.month*slot).toFixed(1)}" y="${py}" width="${slot.toFixed(1)}" height="${ih}" fill="#527461" rx="2" opacity=".08"/>
       ${bars}${lbls}
     </svg>
     <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px">${legend}</div>
@@ -531,7 +623,7 @@ function rSparklines(){
     const pts=vals.map((v,i)=>`${(4+i*14).toFixed(0)},${(H-4-(v/max)*(H-8)).toFixed(1)}`).join(' ');
     const curr=vals[5],prev=vals[4];
     let tr='';
-    if(prev&&curr){const p=Math.round(((curr-prev)/prev)*100);if(p>5)tr=`<span style="font-size:9px;color:#cf5a3e">&#9650;${p}%</span>`;else if(p<-5)tr=`<span style="font-size:9px;color:#4f8a68">&#9660;${Math.abs(p)}%</span>`;}
+    if(prev&&curr){const p=Math.round(((curr-prev)/prev)*100);if(p>5)tr=`<span style="font-size:9px;color:#b0472e">&#9650;${p}%</span>`;else if(p<-5)tr=`<span style="font-size:9px;color:#3d7556">&#9660;${Math.abs(p)}%</span>`;}
     return`<div style="background:#fffdf9;border-radius:8px;padding:6px 7px 5px;border:1px solid #ece4d8">
       <div style="display:flex;align-items:center;gap:3px;margin-bottom:3px">
         <div style="width:5px;height:5px;border-radius:50%;background:${cat.color};flex-shrink:0"></div>
@@ -541,11 +633,11 @@ function rSparklines(){
         <polyline points="${pts}" fill="none" stroke="${cat.color}" stroke-width="1.5" stroke-linejoin="round"/>
         ${vals.map((v,i)=>`<circle cx="${(4+i*14).toFixed(0)}" cy="${(H-4-(v/max)*(H-8)).toFixed(1)}" r="${i===5?2.5:1.5}" fill="${cat.color}"/>`).join('')}
       </svg>
-      <div style="font-size:10px;font-weight:800;color:#5b7f6b;text-align:center;margin-top:2px">&#8362;${fm(curr)}</div>
+      <div style="font-size:10px;font-weight:800;color:#527461;text-align:center;margin-top:2px">&#8362;${fm(curr)}</div>
     </div>`;
   }).join('');
   return`<div style="background:#f3f7f4;border-radius:14px;padding:10px 12px;border:1px solid #d5e2d9">
-    <div style="font-size:11px;color:#5b7f6b;font-weight:700;margin-bottom:8px">&#10024; מגמות 6 חודשים</div>
+    <div style="font-size:11px;color:#527461;font-weight:700;margin-bottom:8px">&#10024; מגמות 6 חודשים</div>
     <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px">${items}</div>
   </div>`;
 }
@@ -555,14 +647,14 @@ function rIncVsExp(){
   const max=Math.max(...iv,...ev,1);
   const W=300,H=110,px=6,py=8,bh=16,iw=288,ih=H-py-bh;
   const slot=iw/6,bw=(slot-6)/2;
-  const bars=idxs.map((m,i)=>{const x=px+i*slot;const h1=(iv[i]/max)*ih,h2=(ev[i]/max)*ih;return`<rect x="${(x+1).toFixed(1)}" y="${(py+ih-h1).toFixed(1)}" width="${bw.toFixed(1)}" height="${h1.toFixed(1)}" fill="#4f8a68" rx="2" opacity="${m===S.month?1:.7}"/><rect x="${(x+bw+4).toFixed(1)}" y="${(py+ih-h2).toFixed(1)}" width="${bw.toFixed(1)}" height="${h2.toFixed(1)}" fill="#5b7f6b" rx="2" opacity="${m===S.month?1:.7}"/>`;}).join('');
-  const lbls=idxs.map((m,i)=>`<text x="${(px+i*slot+slot/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="${m===S.month?'#5b7f6b':'#a39686'}">${MO[m].substring(0,3)}</text>`).join('');
+  const bars=idxs.map((m,i)=>{const x=px+i*slot;const h1=(iv[i]/max)*ih,h2=(ev[i]/max)*ih;return`<rect x="${(x+1).toFixed(1)}" y="${(py+ih-h1).toFixed(1)}" width="${bw.toFixed(1)}" height="${h1.toFixed(1)}" fill="#3d7556" rx="2" opacity="${m===S.month?1:.7}"/><rect x="${(x+bw+4).toFixed(1)}" y="${(py+ih-h2).toFixed(1)}" width="${bw.toFixed(1)}" height="${h2.toFixed(1)}" fill="#527461" rx="2" opacity="${m===S.month?1:.7}"/>`;}).join('');
+  const lbls=idxs.map((m,i)=>`<text x="${(px+i*slot+slot/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="${m===S.month?'#527461':'#756a5c'}">${MO[m].substring(0,3)}</text>`).join('');
   return`<div style="background:#f3f7f4;border-radius:14px;padding:10px 12px;border:1px solid #d5e2d9">
-    <div style="font-size:12px;color:#5b7f6b;font-weight:700;margin-bottom:8px">&#128176; הכנסות מול הוצאות</div>
+    <div style="font-size:12px;color:#527461;font-weight:700;margin-bottom:8px">&#128176; הכנסות מול הוצאות</div>
     <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block">${bars}${lbls}</svg>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:6px">
-      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:#4f8a68"></div><span style="font-size:10px;color:#7d7265">הכנסה</span></div>
-      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:#5b7f6b"></div><span style="font-size:10px;color:#7d7265">הוצאה</span></div>
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:#3d7556"></div><span style="font-size:10px;color:#6f6457">הכנסה</span></div>
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:#527461"></div><span style="font-size:10px;color:#6f6457">הוצאה</span></div>
     </div>
   </div>`;
 }
@@ -576,7 +668,7 @@ function rCharts(){
       </div>
     </div>
     <div style="display:flex;justify-content:center;gap:4px;margin-top:8px;flex-wrap:wrap">
-      ${labels.map((l,i)=>`<div class="chartDot" data-i="${i}" style="padding:3px 8px;border-radius:12px;font-size:10px;font-weight:${S.chartIdx===i?700:400};background:${S.chartIdx===i?'#e9f0eb':'transparent'};color:${S.chartIdx===i?'#5b7f6b':'#a39686'};cursor:pointer;border:1px solid ${S.chartIdx===i?'#c9d9ce':'transparent'}">${l}</div>`).join('')}
+      ${labels.map((l,i)=>`<div class="chartDot" data-i="${i}" style="padding:3px 8px;border-radius:12px;font-size:10px;font-weight:${S.chartIdx===i?700:400};background:${S.chartIdx===i?'#e9f0eb':'transparent'};color:${S.chartIdx===i?'#527461':'#756a5c'};cursor:pointer;border:1px solid ${S.chartIdx===i?'#c9d9ce':'transparent'}">${l}</div>`).join('')}
     </div>
   </div>`;
 }
@@ -585,22 +677,22 @@ function installApp(){if(!deferredPrompt)return;deferredPrompt.prompt();deferred
 
 function rHdr(){
   const un=USERS.find(u=>u.id===CUR_UID)?.name||'';
-  const seg=on=>`padding:5px 12px;border-radius:9px;border:none;font-size:12.5px;font-weight:600;cursor:pointer;background:${on?'#fffdf9':'transparent'};color:${on?'#2f2a24':'#8a7f72'};${on?'box-shadow:0 1px 3px rgba(90,70,40,.12)':''}`;
+  const seg=on=>`padding:5px 12px;border-radius:9px;border:none;font-size:12.5px;font-weight:600;cursor:pointer;background:${on?'#fffdf9':'transparent'};color:${on?'#2f2a24':'#6f6457'};${on?'box-shadow:0 1px 3px rgba(90,70,40,.12)':''}`;
   ih("hdr",`<div style="padding:16px 18px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px">
     <div style="min-width:0">
       <div style="display:flex;align-items:center;gap:7px">
-        <span style="font-size:21px;font-weight:700;color:#2f2a24;letter-spacing:-.3px">תקציב משפחתי</span>
-        <div id="syncDot" title="סנכרון ענן" style="width:7px;height:7px;border-radius:50%;background:#a39686;flex-shrink:0;transition:background .4s"></div>
+        <h1 style="font-size:21px;font-weight:700;color:#2f2a24;letter-spacing:-.3px">תקציב משפחתי</h1>
+        <div id="syncDot" role="img" aria-label="מצב סנכרון ענן" title="סנכרון ענן" style="width:7px;height:7px;border-radius:50%;background:#756a5c;flex-shrink:0;transition:background .4s"></div>
       </div>
-      <div style="font-size:12.5px;color:#8a7f72;margin-top:1px">${un?'שלום '+un:'ניהול חכם של ההוצאות'}</div>
+      <div style="font-size:12.5px;color:#6f6457;margin-top:1px">${un?'שלום '+un:'ניהול חכם של ההוצאות'}</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-      ${S.view==='yearly'?`<button id="yp" class="qbtn" style="width:28px;height:28px;font-size:15px">&#8249;</button><span style="font-size:14px;font-weight:600;color:#5b7f6b">${S.year}</span><button id="yn" class="qbtn" style="width:28px;height:28px;font-size:15px">&#8250;</button>`:''}
+      ${S.view==='yearly'?`<button id="yp" class="qbtn" style="width:28px;height:28px;font-size:15px">&#8249;</button><span style="font-size:14px;font-weight:600;color:#527461">${S.year}</span><button id="yn" class="qbtn" style="width:28px;height:28px;font-size:15px">&#8250;</button>`:''}
       <div style="display:flex;background:#ece4d8;border-radius:11px;padding:3px">
         <button id="vm" style="${seg(S.view==='monthly')}">חודשי</button>
         <button id="vy" style="${seg(S.view==='yearly')}">שנתי</button>
       </div>
-      <button id="userBtn" title="${un||'משתמש'}" style="width:38px;height:38px;border-radius:50%;background:#5b7f6b;border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer">${(un||'?').charAt(0)}</button>
+      <button id="userBtn" title="${un||'משתמש'}" style="width:38px;height:38px;border-radius:50%;background:#527461;border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer">${(un||'?').charAt(0)}</button>
     </div>
   </div>`);
   g("userBtn").onclick=()=>rUserMod();
@@ -659,28 +751,28 @@ function rInbox(){
   ih("m2",`<div class="overlay" id="inbO"><div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
       <span style="font-size:17px;font-weight:800;color:#2f2a24">&#128276; חיובים ממתינים</span>
-      <button id="inbX" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+      <button id="inbX" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
     </div>
-    <div style="font-size:12px;color:#a39686;margin-bottom:12px">התקבלו מההתראות בטלפון. בדוק, בחר קטגוריה ואשר.</div>
+    <div style="font-size:12px;color:#756a5c;margin-bottom:12px">התקבלו מההתראות בטלפון. בדוק, בחר קטגוריה ואשר.</div>
     ${items.map(it=>{const gs=guessCharge(it.merchant);const foreign=it.cur&&it.cur!=='ILS';
       return`<div class="inbIt" data-id="${it.id}" style="border:1px solid #ece4d8;border-radius:14px;padding:12px;margin-bottom:10px;background:#fffdf9">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px">
-        <span style="font-size:18px;font-weight:800;color:${it.credit?'#4f8a68':'#2f2a24'}">${it.credit?'זיכוי ':''}${curSym[it.cur]||''}${fm(it.amount)}</span>
-        <span style="font-size:12px;color:#a39686">${fmDate(it.date)} · ${new Date(it.at).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}</span>
+        <span style="font-size:18px;font-weight:800;color:${it.credit?'#3d7556':'#2f2a24'}">${it.credit?'זיכוי ':''}${curSym[it.cur]||''}${fm(it.amount)}</span>
+        <span style="font-size:12px;color:#756a5c">${fmDate(it.date)} · ${new Date(it.at).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}</span>
       </div>
-      <div style="font-size:11.5px;color:#a39686;margin-bottom:8px;line-height:1.5">${esc(it.raw)}</div>
-      ${foreign?`<div style="font-size:12px;color:#cf5a3e;margin-bottom:6px">החיוב במטבע חוץ — עדכן את הסכום בשקלים</div>`:''}
+      <div style="font-size:11.5px;color:#756a5c;margin-bottom:8px;line-height:1.5">${esc(it.raw)}</div>
+      ${foreign?`<div style="font-size:12px;color:#b0472e;margin-bottom:6px">החיוב במטבע חוץ — עדכן את הסכום בשקלים</div>`:''}
       <div style="display:flex;gap:6px;margin-bottom:6px">
         <input class="inp ibD" value="${esc(gs.desc||it.merchant)}" placeholder="תיאור" style="flex:1;min-width:0;padding:8px 10px;font-size:13px"/>
-        <input class="inp ibA" type="number" inputmode="decimal" value="${it.amount}" style="width:90px;padding:8px 10px;font-size:13px;text-align:center"/>
+        <input class="inp ibA" aria-label="סכום" type="number" inputmode="decimal" value="${it.amount}" style="width:90px;padding:8px 10px;font-size:13px;text-align:center"/>
       </div>
       <select class="inp ibC" style="width:100%;padding:8px 10px;font-size:13px;margin-bottom:8px">
         <option value="">בחר קטגוריה…</option>
         ${S.cats.map(c=>`<option value="${c.id}"${c.id===gs.cat?' selected':''}>${esc(c.name)}</option>`).join('')}
       </select>
       <div style="display:flex;gap:6px">
-        <button class="ibOk" style="flex:2;padding:9px;border-radius:10px;border:none;background:#5b7f6b;color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">&#10004; הוסף להוצאות</button>
-        <button class="ibNo" style="flex:1;padding:9px;border-radius:10px;border:1px solid #ece4d8;background:#fff;color:#7d7265;font-size:13px;cursor:pointer;font-family:inherit">התעלם</button>
+        <button class="ibOk" style="flex:2;padding:9px;border-radius:10px;border:none;background:#527461;color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">&#10004; הוסף להוצאות</button>
+        <button class="ibNo" style="flex:1;padding:9px;border-radius:10px;border:1px solid #ece4d8;background:#fff;color:#6f6457;font-size:13px;cursor:pointer;font-family:inherit">התעלם</button>
       </div>
     </div>`;}).join('')}
   </div></div>`);
@@ -689,7 +781,7 @@ function rInbox(){
     const it=INBOX.find(x=>String(x.id)===el.dataset.id);if(!it)return;
     el.querySelector(".ibOk").onclick=async()=>{
       const sel=el.querySelector(".ibC"),cat=parseInt(sel.value);
-      if(!cat){sel.style.borderColor='#cf5a3e';sel.focus();return;}
+      if(!cat){sel.style.borderColor='#b0472e';sel.focus();return;}
       const a=Math.round((parseFloat(el.querySelector(".ibA").value)||0)*100)/100;if(!a){el.querySelector(".ibA").focus();return;}
       const desc=el.querySelector(".ibD").value.trim()||it.merchant||'';
       addExpenseEntry(cat,{id:Date.now(),desc,amount:it.credit?-Math.abs(a):a,date:it.date,recurring:false,subCat:null});
@@ -703,23 +795,23 @@ function rMaaser(){
   const r=maaserOf(S.month);
   let yDue=0,yGiven=0;for(let m=0;m<12;m++){const x=maaserOf(m);yDue+=x.due;yGiven+=x.given;}
   const yLeft=yDue-yGiven;
-  const row=(l,v,c='#2f2a24',b=400)=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f3ece2"><span style="color:#7d7265;font-size:14px">${l}</span><span style="font-weight:${b};color:${c};font-size:15px">&#8362;${fm(v)}</span></div>`;
+  const row=(l,v,c='#2f2a24',b=400)=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f3ece2"><span style="color:#6f6457;font-size:14px">${l}</span><span style="font-weight:${b};color:${c};font-size:15px">&#8362;${fm(v)}</span></div>`;
   const verdict=(left)=>left>0?`<div style="font-size:13px;color:#9e5868">נשאר להשלים</div><div style="font-size:30px;font-weight:800;color:#9e5868">&#8362;${fm(left)}</div>`
     :`<div style="font-size:13px;color:#3f7356">${left<0?'נתת יותר מהמעשר ב-':'המעשר הושלם'}</div><div style="font-size:30px;font-weight:800;color:#3f7356">${left<0?'&#8362;'+fm(-left):'&#10004;'}</div>`;
   ih("m2",`<div class="overlay" id="maO"><div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <span style="font-size:17px;font-weight:800;color:#2f2a24">&#129518; מעשר — ${moLabel(S.month)}</span>
-      <button id="maX" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+      <button id="maX" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
     </div>
     ${row('הכנסות החודש',r.inc)}
     ${row('מעשר (10%)',r.due,'#2f2a24',700)}
-    ${row('ניתן לצדקה',r.given,'#b56b7c')}
+    ${row('ניתן לצדקה',r.given,'#a85a6b')}
     <div style="text-align:center;background:${r.left>0?'#f8eef0':'#eef5ef'};border-radius:14px;padding:14px;margin:14px 0">${verdict(r.left)}</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
       <input class="inp" id="maAmt" type="number" inputmode="decimal" min="0" placeholder="סכום שנתתי" value="${r.left>0?r.left:''}" style="flex:1;padding:10px 12px;font-size:16px;text-align:center"/>
-      <button id="maGive" style="padding:10px 16px;border-radius:10px;border:none;color:#fff;font-weight:800;font-size:14px;background:linear-gradient(135deg,#b56b7c,#9e5868);cursor:pointer;white-space:nowrap">&#10004; נתתי</button>
+      <button id="maGive" style="padding:10px 16px;border-radius:10px;border:none;color:#fff;font-weight:800;font-size:14px;background:linear-gradient(135deg,#a85a6b,#9e5868);cursor:pointer;white-space:nowrap">&#10004; נתתי</button>
     </div>
-    <div style="font-size:12px;color:#a39686;text-align:center">מתחילת ${S.year}: מעשר &#8362;${fm(yDue)} · ניתן &#8362;${fm(yGiven)} · ${yLeft>0?'להשלים &#8362;'+fm(yLeft):yLeft<0?'עודף &#8362;'+fm(-yLeft):'מאוזן'}</div>
+    <div style="font-size:12px;color:#756a5c;text-align:center">מתחילת ${S.year}: מעשר &#8362;${fm(yDue)} · ניתן &#8362;${fm(yGiven)} · ${yLeft>0?'להשלים &#8362;'+fm(yLeft):yLeft<0?'עודף &#8362;'+fm(-yLeft):'מאוזן'}</div>
   </div></div>`);
   g("maX").onclick=()=>ih("m2","");
   // Record a donation as an entry in this month's "צדקה" category
@@ -744,9 +836,9 @@ function rMon(){
   const monNav=`<div class="monNav" style="display:flex;align-items:center;justify-content:space-between;margin:0 -16px 12px;padding:4px 18px 12px">
     <button id="prevMon" class="qbtn" style="width:36px;height:36px;font-size:19px">&#8249;</button>
     <div style="text-align:center;line-height:1.15">
-      <span style="font-size:26px;font-weight:700;color:#2f2a24;letter-spacing:-.4px">${moLabel(S.month)}</span><span style="font-size:13px;color:#8a7f72;margin-inline-start:6px">${S.year}</span>
-      ${cycleRangeLabel(S.month)?`<div style="font-size:11px;color:#a39686">${cycleRangeLabel(S.month)}</div>`:''}
-      ${!isNow?'<button id="todayBtn" style="margin-top:4px;padding:3px 10px;border-radius:8px;border:none;background:#e9f0eb;color:#5b7f6b;font-size:11.5px;font-weight:600;cursor:pointer">&#8617; לחודש הנוכחי</button>':''}
+      <span style="font-size:26px;font-weight:700;color:#2f2a24;letter-spacing:-.4px">${moLabel(S.month)}</span><span style="font-size:13px;color:#6f6457;margin-inline-start:6px">${S.year}</span>
+      ${cycleRangeLabel(S.month)?`<div style="font-size:11px;color:#756a5c">${cycleRangeLabel(S.month)}</div>`:''}
+      ${!isNow?'<button id="todayBtn" style="margin-top:4px;padding:3px 10px;border-radius:8px;border:none;background:#e9f0eb;color:#527461;font-size:11.5px;font-weight:600;cursor:pointer">&#8617; לחודש הנוכחי</button>':''}
     </div>
     <button id="nextMon" class="qbtn" style="width:36px;height:36px;font-size:19px">&#8250;</button>
   </div>`;
@@ -757,22 +849,22 @@ function rMon(){
   const budCats=S.cats.filter(c=>!c.activeMonths||c.activeMonths.includes(S.month));
   const totBud=budCats.reduce((t,c)=>t+(c.budget||0)+(c.budgetRec||0),0);
   const budLeft=totBud-expTotal,budOv=totBud>0&&expTotal>totBud,budPct=totBud>0?Math.min(100,expTotal/totBud*100):0;
-  const mini=(l,v,c,extra='')=>`<div ${extra} style="flex:1;min-width:0;background:#f7f1e8;border-radius:14px;padding:9px 10px;${extra?'cursor:pointer':''}"><div style="font-size:11.5px;color:#8a7f72">${l}</div><div style="font-size:15px;font-weight:700;color:${c};margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v}</div></div>`;
+  const mini=(l,v,c,extra='')=>`<div ${extra} style="flex:1;min-width:0;background:#f7f1e8;border-radius:14px;padding:9px 10px;${extra?'cursor:pointer':''}"><div style="font-size:11.5px;color:#6f6457">${l}</div><div style="font-size:15px;font-weight:700;color:${c};margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${v}</div></div>`;
   const incomeSec=`<div style="${card};padding:18px 18px 14px;margin-bottom:12px">
     <div style="display:flex;justify-content:space-between;align-items:baseline">
-      <span style="font-size:12.5px;color:#8a7f72">הוצאות מול תקציב</span>
-      ${totBud>0?`<span style="font-size:12px;font-weight:600;color:${budOv?'#c2410c':'#5b7f6b'}">${Math.round(expTotal/totBud*100)}%</span>`:''}
+      <span style="font-size:12.5px;color:#6f6457">הוצאות מול תקציב</span>
+      ${totBud>0?`<span style="font-size:12px;font-weight:600;color:${budOv?'#9a3412':'#527461'}">${Math.round(expTotal/totBud*100)}%</span>`:''}
     </div>
     <div style="display:flex;align-items:baseline;gap:8px;margin:2px 0 10px;flex-wrap:wrap">
-      <span style="font-size:clamp(26px,8vw,34px);font-weight:700;letter-spacing:-.8px;color:${budOv?'#c2410c':'#2f2a24'}">&#8362;${fm0(expTotal)}</span>
-      <span style="font-size:15px;color:#8a7f72">מתוך &#8362;${fm0(totBud)}</span>
+      <span style="font-size:clamp(26px,8vw,34px);font-weight:700;letter-spacing:-.8px;color:${budOv?'#9a3412':'#2f2a24'}">&#8362;${fm0(expTotal)}</span>
+      <span style="font-size:15px;color:#6f6457">מתוך &#8362;${fm0(totBud)}</span>
     </div>
     ${totBud>0?`<div style="height:8px;border-radius:8px;background:#efe7db;overflow:hidden"><div style="height:100%;width:${budPct}%;background:${barColor(expTotal/totBud*100)};border-radius:8px"></div></div>
-    <div style="font-size:12px;color:${budOv?'#c2410c':'#8a7f72'};margin:6px 0 14px">${budOv?'חריגה של &#8362;'+fm0(-budLeft)+' מהתקציב':'נותרו &#8362;'+fm0(budLeft)+' בתקציב החודש'}</div>`:'<div style="font-size:12px;color:#8a7f72;margin-bottom:14px">לא הוגדר תקציב לקטגוריות</div>'}
+    <div style="font-size:12px;color:${budOv?'#9a3412':'#6f6457'};margin:6px 0 14px">${budOv?'חריגה של &#8362;'+fm0(-budLeft)+' מהתקציב':'נותרו &#8362;'+fm0(budLeft)+' בתקציב החודש'}</div>`:'<div style="font-size:12px;color:#6f6457;margin-bottom:14px">לא הוגדר תקציב לקטגוריות</div>'}
     <div style="display:flex;gap:8px">
       ${mini('הכנסות','&#8362;'+fm0(inc),'#4a6b58','id="addInc"')}
       ${mini('הוצאות','&#8362;'+fm0(expTotal+evtTot),'#2f2a24')}
-      ${mini('מאזן','<span dir="ltr">'+(balance<0?'-':'')+'&#8362;'+fm0(Math.abs(balance))+'</span>',balance>=0?'#4a6b58':'#c2410c')}
+      ${mini('מאזן','<span dir="ltr">'+(balance<0?'-':'')+'&#8362;'+fm0(Math.abs(balance))+'</span>',balance>=0?'#4a6b58':'#9a3412')}
     </div>
   </div>`;
   const tile=(id,ic,l,on)=>`<button id="${id}" style="flex:1;padding:11px 4px 9px;border-radius:16px;border:1px solid ${on?'#c9d9ce':'#ece4d8'};background:${on?'#eef3ef':'#fffdf9'};cursor:pointer;font-family:inherit"><div style="font-size:19px;line-height:1">${ic}</div><div style="font-size:12.5px;font-weight:500;color:#2f2a24;margin-top:5px">${l}</div></button>`;
@@ -780,7 +872,7 @@ function rMon(){
 
   // Filter buttons
   const filtLabels={all:'הכל',recurring:'&#128260; קבועות',variable:'&#128200; משתנות'};
-  const filtBtns=`<div style="display:flex;background:#ece4d8;border-radius:10px;padding:2px">${['variable','all','recurring'].map(f=>{const on=filt===f;return`<button class="fBtn" data-f="${f}" style="padding:4px 10px;border-radius:8px;border:none;font-size:11.5px;font-weight:${on?600:400};background:${on?'#fffdf9':'transparent'};color:${on?'#2f2a24':'#8a7f72'};cursor:pointer;font-family:inherit">${{all:'הכל',recurring:'קבועות',variable:'משתנות'}[f]}</button>`;}).join('')}</div>`;
+  const filtBtns=`<div style="display:flex;background:#ece4d8;border-radius:10px;padding:2px">${['variable','all','recurring'].map(f=>{const on=filt===f;return`<button class="fBtn" data-f="${f}" style="padding:4px 10px;border-radius:8px;border:none;font-size:11.5px;font-weight:${on?600:400};background:${on?'#fffdf9':'transparent'};color:${on?'#2f2a24':'#6f6457'};cursor:pointer;font-family:inherit">${{all:'הכל',recurring:'קבועות',variable:'משתנות'}[f]}</button>`;}).join('')}</div>`;
 
   // Cards with filter applied
   const monthCats=S.cats.filter(c=>!c.activeMonths||c.activeMonths.includes(S.month));
@@ -803,25 +895,25 @@ function rMon(){
         <div class="oE" data-c="${cat.id}" style="flex:1;min-width:0;cursor:pointer">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <span style="font-size:15px;font-weight:500;color:#2f2a24">${cat.name}</span>
-            ${ov?'<span style="font-size:10.5px;padding:1px 8px;border-radius:20px;background:#fbe9e2;color:#c2410c;font-weight:600">חריגה</span>':''}
-            ${cat.isRecurring?'<span style="font-size:10.5px;color:#8a7f72">&#128260; קבועה</span>':recCount>0?`<span style="font-size:10.5px;color:#8a7f72">&#128260;${recCount}</span>`:''}
+            ${ov?'<span style="font-size:10.5px;padding:1px 8px;border-radius:20px;background:#fbe9e2;color:#9a3412;font-weight:600">חריגה</span>':''}
+            ${cat.isRecurring?'<span style="font-size:10.5px;color:#6f6457">&#128260; קבועה</span>':recCount>0?`<span style="font-size:10.5px;color:#6f6457">&#128260;${recCount}</span>`:''}
             ${tr}
           </div>
-          <div style="font-size:11.5px;color:#a39686;margin-top:1px">${ent.length} פריטים</div>
+          <div style="font-size:11.5px;color:#756a5c;margin-top:1px">${ent.length} פריטים</div>
         </div>
         <div style="text-align:left;flex-shrink:0">
-          <div style="font-size:15.5px;font-weight:700;color:${ov?'#c2410c':'#2f2a24'}">&#8362;${fm(tot)}</div>
-          ${bud>0?`<div style="font-size:11.5px;color:#a39686">מתוך &#8362;${fm(bud)}</div>`:''}
+          <div style="font-size:15.5px;font-weight:700;color:${ov?'#9a3412':'#2f2a24'}">&#8362;${fm(tot)}</div>
+          ${bud>0?`<div style="font-size:11.5px;color:#756a5c">מתוך &#8362;${fm(bud)}</div>`:''}
         </div>
         <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
-          <button class="eC" data-c="${cat.id}" title="עריכה" style="background:transparent;border:none;cursor:pointer;font-size:13px;padding:1px 3px;color:#c4b8a8">&#9998;</button>
-          <button class="dC" data-c="${cat.id}" title="מחיקה" style="background:transparent;border:none;cursor:pointer;font-size:15px;padding:0 3px;color:#c4b8a8;line-height:1">&times;</button>
+          <button class="eC" data-c="${cat.id}" title="עריכה" style="background:transparent;border:none;cursor:pointer;font-size:13px;padding:1px 3px;color:#6f6457">&#9998;</button>
+          <button class="dC" data-c="${cat.id}" title="מחיקה" style="background:transparent;border:none;cursor:pointer;font-size:15px;padding:0 3px;color:#6f6457;line-height:1">&times;</button>
         </div>
       </div>
       ${bud>0?`<div style="height:5px;border-radius:5px;background:#efe7db;margin-top:11px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${barC};border-radius:5px"></div></div>
-      <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#8a7f72;margin-top:6px"><span>${ov?'חריגה של &#8362;'+fm(-rem):'נותרו &#8362;'+fm(rem)}</span><span>${Math.round(tot/bud*100)}%</span></div>`:''}
+      <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#6f6457;margin-top:6px"><span>${ov?'חריגה של &#8362;'+fm(-rem):'נותרו &#8362;'+fm(rem)}</span><span>${Math.round(tot/bud*100)}%</span></div>`:''}
       ${mz&&mz.due>0?`<div style="font-size:11.5px;color:${mz.left>0?'#9e5868':'#4a6b58'};margin-top:6px">${mz.left>0?'מעשר: נשאר להשלים &#8362;'+fm(mz.left):'המעשר הושלם &#10004;'}</div>`:''}
-      ${(cat.subs||[]).some(s=>s.budget>0)?`<div style="border-top:1px solid #f3ece2;margin-top:8px;padding-top:6px">${(cat.subs||[]).filter(s=>s.budget>0).map(s=>{const sT=ent.filter(e=>e.subCat===s.id).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);const sP=Math.min((sT/s.budget)*100,100);const sOv=sT>s.budget;return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:11px;color:#7d7265;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</span><span style="font-size:11px;font-weight:600;color:${sOv?'#cf5a3e':'#5b7f6b'};flex-shrink:0">&#8362;${fm(sT)}</span><div style="width:48px;height:4px;background:#f3ece2;border-radius:2px;overflow:hidden;flex-shrink:0"><div style="height:100%;width:${sP}%;background:${barColor(sP)};border-radius:2px"></div></div><span style="font-size:10px;color:#a39686;flex-shrink:0">${fm(s.budget)}</span></div>`;}).join('')}</div>`:''}
+      ${(cat.subs||[]).some(s=>s.budget>0)?`<div style="border-top:1px solid #f3ece2;margin-top:8px;padding-top:6px">${(cat.subs||[]).filter(s=>s.budget>0).map(s=>{const sT=ent.filter(e=>e.subCat===s.id).reduce((a,e)=>a+(parseFloat(e.amount)||0),0);const sP=Math.min((sT/s.budget)*100,100);const sOv=sT>s.budget;return`<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:11px;color:#6f6457;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</span><span style="font-size:11px;font-weight:600;color:${sOv?'#b0472e':'#527461'};flex-shrink:0">&#8362;${fm(sT)}</span><div style="width:48px;height:4px;background:#f3ece2;border-radius:2px;overflow:hidden;flex-shrink:0"><div style="height:100%;width:${sP}%;background:${barColor(sP)};border-radius:2px"></div></div><span style="font-size:10px;color:#756a5c;flex-shrink:0">${fm(s.budget)}</span></div>`;}).join('')}</div>`:''}
     </div>`;
   }).join("");
 
@@ -834,10 +926,10 @@ function rMon(){
     return`<div style="padding:14px 16px;border-bottom:1px solid #f0e8dc">
       <div style="display:flex;align-items:center;gap:11px">
         <div style="width:36px;height:36px;border-radius:11px;background:#eef3ef;display:grid;place-items:center;font-size:17px;flex-shrink:0">&#127881;</div>
-        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500;color:#2f2a24">${ev.name}</div><div style="font-size:11.5px;color:#a39686">אירוע &middot; ${monthExps.length} תשלומים</div></div>
+        <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:500;color:#2f2a24">${ev.name}</div><div style="font-size:11.5px;color:#756a5c">אירוע &middot; ${monthExps.length} תשלומים</div></div>
         <div style="font-size:15.5px;font-weight:700;color:#2f2a24">&#8362;${fm(tot)}</div>
       </div>
-      ${monthExps.map(e=>`<div style="display:flex;gap:6px;font-size:12px;color:#8a7f72;margin-top:6px;padding-inline-start:47px"><span style="flex:1">${e.desc}</span>${e.date?`<span>${fmDate(e.date)}</span>`:''}<span style="font-weight:600;color:#2f2a24">&#8362;${fm(e.amount)}</span></div>`).join('')}
+      ${monthExps.map(e=>`<div style="display:flex;gap:6px;font-size:12px;color:#6f6457;margin-top:6px;padding-inline-start:47px"><span style="flex:1">${e.desc}</span>${e.date?`<span>${fmDate(e.date)}</span>`:''}<span style="font-weight:600;color:#2f2a24">&#8362;${fm(e.amount)}</span></div>`).join('')}
     </div>`;
   }).filter(h=>h).join('');
 
@@ -862,14 +954,14 @@ function rMon(){
       <span style="font-size:16px;font-weight:700;color:#2f2a24">קטגוריות</span>
       ${filtBtns}
     </div>
-    <div style="${card};overflow:hidden" class="catList">${cards}${evtCards}${!cards&&!evtCards?'<div style="padding:24px;text-align:center;color:#a39686;font-size:13px">אין קטגוריות להצגה</div>':''}</div>
+    <div style="${card};overflow:hidden" class="catList">${cards}${evtCards}${!cards&&!evtCards?'<div style="padding:24px;text-align:center;color:#756a5c;font-size:13px">אין קטגוריות להצגה</div>':''}</div>
     <div style="display:flex;gap:8px;justify-content:center;margin:14px 0 6px;flex-wrap:wrap">
       <button id="oA" style="${small}">+ קטגוריה</button>
       <button id="oBudSug" style="${small}">&#128161; הצעות תקציב</button>
       <button id="oE" style="${small}">&#11015; ייצוא CSV</button>
     </div>
     </div></div>
-    <button id="addExpBtn" style="position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:50;padding:15px 30px;border-radius:22px;border:none;color:#fff;font-weight:700;font-size:15px;background:#5b7f6b;cursor:pointer;box-shadow:0 10px 24px rgba(91,127,107,.38);white-space:nowrap;font-family:inherit">+ הוצאה חדשה</button>
+    <button id="addExpBtn" style="position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:50;padding:15px 30px;border-radius:22px;border:none;color:#fff;font-weight:700;font-size:15px;background:#527461;cursor:pointer;box-shadow:0 10px 24px rgba(91,127,107,.38);white-space:nowrap;font-family:inherit">+ הוצאה חדשה</button>
   `);
 
   g("prevMon").onclick=()=>{if(S.month===0){S.month=11;S.year--;ld();fbListen(S.year);}else{S.month--;}rAll();};
@@ -904,51 +996,51 @@ function rExpMod(){
       const sel=selCat===cat.id;
       return`<button class="expCat" data-c="${cat.id}" style="padding:9px 12px;border-radius:11px;border:2px solid ${sel?cat.color:'#ece4d8'};background:${sel?cat.color+'18':'#fff'};cursor:pointer;display:flex;align-items:center;gap:7px;flex:1 0 130px;min-width:0">
         <div style="width:9px;height:9px;border-radius:50%;background:${cat.color};flex-shrink:0"></div>
-        <span style="font-size:12px;font-weight:${sel?700:400};color:${sel?cat.color:'#7d7265'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${cat.name}</span>
+        <span style="font-size:12px;font-weight:${sel?700:400};color:${sel?cat.color:'#6f6457'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${cat.name}</span>
       </button>`;
     }).join("");
     const selCatObj=S.cats.find(c=>c.id===selCat);
-    const subBtns=selCatObj?.subs?.length?`<div style="font-size:11px;font-weight:600;color:#a39686;margin-bottom:7px;letter-spacing:.5px">תת-קטגוריה</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px">${selCatObj.subs.map(sub=>{const sel=selSub===sub.id;return`<button class="expSub" data-s="${sub.id}" style="padding:6px 12px;border-radius:9px;border:2px solid ${sel?selCatObj.color:'#ece4d8'};background:${sel?selCatObj.color+'18':'#fff'};cursor:pointer;font-size:12px;font-weight:${sel?700:400};color:${sel?selCatObj.color:'#7d7265'}">${sub.name}</button>`;}).join('')}</div>`:'';
+    const subBtns=selCatObj?.subs?.length?`<div style="font-size:11px;font-weight:600;color:#756a5c;margin-bottom:7px;letter-spacing:.5px">תת-קטגוריה</div><div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px">${selCatObj.subs.map(sub=>{const sel=selSub===sub.id;return`<button class="expSub" data-s="${sub.id}" style="padding:6px 12px;border-radius:9px;border:2px solid ${sel?selCatObj.color:'#ece4d8'};background:${sel?selCatObj.color+'18':'#fff'};cursor:pointer;font-size:12px;font-weight:${sel?700:400};color:${sel?selCatObj.color:'#6f6457'}">${sub.name}</button>`;}).join('')}</div>`:'';
     ih("m1",`<div class="overlay" id="expO"><div class="modal">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
         <div>
           <div style="font-size:17px;font-weight:800;color:#2f2a24">הוצאה חדשה</div>
-          <div style="font-size:11px;color:#a39686">${moLabel(S.month)} ${S.year}</div>
+          <div style="font-size:11px;color:#756a5c">${moLabel(S.month)} ${S.year}</div>
         </div>
-        <button id="cExp" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+        <button id="cExp" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
       </div>
-      <div style="font-size:11px;font-weight:600;color:#a39686;margin-bottom:7px;letter-spacing:.5px">קטגוריה</div>
+      <div style="font-size:11px;font-weight:600;color:#756a5c;margin-bottom:7px;letter-spacing:.5px">קטגוריה</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px">${catBtns}</div>
       ${subBtns}
-      <div style="font-size:11px;font-weight:600;color:#a39686;margin-bottom:5px;letter-spacing:.5px">תיאור</div>
+      <div style="font-size:11px;font-weight:600;color:#756a5c;margin-bottom:5px;letter-spacing:.5px">תיאור</div>
       <input class="inp" id="expD" placeholder="למשל: סופר, תדלוק, קפה..." style="margin-bottom:14px" value="${_desc.replace(/"/g,'&quot;')}"/>
       <div style="display:flex;gap:10px;margin-bottom:14px">
         <div style="flex:1">
-          <div style="font-size:11px;font-weight:600;color:#a39686;margin-bottom:5px;letter-spacing:.5px">סכום &#8362;</div>
-          <input class="inp" id="expA" type="number" placeholder="0" style="font-size:22px;font-weight:800;color:#5b7f6b;text-align:center" value="${_amt}"/>
+          <div style="font-size:11px;font-weight:600;color:#756a5c;margin-bottom:5px;letter-spacing:.5px">סכום &#8362;</div>
+          <input class="inp" id="expA" type="number" placeholder="0" style="font-size:22px;font-weight:800;color:#527461;text-align:center" value="${_amt}"/>
         </div>
         <div style="flex:1">
-          <div style="font-size:11px;font-weight:600;color:#a39686;margin-bottom:5px;letter-spacing:.5px">תאריך</div>
+          <div style="font-size:11px;font-weight:600;color:#756a5c;margin-bottom:5px;letter-spacing:.5px">תאריך</div>
           <input class="inp" id="expDt" type="date" value="${_date}"/>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:14px">
         <div style="flex:1">
-          <div style="font-size:11px;font-weight:600;color:#a39686;margin-bottom:5px;letter-spacing:.5px">תשלומים</div>
-          <input class="inp" id="expInst" type="number" min="1" max="60" placeholder="1" style="text-align:center;font-size:18px;font-weight:700;color:#5b7f6b" value="${_inst}"/>
+          <div style="font-size:11px;font-weight:600;color:#756a5c;margin-bottom:5px;letter-spacing:.5px">תשלומים</div>
+          <input class="inp" id="expInst" type="number" min="1" max="60" placeholder="1" style="text-align:center;font-size:18px;font-weight:700;color:#527461" value="${_inst}"/>
         </div>
-        <div style="flex:2;padding-bottom:2px;font-size:11px;color:#a39686;line-height:1.5">פיצול לחודשים עוקבים<br/>(1 = ללא פיצול)</div>
+        <div style="flex:2;padding-bottom:2px;font-size:11px;color:#756a5c;line-height:1.5">פיצול לחודשים עוקבים<br/>(1 = ללא פיצול)</div>
       </div>
       <label style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;cursor:pointer;margin-bottom:16px">
-        <input type="checkbox" id="expRec" style="width:18px;height:18px;accent-color:#5b7f6b;flex-shrink:0" ${_rec?'checked':''}/>
+        <input type="checkbox" id="expRec" style="width:18px;height:18px;accent-color:#527461;flex-shrink:0" ${_rec?'checked':''}/>
         <div style="flex:1">
           <div style="font-size:13px;font-weight:700;color:#2f2a24">הוצאה קבועה</div>
-          <div style="font-size:11px;color:#a39686">תתוסף אוטומטית לכל החודשים</div>
+          <div style="font-size:11px;color:#756a5c">תתוסף אוטומטית לכל החודשים</div>
         </div>
         <span style="font-size:22px">&#128260;</span>
       </label>
       <div style="position:sticky;bottom:-24px;background:#fffdf9;padding:10px 0 0;margin:8px -24px -24px;padding:10px 24px 20px;border-top:1px solid #f3ece2">
-        <button id="expSave" style="width:100%;padding:14px;border-radius:12px;border:none;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer;box-shadow:0 4px 14px rgba(91,127,107,.3)">שמור הוצאה</button>
+        <button id="expSave" style="width:100%;padding:14px;border-radius:12px;border:none;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer;box-shadow:0 4px 14px rgba(91,127,107,.3)">שמור הוצאה</button>
       </div>
     </div></div>`);
     g("cExp").onclick=()=>ih("m1","");
@@ -1023,27 +1115,27 @@ function rExpMod(){
 function rIncMod(){
   const inc=S.mData[S.month]?.income||[],tot=incT(S.month);
   const list=inc.length===0
-    ?`<div style="text-align:center;color:#d6ccbe;font-size:14px;padding:20px 0">אין הכנסות עדיין</div>`
+    ?`<div style="text-align:center;color:#756a5c;font-size:14px;padding:20px 0">אין הכנסות עדיין</div>`
     :inc.map((e,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:${i%2===0?'#faf6ef':'#fff'};margin-bottom:3px">
-        <span style="font-size:11px;color:#a39686;flex-shrink:0">${fmDate(e.date)}</span>
-        <span style="font-size:13px;color:#7d7265;flex:1">${e.desc||'—'}</span>
+        <span style="font-size:11px;color:#756a5c;flex-shrink:0">${fmDate(e.date)}</span>
+        <span style="font-size:13px;color:#6f6457;flex:1">${e.desc||'—'}</span>
         <span style="font-size:14px;font-weight:700;color:#3f7356">&#8362;${fm(e.amount)}</span>
-        <button class="dInc" data-e="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:15px;color:#cf5a3e;padding:3px">&#128465;</button>
+        <button class="dInc" data-e="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:15px;color:#b0472e;padding:3px">&#128465;</button>
       </div>`).join("");
   ih("m1",`<div class="overlay" id="incO"><div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
       <span style="font-size:16px;font-weight:800;color:#3f7356">&#128176; הכנסות — ${moLabel(S.month)}</span>
-      <button id="cInc" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+      <button id="cInc" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
     </div>
     <button id="incShow" style="width:100%;padding:11px;border-radius:12px;border:1px dashed #c9d9ce;background:#eef3ef;color:#3f7356;font-weight:600;font-size:14px;cursor:pointer;margin-bottom:12px;font-family:inherit">+ הוסף הכנסה</button>
     <div id="incForm" style="display:none;gap:5px;margin-bottom:12px;flex-wrap:wrap">
       <input class="inp" id="iD" placeholder="תיאור (משכורת, פרילנס...)" style="flex:2;min-width:120px;padding:8px 10px"/>
       <input class="inp" id="iA" type="number" placeholder="&#8362;" style="flex:1;min-width:70px;padding:8px 10px;font-size:15px;font-weight:700"/>
       <input class="inp" id="iDt" type="date" value="${today()}" style="flex:1;min-width:100px;padding:8px 6px;font-size:12px"/>
-      <button id="iAdd" style="padding:8px 14px;border-radius:10px;border:none;color:#fff;background:linear-gradient(135deg,#4f8a68,#3f7356);font-size:20px;cursor:pointer">+</button>
+      <button id="iAdd" style="padding:8px 14px;border-radius:10px;border:none;color:#fff;background:linear-gradient(135deg,#3d7556,#3f7356);font-size:20px;cursor:pointer">+</button>
     </div>
     <div style="max-height:260px;overflow-y:auto">${list}</div>
-    ${inc.length>0?`<div style="margin-top:10px;border-top:1px solid #ece4d8;padding-top:10px;display:flex;justify-content:space-between"><span style="color:#a39686;font-size:12px">${inc.length} הכנסות</span><span style="font-weight:700;color:#3f7356">&#8362;${fm(tot)}</span></div>`:""}
+    ${inc.length>0?`<div style="margin-top:10px;border-top:1px solid #ece4d8;padding-top:10px;display:flex;justify-content:space-between"><span style="color:#756a5c;font-size:12px">${inc.length} הכנסות</span><span style="font-weight:700;color:#3f7356">&#8362;${fm(tot)}</span></div>`:""}
   </div></div>`);
   g("cInc").onclick=()=>{ih("m1","");rMon();};
   g("incO").onclick=e=>{if(e.target.id==="incO"){ih("m1","");rMon();}};
@@ -1066,27 +1158,27 @@ function rYr(){
   const rows=S.cats.map((cat,i)=>{
     const totalBud=(cat.budget||0)+(cat.budgetRec||0);
     const yt=cyt(cat.id),yo=yt>totalBud*12&&totalBud>0;
-    const cs=MO.map((_,mi)=>{const t=ct(mi,cat.id),o=t>totalBud&&totalBud>0;return`<td style="padding:7px 3px;font-size:11px;font-weight:${o?700:400};color:${o?'#cf5a3e':t>0?'#2f2a24':'#d6ccbe'}">${t>0?'&#8362;'+fm(t):'—'}</td>`;}).join("");
+    const cs=MO.map((_,mi)=>{const t=ct(mi,cat.id),o=t>totalBud&&totalBud>0;return`<td style="padding:7px 3px;font-size:11px;font-weight:${o?700:400};color:${o?'#b0472e':t>0?'#2f2a24':'#d6ccbe'}">${t>0?'&#8362;'+fm(t):'—'}</td>`;}).join("");
     return`<tr style="background:${i%2===0?'#fff':'#faf6ef'};border-top:1px solid #ece4d8">
       <td style="padding:9px 10px;text-align:right;white-space:nowrap">
         <div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:${cat.color};flex-shrink:0"></div><span style="font-weight:600;color:#2f2a24;font-size:12px">${cat.name}</span></div>
-        <div style="font-size:10px;color:#a39686;margin-top:2px">תקציב: ${fm(totalBud)}/חודש</div>
+        <div style="font-size:10px;color:#756a5c;margin-top:2px">תקציב: ${fm(totalBud)}/חודש</div>
       </td>${cs}
-      <td style="padding:9px 6px;text-align:center;font-size:13px;font-weight:700;color:${yo?'#cf5a3e':'#5b7f6b'}">&#8362;${fm(yt)}</td>
+      <td style="padding:9px 6px;text-align:center;font-size:13px;font-weight:700;color:${yo?'#b0472e':'#527461'}">&#8362;${fm(yt)}</td>
     </tr>`;
   }).join("");
-  const tc=MO.map((_,mi)=>`<td style="padding:10px 3px;text-align:center;font-weight:700;color:#5b7f6b;font-size:11px">&#8362;${fm(mt(mi))}</td>`).join("");
+  const tc=MO.map((_,mi)=>`<td style="padding:10px 3px;text-align:center;font-weight:700;color:#527461;font-size:11px">&#8362;${fm(mt(mi))}</td>`).join("");
   ih("cnt",`
     <div style="background:#fffdf9;border-radius:12px;padding:12px 14px;margin:12px 0;border:1px solid #ece4d8;display:flex;justify-content:space-between;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.05)">
-      <span style="color:#7d7265;font-size:14px;font-weight:600">סה&quot;כ ${S.year}</span>
-      <span style="font-size:22px;font-weight:800;color:#5b7f6b">&#8362;${fm(gt())}</span>
+      <span style="color:#6f6457;font-size:14px;font-weight:600">סה&quot;כ ${S.year}</span>
+      <span style="font-size:22px;font-weight:800;color:#527461">&#8362;${fm(gt())}</span>
     </div>
     <div style="overflow-x:auto"><div style="min-width:700px"><div style="background:#fffdf9;border-radius:14px;border:1px solid #ece4d8;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)">
-    <table><thead><tr><th style="text-align:right;padding:10px;font-size:12px">קטגוריה</th>${hd}<th style="color:#5b7f6b;font-size:11px">סה&quot;כ</th></tr></thead>
+    <table><thead><tr><th style="text-align:right;padding:10px;font-size:12px">קטגוריה</th>${hd}<th style="color:#527461;font-size:11px">סה&quot;כ</th></tr></thead>
     <tbody>${rows}
       <tr style="background:#e9f0eb;border-top:2px solid #c9d9ce">
-        <td style="padding:10px;text-align:right;font-weight:700;color:#7d7265;font-size:12px">סה&quot;כ</td>${tc}
-        <td style="padding:10px;text-align:center;font-weight:800;color:#5b7f6b;font-size:14px">&#8362;${fm(gt())}</td>
+        <td style="padding:10px;text-align:right;font-weight:700;color:#6f6457;font-size:12px">סה&quot;כ</td>${tc}
+        <td style="padding:10px;text-align:center;font-weight:800;color:#527461;font-size:14px">&#8362;${fm(gt())}</td>
       </tr>
     </tbody></table></div></div></div>`);
 }
@@ -1100,7 +1192,7 @@ async function loadYearData(y){
 // Spending in one category over the last 6 budget months (this one included)
 async function rCatHistory(catId){
   const box=g("entHist"),btn=g("histBtn");if(!box)return;
-  btn.style.display='none';box.innerHTML='<div style="text-align:center;color:#a39686;font-size:12px;padding:10px">טוען…</div>';
+  btn.style.display='none';box.innerHTML='<div style="text-align:center;color:#756a5c;font-size:12px;padding:10px">טוען…</div>';
   const cat=S.cats.find(c=>c.id===catId)||{};
   const rows=[],cache={};
   for(let i=0;i<6;i++){
@@ -1115,17 +1207,17 @@ async function rCatHistory(catId){
   const html=`<div style="margin-top:12px;border-top:1px solid #ece4d8;padding-top:12px">
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
       <span style="font-size:13.5px;font-weight:700;color:#2f2a24">&#128197; חצי שנה אחרונה</span>
-      <span style="font-size:12px;color:#8a7f72">${past.length?`ממוצע חודשי: &#8362;${fm0(avg)}`:'אין עדיין חודשים קודמים'}${bud?` · תקציב &#8362;${fm0(bud)}`:''}</span>
+      <span style="font-size:12px;color:#6f6457">${past.length?`ממוצע חודשי: &#8362;${fm0(avg)}`:'אין עדיין חודשים קודמים'}${bud?` · תקציב &#8362;${fm0(bud)}`:''}</span>
     </div>
     ${rows.map(x=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
-      <span style="width:62px;flex-shrink:0;font-size:12.5px;color:${x.now?'#2f2a24':'#7d7265'};font-weight:${x.now?600:400}">${x.label}</span>
+      <span style="width:62px;flex-shrink:0;font-size:12.5px;color:${x.now?'#2f2a24':'#6f6457'};font-weight:${x.now?600:400}">${x.label}</span>
       <div style="flex:1;height:9px;border-radius:9px;background:#f3ece2;overflow:hidden;display:flex">
         <div style="width:${x.v/max*100}%;background:${barColor(bud?tot(x)/bud*100:0)}"></div>
         <div style="width:${x.r/max*100}%;background:#a8b9cc"></div>
       </div>
       <span style="width:72px;flex-shrink:0;text-align:left;font-size:13px;font-weight:700;color:#2f2a24">&#8362;${fm0(tot(x))}</span>
     </div>`).join('')}
-    ${rows.some(x=>x.r>0)?'<div style="font-size:11px;color:#a39686">החלק האפור-כחול: הוצאות קבועות</div>':''}
+    ${rows.some(x=>x.r>0)?'<div style="font-size:11px;color:#756a5c">החלק האפור-כחול: הוצאות קבועות</div>':''}
   </div>`;
   box.innerHTML=DARK?darken(html):html;
 }
@@ -1142,12 +1234,12 @@ function rEntMod(){
   const filtered=q?ent.filter(e=>(e.desc||"").toLowerCase().includes(q)):ent;
   const sorted=[...filtered].sort((a,b)=>S.sortEnt==="amount"?(parseFloat(b.amount)||0)-(parseFloat(a.amount)||0):(b.date||"")>(a.date||"")?1:-1);
 
-  const subBreakdown=cat.subs?.length?`<div style="background:#faf6ef;border-radius:9px;padding:10px 12px;margin-bottom:10px;border:1px solid #ece4d8"><div style="font-size:11px;font-weight:700;color:#7d7265;margin-bottom:6px">&#128202; פילוח תתי-קטגוריות</div>${cat.subs.map(sub=>{const curr=ent.filter(e=>e.subCat===sub.id).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);const pEnt=S.mData[(S.month-1+12)%12]?.[S.aCat]?.entries||[];const prev=pEnt.filter(e=>e.subCat===sub.id).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);let tr='';if(prev&&curr){const pt=Math.round(((curr-prev)/prev)*100);if(pt>5)tr=`<span style="font-size:10px;color:#cf5a3e">&#9650;${pt}%</span>`;else if(pt<-5)tr=`<span style="font-size:10px;color:#4f8a68">&#9660;${Math.abs(pt)}%</span>`;}return`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #f3ece2"><span style="font-size:12px;color:#7d7265;flex:1">${sub.name}</span>${tr}<span style="font-size:13px;font-weight:700;color:#2f2a24">&#8362;${fm(curr)}</span></div>`;}).join('')}</div>`:'';
+  const subBreakdown=cat.subs?.length?`<div style="background:#faf6ef;border-radius:9px;padding:10px 12px;margin-bottom:10px;border:1px solid #ece4d8"><div style="font-size:11px;font-weight:700;color:#6f6457;margin-bottom:6px">&#128202; פילוח תתי-קטגוריות</div>${cat.subs.map(sub=>{const curr=ent.filter(e=>e.subCat===sub.id).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);const pEnt=S.mData[(S.month-1+12)%12]?.[S.aCat]?.entries||[];const prev=pEnt.filter(e=>e.subCat===sub.id).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);let tr='';if(prev&&curr){const pt=Math.round(((curr-prev)/prev)*100);if(pt>5)tr=`<span style="font-size:10px;color:#b0472e">&#9650;${pt}%</span>`;else if(pt<-5)tr=`<span style="font-size:10px;color:#3d7556">&#9660;${Math.abs(pt)}%</span>`;}return`<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #f3ece2"><span style="font-size:12px;color:#6f6457;flex:1">${sub.name}</span>${tr}<span style="font-size:13px;font-weight:700;color:#2f2a24">&#8362;${fm(curr)}</span></div>`;}).join('')}</div>`:'';
 
-  const subSel=cat.subs?.length?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:11px;color:#a39686;white-space:nowrap">תת-קטגוריה:</span><select class="inp" id="mSub" style="flex:1;padding:6px 8px;font-size:12px"><option value="">כללי</option>${cat.subs.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div>`:'';
+  const subSel=cat.subs?.length?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:11px;color:#756a5c;white-space:nowrap">תת-קטגוריה:</span><select class="inp" id="mSub" style="flex:1;padding:6px 8px;font-size:12px"><option value="">כללי</option>${cat.subs.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select></div>`:'';
 
   const list=sorted.length===0
-    ?`<div style="text-align:center;color:#d6ccbe;font-size:14px;padding:24px 0">${q?"אין תוצאות":"אין הוצאות עדיין"}</div>`
+    ?`<div style="text-align:center;color:#756a5c;font-size:14px;padding:24px 0">${q?"אין תוצאות":"אין הוצאות עדיין"}</div>`
     :sorted.map((e,i)=>{
       if(S.editEntId===e.id){
         return`<div style="padding:9px 10px;border-radius:9px;background:#e9f0eb;margin-bottom:3px;border:1px solid #c9d9ce">
@@ -1156,44 +1248,44 @@ function rEntMod(){
             <input class="inp" id="ed_amt" type="number" value="${e.amount}" style="flex:1;min-width:70px;padding:6px 8px;font-size:13px;font-weight:700"/>
             <input class="inp" id="ed_date" type="date" value="${e.date||today()}" style="flex:1;min-width:100px;padding:6px 4px;font-size:11px"/>
           </div>
-          ${instInfo(e)?`<div style="font-size:11px;color:#5b7f6b;margin-bottom:4px">&#128179; ישנה את כל ${instInfo(e).n} התשלומים (סכום לתשלום)</div>`:''}
+          ${instInfo(e)?`<div style="font-size:11px;color:#527461;margin-bottom:4px">&#128179; ישנה את כל ${instInfo(e).n} התשלומים (סכום לתשלום)</div>`:''}
           ${cat.subs?.length?`<div style="margin-bottom:4px"><select class="inp" id="ed_sub" style="width:100%;padding:6px 8px;font-size:12px"><option value="">כללי</option>${cat.subs.map(s=>`<option value="${s.id}"${e.subCat===s.id?' selected':''}>${s.name}</option>`).join('')}</select></div>`:''}
           <div style="display:flex;gap:5px">
-            <button class="saveEnt" data-e="${e.id}" style="flex:1;padding:6px;border-radius:8px;border:none;color:#fff;background:#5b7f6b;font-size:12px;cursor:pointer">שמור</button>
-            <button onclick="window.S.editEntId=null;window.rEntMod()" style="flex:1;padding:6px;border-radius:8px;border:none;color:#7d7265;background:#f3ece2;font-size:12px;cursor:pointer">ביטול</button>
+            <button class="saveEnt" data-e="${e.id}" style="flex:1;padding:6px;border-radius:8px;border:none;color:#fff;background:#527461;font-size:12px;cursor:pointer">שמור</button>
+            <button onclick="window.S.editEntId=null;window.rEntMod()" style="flex:1;padding:6px;border-radius:8px;border:none;color:#6f6457;background:#f3ece2;font-size:12px;cursor:pointer">ביטול</button>
           </div>
         </div>`;
       }
       const subObj=cat.subs?.find(s=>s.id===e.subCat);
-      return`<div style="display:flex;align-items:center;gap:6px;padding:9px 10px;border-radius:9px;background:${i%2===0?'#faf6ef':'#fff'};margin-bottom:3px;border-right:${e.recurring?'3px solid #5b7f6b':'3px solid transparent'}">
-        <span style="font-size:11px;color:#a39686;flex-shrink:0;min-width:32px">${fmDate(e.date)}</span>
+      return`<div style="display:flex;align-items:center;gap:6px;padding:9px 10px;border-radius:9px;background:${i%2===0?'#faf6ef':'#fff'};margin-bottom:3px;border-right:${e.recurring?'3px solid #527461':'3px solid transparent'}">
+        <span style="font-size:11px;color:#756a5c;flex-shrink:0;min-width:32px">${fmDate(e.date)}</span>
         ${e.recurring?'<span style="font-size:13px" title="הוצאה קבועה">&#128260;</span>':''}
-        ${subObj?`<span style="font-size:10px;background:#e9f0eb;color:#5b7f6b;border-radius:6px;padding:1px 6px;flex-shrink:0">${subObj.name}</span>`:''}
-        <span style="font-size:13px;color:#7d7265;flex:1">${e.desc||'—'}</span>
+        ${subObj?`<span style="font-size:10px;background:#e9f0eb;color:#527461;border-radius:6px;padding:1px 6px;flex-shrink:0">${subObj.name}</span>`:''}
+        <span style="font-size:13px;color:#6f6457;flex:1">${e.desc||'—'}</span>
         <span style="font-size:14px;font-weight:700;color:#2f2a24">&#8362;${fm(e.amount)}</span>
-        <button class="editEnt" data-e="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:13px;color:#5b7f6b;padding:3px">&#9998;</button>
-        <button class="dEn" data-e="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:15px;color:#cf5a3e;padding:3px">&#128465;</button>
+        <button class="editEnt" data-e="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:13px;color:#527461;padding:3px">&#9998;</button>
+        <button class="dEn" data-e="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:15px;color:#b0472e;padding:3px">&#128465;</button>
       </div>`;
     }).join("");
 
   ih("m1",`<div class="overlay" id="eO"><div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:8px"><div style="width:9px;height:9px;border-radius:50%;background:${cat.color}"></div><span style="font-size:16px;font-weight:800;color:#2f2a24">${cat.name}</span><span style="font-size:12px;color:#a39686">${moLabel(S.month)}</span></div>
-      <button id="cE" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+      <div style="display:flex;align-items:center;gap:8px"><div style="width:9px;height:9px;border-radius:50%;background:${cat.color}"></div><span style="font-size:16px;font-weight:800;color:#2f2a24">${cat.name}</span><span style="font-size:12px;color:#756a5c">${moLabel(S.month)}</span></div>
+      <button id="cE" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
     </div>
     <div style="display:flex;gap:6px;margin-bottom:8px">
-      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#a39686;margin-bottom:2px">תקציב</div><div style="font-size:15px;font-weight:700;color:#5b7f6b;white-space:nowrap">&#8362;${fm0(cat.budget||0)}</div></div>
-      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#a39686;margin-bottom:2px">הוצאה</div><div style="font-size:15px;font-weight:700;color:${ov?'#cf5a3e':'#2f2a24'};white-space:nowrap">&#8362;${fm0(tot)}</div></div>
-      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#a39686;margin-bottom:2px">יתרה</div><div dir="ltr" style="font-size:15px;font-weight:700;color:${rem<0?'#cf5a3e':'#4f8a68'};white-space:nowrap">${rem<0?'-':''}&#8362;${fm0(Math.abs(rem))}</div></div>
+      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#756a5c;margin-bottom:2px">תקציב</div><div style="font-size:15px;font-weight:700;color:#527461;white-space:nowrap">&#8362;${fm0(cat.budget||0)}</div></div>
+      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#756a5c;margin-bottom:2px">הוצאה</div><div style="font-size:15px;font-weight:700;color:${ov?'#b0472e':'#2f2a24'};white-space:nowrap">&#8362;${fm0(tot)}</div></div>
+      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#756a5c;margin-bottom:2px">יתרה</div><div dir="ltr" style="font-size:15px;font-weight:700;color:${rem<0?'#b0472e':'#3d7556'};white-space:nowrap">${rem<0?'-':''}&#8362;${fm0(Math.abs(rem))}</div></div>
     </div>
     <div style="height:5px;background:#f3ece2;border-radius:3px;margin-bottom:10px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${barColor(pct)};border-radius:3px"></div></div>
     ${subBreakdown}
     <div style="display:flex;gap:6px;margin-bottom:8px">
       <input class="inp" id="entSearch" placeholder="&#128269; חיפוש..." style="flex:1;padding:7px 10px;font-size:12px" value="${q}"/>
-      <button id="sortBtn" style="padding:7px 10px;border-radius:8px;border:1px solid #ece4d8;background:#fffdf9;color:#7d7265;font-size:11px;cursor:pointer;white-space:nowrap">מיון: ${S.sortEnt==="date"?"תאריך":"סכום"}</button>
+      <button id="sortBtn" style="padding:7px 10px;border-radius:8px;border:1px solid #ece4d8;background:#fffdf9;color:#6f6457;font-size:11px;cursor:pointer;white-space:nowrap">מיון: ${S.sortEnt==="date"?"תאריך":"סכום"}</button>
     </div>
     <div style="max-height:230px;overflow-y:auto">${list}</div>
-    ${ent.length>0?`<div style="margin-top:10px;border-top:1px solid #ece4d8;padding-top:10px;display:flex;justify-content:space-between;align-items:center"><span style="color:#a39686;font-size:12px">${ent.length} פריטים</span><span style="font-weight:700;font-size:14px;color:${ov?'#cf5a3e':'#5b7f6b'}">&#8362;${fm(tot)}</span></div>`:""}
+    ${ent.length>0?`<div style="margin-top:10px;border-top:1px solid #ece4d8;padding-top:10px;display:flex;justify-content:space-between;align-items:center"><span style="color:#756a5c;font-size:12px">${ent.length} פריטים</span><span style="font-weight:700;font-size:14px;color:${ov?'#b0472e':'#527461'}">&#8362;${fm(tot)}</span></div>`:""}
     <button id="histBtn" style="width:100%;margin-top:12px;padding:11px;border-radius:12px;border:1px solid #e6dccd;background:#faf6ef;color:#2f2a24;font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit">&#128197; חודשים קודמים</button>
     <div id="entHist"></div>
   </div></div>`);
@@ -1261,34 +1353,34 @@ function sw(sel){return CL.map(c=>`<div class="csw${sel===c?' on':''}" data-c="$
 function rAddMod(){
   ih("m2",`<div class="overlay" id="aO"><div class="modal">
     <div style="font-size:17px;font-weight:800;margin-bottom:16px;color:#2f2a24">קטגוריה חדשה</div>
-    <label style="font-size:11px;color:#a39686;display:block;margin-bottom:4px;letter-spacing:.5px">שם</label>
+    <label style="font-size:11px;color:#756a5c;display:block;margin-bottom:4px;letter-spacing:.5px">שם</label>
     <input class="inp" id="nN" placeholder="למשל: בילויים" style="margin-bottom:12px" value="${S.nc.name.replace(/"/g,'&quot;')}"/>
     <div style="display:flex;gap:10px;margin-bottom:12px">
-      <div style="flex:1"><label style="font-size:11px;color:#a39686;display:block;margin-bottom:4px;letter-spacing:.5px">תקציב משתנות (&#8362;)</label><input class="inp" id="nB" type="number" placeholder="0" value="${S.nc.budget||''}"/></div>
-      <div style="flex:1"><label style="font-size:11px;color:#a39686;display:block;margin-bottom:4px;letter-spacing:.5px">תקציב קבועות (&#8362;)</label><input class="inp" id="nBR" type="number" placeholder="0" value="${S.nc.budgetRec||''}"/></div>
+      <div style="flex:1"><label style="font-size:11px;color:#756a5c;display:block;margin-bottom:4px;letter-spacing:.5px">תקציב משתנות (&#8362;)</label><input class="inp" id="nB" type="number" placeholder="0" value="${S.nc.budget||''}"/></div>
+      <div style="flex:1"><label style="font-size:11px;color:#756a5c;display:block;margin-bottom:4px;letter-spacing:.5px">תקציב קבועות (&#8362;)</label><input class="inp" id="nBR" type="number" placeholder="0" value="${S.nc.budgetRec||''}"/></div>
     </div>
-    <label style="font-size:11px;color:#a39686;display:block;margin-bottom:6px;letter-spacing:.5px">צבע</label>
+    <label style="font-size:11px;color:#756a5c;display:block;margin-bottom:6px;letter-spacing:.5px">צבע</label>
     <div id="nS" style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">${sw(S.nc.color)}</div>
     <label style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;cursor:pointer;margin-bottom:16px">
-      <input type="checkbox" id="nCatRec" style="width:18px;height:18px;accent-color:#5b7f6b;flex-shrink:0" ${S.nc.isRec?'checked':''}/>
-      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2f2a24">קטגוריה קבועה</div><div style="font-size:11px;color:#a39686">לא תוצג בתצוגת הוצאות משתנות</div></div>
+      <input type="checkbox" id="nCatRec" style="width:18px;height:18px;accent-color:#527461;flex-shrink:0" ${S.nc.isRec?'checked':''}/>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2f2a24">קטגוריה קבועה</div><div style="font-size:11px;color:#756a5c">לא תוצג בתצוגת הוצאות משתנות</div></div>
       <span style="font-size:20px">&#128260;</span>
     </label>
     <label style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;cursor:pointer;margin-bottom:8px">
-      <input type="checkbox" id="nLimitMonths" style="width:18px;height:18px;accent-color:#5b7f6b;flex-shrink:0" ${S.nc.activeMonths?'checked':''}/>
-      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2f2a24">חודשים ספציפיים בלבד</div><div style="font-size:11px;color:#a39686">הקטגוריה תופיע רק בחודשים שתבחר</div></div>
+      <input type="checkbox" id="nLimitMonths" style="width:18px;height:18px;accent-color:#527461;flex-shrink:0" ${S.nc.activeMonths?'checked':''}/>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2f2a24">חודשים ספציפיים בלבד</div><div style="font-size:11px;color:#756a5c">הקטגוריה תופיע רק בחודשים שתבחר</div></div>
     </label>
     <div id="nMonPicker" style="display:${S.nc.activeMonths?'flex':'none'};flex-wrap:wrap;gap:6px;margin-bottom:14px">
-      ${MO.map((m,i)=>`<label style="display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:1px solid ${(S.nc.activeMonths||[]).includes(i)?'#5b7f6b':'#ece4d8'};background:${(S.nc.activeMonths||[]).includes(i)?'#e9f0eb':'#faf6ef'};cursor:pointer;font-size:12px;font-weight:600;color:${(S.nc.activeMonths||[]).includes(i)?'#5b7f6b':'#7d7265'}"><input type="checkbox" class="nMCb" value="${i}" style="display:none" ${(S.nc.activeMonths||[]).includes(i)?'checked':''}>${moLabel(i)}</label>`).join('')}
+      ${MO.map((m,i)=>`<label style="display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:1px solid ${(S.nc.activeMonths||[]).includes(i)?'#527461':'#ece4d8'};background:${(S.nc.activeMonths||[]).includes(i)?'#e9f0eb':'#faf6ef'};cursor:pointer;font-size:12px;font-weight:600;color:${(S.nc.activeMonths||[]).includes(i)?'#527461':'#6f6457'}"><input type="checkbox" class="nMCb" value="${i}" style="display:none" ${(S.nc.activeMonths||[]).includes(i)?'checked':''}>${moLabel(i)}</label>`).join('')}
     </div>
     <div style="display:flex;gap:8px">
-      <button id="dA" style="flex:1;padding:11px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer">הוסף</button>
-      <button id="cA" style="flex:1;padding:11px;border-radius:10px;border:none;color:#7d7265;font-weight:600;background:#f3ece2;cursor:pointer">ביטול</button>
+      <button id="dA" style="flex:1;padding:11px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer">הוסף</button>
+      <button id="cA" style="flex:1;padding:11px;border-radius:10px;border:none;color:#6f6457;font-weight:600;background:#f3ece2;cursor:pointer">ביטול</button>
     </div>
   </div></div>`);
   document.querySelectorAll("#nS .csw").forEach(s=>s.onclick=()=>{S.nc.name=(g("nN")?.value||"");S.nc.budget=(g("nB")?.value||"");S.nc.budgetRec=(g("nBR")?.value||"");S.nc.color=s.dataset.c;S.nc.isRec=(g("nCatRec")?.checked||false);rAddMod();});
   g("nLimitMonths").onchange=()=>{g("nMonPicker").style.display=g("nLimitMonths").checked?'flex':'none';};
-  document.querySelectorAll(".nMCb").forEach(cb=>{cb.parentElement.onclick=e=>{e.preventDefault();cb.checked=!cb.checked;const sel=cb.checked;cb.parentElement.style.background=sel?'#e9f0eb':'#faf6ef';cb.parentElement.style.color=sel?'#5b7f6b':'#7d7265';cb.parentElement.style.borderColor=sel?'#5b7f6b':'#ece4d8';};});
+  document.querySelectorAll(".nMCb").forEach(cb=>{cb.parentElement.onclick=e=>{e.preventDefault();cb.checked=!cb.checked;const sel=cb.checked;cb.parentElement.style.background=recolor(sel?'#e9f0eb':'#faf6ef');cb.parentElement.style.color=recolor(sel?'#527461':'#6f6457');cb.parentElement.style.borderColor=recolor(sel?'#527461':'#ece4d8');};});
   g("cA").onclick=()=>ih("m2","");
   g("aO").onclick=e=>{if(e.target.id==="aO")ih("m2","");};
   g("dA").onclick=()=>{
@@ -1299,7 +1391,7 @@ function rAddMod(){
     if(g("nCatRec")?.checked)newCat.isRecurring=true;
     if(g("nLimitMonths")?.checked){const sel=[...document.querySelectorAll(".nMCb:checked")].map(cb=>parseInt(cb.value));if(sel.length)newCat.activeMonths=sel;}
     S.cats.push(newCat);
-    eC(S.cats,S.mData);S.nc={name:"",budget:"",budgetRec:"",color:"#5b7f6b",isRec:false};
+    eC(S.cats,S.mData);S.nc={name:"",budget:"",budgetRec:"",color:"#527461",isRec:false};
     sv();ih("m2","");rMon();
   };
 }
@@ -1308,45 +1400,45 @@ function rEditMod(){
   const ec=S.eCat;
   let editSubs=(ec.subs||[]).map(s=>({...s}));
   function buildEM(){
-    const subItems=editSubs.map(s=>`<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:#faf6ef;border-radius:8px;margin-bottom:4px;border:1px solid #ece4d8"><span style="flex:1;font-size:13px;color:#2f2a24">${s.name}</span><input class="inp subBudget" data-sid="${s.id}" type="number" placeholder="תקציב" value="${s.budget||''}" style="width:80px;padding:4px 8px;font-size:12px;text-align:center"/><button class="dSub" data-sid="${s.id}" style="background:transparent;border:none;cursor:pointer;font-size:16px;color:#cf5a3e;padding:2px">&times;</button></div>`).join('');
+    const subItems=editSubs.map(s=>`<div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:#faf6ef;border-radius:8px;margin-bottom:4px;border:1px solid #ece4d8"><span style="flex:1;font-size:13px;color:#2f2a24">${s.name}</span><input class="inp subBudget" data-sid="${s.id}" type="number" placeholder="תקציב" value="${s.budget||''}" style="width:80px;padding:4px 8px;font-size:12px;text-align:center"/><button class="dSub" data-sid="${s.id}" style="background:transparent;border:none;cursor:pointer;font-size:16px;color:#b0472e;padding:2px">&times;</button></div>`).join('');
     ih("m3",`<div class="overlay" id="edO"><div class="modal">
       <div style="font-size:17px;font-weight:800;margin-bottom:16px;color:#2f2a24">עריכת קטגוריה</div>
-      <label style="font-size:11px;color:#a39686;display:block;margin-bottom:4px;letter-spacing:.5px">שם</label>
+      <label style="font-size:11px;color:#756a5c;display:block;margin-bottom:4px;letter-spacing:.5px">שם</label>
       <input class="inp" id="eN" style="margin-bottom:12px" value="${ec.name.replace(/"/g,'&quot;')}"/>
       <div style="display:flex;gap:10px;margin-bottom:12px">
-        <div style="flex:1"><label style="font-size:11px;color:#a39686;display:block;margin-bottom:4px;letter-spacing:.5px">תקציב משתנות (&#8362;)</label><input class="inp" id="eB" type="number" value="${ec.budget||''}"/></div>
-        <div style="flex:1"><label style="font-size:11px;color:#a39686;display:block;margin-bottom:4px;letter-spacing:.5px">תקציב קבועות (&#8362;)</label><input class="inp" id="eBR" type="number" placeholder="0" value="${ec.budgetRec||''}"/></div>
+        <div style="flex:1"><label style="font-size:11px;color:#756a5c;display:block;margin-bottom:4px;letter-spacing:.5px">תקציב משתנות (&#8362;)</label><input class="inp" id="eB" type="number" value="${ec.budget||''}"/></div>
+        <div style="flex:1"><label style="font-size:11px;color:#756a5c;display:block;margin-bottom:4px;letter-spacing:.5px">תקציב קבועות (&#8362;)</label><input class="inp" id="eBR" type="number" placeholder="0" value="${ec.budgetRec||''}"/></div>
       </div>
-      <label style="font-size:11px;color:#a39686;display:block;margin-bottom:6px;letter-spacing:.5px">צבע</label>
+      <label style="font-size:11px;color:#756a5c;display:block;margin-bottom:6px;letter-spacing:.5px">צבע</label>
       <div id="eS" style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">${sw(ec.color)}</div>
       <label style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;cursor:pointer;margin-bottom:8px">
-        <input type="checkbox" id="eCatRec" style="width:18px;height:18px;accent-color:#5b7f6b;flex-shrink:0" ${ec.isRecurring?'checked':''}/>
-        <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2f2a24">קטגוריה קבועה</div><div style="font-size:11px;color:#a39686">לא תוצג בתצוגת הוצאות משתנות</div></div>
+        <input type="checkbox" id="eCatRec" style="width:18px;height:18px;accent-color:#527461;flex-shrink:0" ${ec.isRecurring?'checked':''}/>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2f2a24">קטגוריה קבועה</div><div style="font-size:11px;color:#756a5c">לא תוצג בתצוגת הוצאות משתנות</div></div>
         <span style="font-size:20px">&#128260;</span>
       </label>
       <label style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;cursor:pointer;margin-bottom:8px">
-        <input type="checkbox" id="eLimitMonths" style="width:18px;height:18px;accent-color:#5b7f6b;flex-shrink:0" ${ec.activeMonths?'checked':''}/>
-        <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2f2a24">חודשים ספציפיים בלבד</div><div style="font-size:11px;color:#a39686">הקטגוריה תופיע רק בחודשים שתבחר</div></div>
+        <input type="checkbox" id="eLimitMonths" style="width:18px;height:18px;accent-color:#527461;flex-shrink:0" ${ec.activeMonths?'checked':''}/>
+        <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#2f2a24">חודשים ספציפיים בלבד</div><div style="font-size:11px;color:#756a5c">הקטגוריה תופיע רק בחודשים שתבחר</div></div>
       </label>
       <div id="eMonPicker" style="display:${ec.activeMonths?'flex':'none'};flex-wrap:wrap;gap:6px;margin-bottom:12px">
-        ${MO.map((mo,i)=>`<label style="display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:1px solid ${(ec.activeMonths||[]).includes(i)?'#5b7f6b':'#ece4d8'};background:${(ec.activeMonths||[]).includes(i)?'#e9f0eb':'#faf6ef'};cursor:pointer;font-size:12px;font-weight:600;color:${(ec.activeMonths||[]).includes(i)?'#5b7f6b':'#7d7265'}"><input type="checkbox" class="eMCb" value="${i}" style="display:none" ${(ec.activeMonths||[]).includes(i)?'checked':''}>${moLabel(i)}</label>`).join('')}
+        ${MO.map((mo,i)=>`<label style="display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:1px solid ${(ec.activeMonths||[]).includes(i)?'#527461':'#ece4d8'};background:${(ec.activeMonths||[]).includes(i)?'#e9f0eb':'#faf6ef'};cursor:pointer;font-size:12px;font-weight:600;color:${(ec.activeMonths||[]).includes(i)?'#527461':'#6f6457'}"><input type="checkbox" class="eMCb" value="${i}" style="display:none" ${(ec.activeMonths||[]).includes(i)?'checked':''}>${moLabel(i)}</label>`).join('')}
       </div>
-      <label style="font-size:11px;color:#a39686;display:block;margin-bottom:5px;letter-spacing:.5px">תתי-קטגוריות</label>
-      <div id="subEL" style="margin-bottom:6px">${subItems||'<div style="font-size:12px;color:#d6ccbe;padding:3px 0">אין תתי-קטגוריות</div>'}</div>
+      <label style="font-size:11px;color:#756a5c;display:block;margin-bottom:5px;letter-spacing:.5px">תתי-קטגוריות</label>
+      <div id="subEL" style="margin-bottom:6px">${subItems||'<div style="font-size:12px;color:#756a5c;padding:3px 0">אין תתי-קטגוריות</div>'}</div>
       <div style="display:flex;gap:6px;margin-bottom:16px">
         <input class="inp" id="newSubN" placeholder="שם" style="flex:2;padding:7px 10px;font-size:13px"/>
         <input class="inp" id="newSubB" type="number" placeholder="תקציב &#8362;" style="flex:1;padding:7px 8px;font-size:12px;text-align:center"/>
-        <button id="addSubB" style="padding:7px 14px;border-radius:10px;border:none;background:#5b7f6b;color:#fff;font-size:15px;font-weight:700;cursor:pointer">+</button>
+        <button id="addSubB" style="padding:7px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:15px;font-weight:700;cursor:pointer">+</button>
       </div>
       <div style="display:flex;gap:8px">
-        <button id="dE" style="flex:1;padding:11px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer">שמור</button>
-        <button id="cEd" style="flex:1;padding:11px;border-radius:10px;border:none;color:#7d7265;font-weight:600;background:#f3ece2;cursor:pointer">ביטול</button>
+        <button id="dE" style="flex:1;padding:11px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer">שמור</button>
+        <button id="cEd" style="flex:1;padding:11px;border-radius:10px;border:none;color:#6f6457;font-weight:600;background:#f3ece2;cursor:pointer">ביטול</button>
       </div>
     </div></div>`);
     const capSubs=()=>{editSubs=editSubs.map(s=>{const el=document.querySelector('.subBudget[data-sid="'+s.id+'"]');const b=parseFloat(el?.value)||0;return b?{...s,budget:b}:{id:s.id,name:s.name};});};
     document.querySelectorAll("#eS .csw").forEach(s=>s.onclick=()=>{capSubs();S.eCat.name=(g("eN")?.value||S.eCat.name);S.eCat.budget=parseFloat(g("eB")?.value)||S.eCat.budget;const bR=parseFloat(g("eBR")?.value);if(bR>0)S.eCat.budgetRec=bR;else delete S.eCat.budgetRec;S.eCat.color=s.dataset.c;S.eCat.subs=editSubs;rEditMod();});
     g("eLimitMonths").onchange=()=>{g("eMonPicker").style.display=g("eLimitMonths").checked?'flex':'none';};
-    document.querySelectorAll(".eMCb").forEach(cb=>{cb.parentElement.onclick=e=>{e.preventDefault();cb.checked=!cb.checked;const sel=cb.checked;cb.parentElement.style.background=sel?'#e9f0eb':'#faf6ef';cb.parentElement.style.color=sel?'#5b7f6b':'#7d7265';cb.parentElement.style.borderColor=sel?'#5b7f6b':'#ece4d8';};});
+    document.querySelectorAll(".eMCb").forEach(cb=>{cb.parentElement.onclick=e=>{e.preventDefault();cb.checked=!cb.checked;const sel=cb.checked;cb.parentElement.style.background=recolor(sel?'#e9f0eb':'#faf6ef');cb.parentElement.style.color=recolor(sel?'#527461':'#6f6457');cb.parentElement.style.borderColor=recolor(sel?'#527461':'#ece4d8');};});
     g("cEd").onclick=()=>ih("m3","");
     g("edO").onclick=e=>{if(e.target.id==="edO")ih("m3","");};
     g("addSubB").onclick=()=>{capSubs();const n=(g("newSubN").value||"").trim();if(!n)return;const bN=parseFloat(g("newSubB")?.value)||0;const newS={id:Date.now(),name:n};if(bN>0)newS.budget=bN;editSubs=[...editSubs,newS];buildEM();};
@@ -1406,14 +1498,14 @@ async function authBiometric(uid,onOk,onFail){
 }
 
 function rCenter(html){GATE=true;g('cnt').innerHTML=`<div style="min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:32px 24px;text-align:center">${html}</div>`;}
-const BTN='width:100%;max-width:280px;padding:13px;border-radius:12px;border:none;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer';
+const BTN='width:100%;max-width:280px;padding:13px;border-radius:12px;border:none;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer';
 function rLogin(msg=''){
   rCenter(`<div style="font-size:40px">&#128176;</div>
     <div style="font-size:22px;font-weight:800;color:#2f2a24">תקציב משפחתי</div>
-    <div style="font-size:13px;color:#7d7265;margin-bottom:8px">התחבר כדי לראות את הנתונים שלך</div>
+    <div style="font-size:13px;color:#6f6457;margin-bottom:8px">התחבר כדי לראות את הנתונים שלך</div>
     <button id="gLogin" style="${BTN}">התחבר עם Google</button>
-    <div id="loginErr" style="color:#cf5a3e;font-size:12px;max-width:280px">${msg}</div>
-    <a href="privacy.html" style="font-size:12px;color:#a39686;margin-top:14px">מדיניות פרטיות</a>`);
+    <div id="loginErr" style="color:#b0472e;font-size:12px;max-width:280px">${msg}</div>
+    <div style="font-size:12px;margin-top:14px"><a href="privacy.html" style="color:#756a5c">מדיניות פרטיות</a> · <a href="accessibility.html" style="color:#756a5c">הצהרת נגישות</a></div>`);
   g('gLogin').onclick=async()=>{
     if(!auth){g('loginErr').textContent='השרת עוד נטען, נסה שוב בעוד רגע';return;}
     const prov=new _A.GoogleAuthProvider();prov.setCustomParameters({prompt:'select_account'});
@@ -1458,12 +1550,12 @@ function rWelcome(){
   const nm=(AUTH_USER?.displayName||'').split(' ')[0];
   rCenter(`<div style="font-size:40px">&#128075;</div>
     <div style="font-size:22px;font-weight:800;color:#2f2a24">ברוך הבא!</div>
-    <div style="font-size:14px;color:#7d7265">איך קוראים לך?</div>
+    <div style="font-size:14px;color:#6f6457">איך קוראים לך?</div>
     <input class="inp" id="wName" value="${nm.replace(/"/g,'&quot;')}" placeholder="השם שלך" style="width:100%;max-width:280px;padding:12px;font-size:17px;text-align:center"/>
     <button id="wGo" style="${BTN}">התחל</button>
-    <div id="wErr" style="color:#cf5a3e;font-size:12px;max-width:280px"></div>
-    <div style="font-size:12px;color:#a39686;max-width:280px;margin-top:10px">מישהו שיתף איתך פרופיל? בקש ממנו להוסיף את <b style="direction:ltr;display:inline-block">${myEmail()}</b> בהגדרות, ואז רענן את הדף</div>
-    <button id="wOut" style="background:transparent;border:none;color:#a39686;font-size:13px;cursor:pointer;text-decoration:underline">התנתק</button>`);
+    <div id="wErr" style="color:#b0472e;font-size:12px;max-width:280px"></div>
+    <div style="font-size:12px;color:#756a5c;max-width:280px;margin-top:10px">מישהו שיתף איתך פרופיל? בקש ממנו להוסיף את <b style="direction:ltr;display:inline-block">${myEmail()}</b> בהגדרות, ואז רענן את הדף</div>
+    <button id="wOut" style="background:transparent;border:none;color:#756a5c;font-size:13px;cursor:pointer;text-decoration:underline">התנתק</button>`);
   g('wOut').onclick=fbSignOut;
   g('wName').onkeydown=e=>{if(e.key==='Enter')g('wGo').click();};
   g('wGo').onclick=async()=>{
@@ -1477,15 +1569,15 @@ function rWelcome(){
 async function rClaim(fromSettings=false){
   ih("m2","");
   rCenter(`<div style="font-size:20px;font-weight:800;color:#2f2a24">שיוך פרופיל</div>
-    <div style="font-size:13px;color:#7d7265">מחובר כ-${myEmail()}</div>
-    <div id="oldList" style="width:100%;max-width:280px;display:flex;flex-direction:column;gap:8px;margin-top:8px"><div style="color:#a39686;font-size:13px">טוען…</div></div>
-    <div id="claimErr" style="color:#cf5a3e;font-size:12px;max-width:280px"></div>
+    <div style="font-size:13px;color:#6f6457">מחובר כ-${myEmail()}</div>
+    <div id="oldList" style="width:100%;max-width:280px;display:flex;flex-direction:column;gap:8px;margin-top:8px"><div style="color:#756a5c;font-size:13px">טוען…</div></div>
+    <div id="claimErr" style="color:#b0472e;font-size:12px;max-width:280px"></div>
     <div style="width:100%;max-width:280px;border-top:1px solid #ece4d8;padding-top:14px;margin-top:6px;display:flex;gap:8px">
       <input class="inp" id="newProf" placeholder="שם לפרופיל חדש" style="flex:1;padding:9px 12px"/>
-      <button id="mkProf" style="padding:9px 14px;border-radius:10px;border:none;color:#fff;background:linear-gradient(135deg,#4f8a68,#3f7356);font-weight:700;font-size:13px;cursor:pointer">+ צור</button>
+      <button id="mkProf" style="padding:9px 14px;border-radius:10px;border:none;color:#fff;background:linear-gradient(135deg,#3d7556,#3f7356);font-weight:700;font-size:13px;cursor:pointer">+ צור</button>
     </div>
-    ${fromSettings?`<button id="claimBack" style="background:transparent;border:none;color:#5b7f6b;font-size:13px;cursor:pointer;text-decoration:underline">&#8592; חזור</button>`:''}
-    <button id="claimOut" style="background:transparent;border:none;color:#a39686;font-size:13px;cursor:pointer;text-decoration:underline">התנתק</button>`);
+    ${fromSettings?`<button id="claimBack" style="background:transparent;border:none;color:#527461;font-size:13px;cursor:pointer;text-decoration:underline">&#8592; חזור</button>`:''}
+    <button id="claimOut" style="background:transparent;border:none;color:#756a5c;font-size:13px;cursor:pointer;text-decoration:underline">התנתק</button>`);
   const err=t=>{g('claimErr').textContent=t;};
   g('claimOut').onclick=fbSignOut;
   if(g('claimBack'))g('claimBack').onclick=()=>{GATE=false;rAll();};
@@ -1497,9 +1589,9 @@ async function rClaim(fromSettings=false){
   let old=[];
   try{const sn=await _getDoc(_doc(fdb,'budget','_users'));old=sn.exists()?(sn.data().users||[]):[];}catch{}
   old=old.filter(o=>!USERS.find(u=>u.id===o.id));
-  g('oldList').innerHTML=old.length?`<div style="font-size:12px;color:#7d7265">פרופיל מהגרסה הקודמת (הזן את הסיסמה שלו):</div>`+old.map(o=>`
+  g('oldList').innerHTML=old.length?`<div style="font-size:12px;color:#6f6457">פרופיל מהגרסה הקודמת (הזן את הסיסמה שלו):</div>`+old.map(o=>`
     <button class="oldP" data-id="${o.id}" style="padding:11px;border-radius:12px;border:2px solid #c9d9ce;background:#e9f0eb;color:#4338ca;font-weight:800;font-size:14px;cursor:pointer">${o.name}${o.pin?' &#128274;':''}</button>`).join('')
-    :`<div style="font-size:12px;color:#a39686">אין פרופילים ישנים לשיוך</div>`;
+    :`<div style="font-size:12px;color:#756a5c">אין פרופילים ישנים לשיוך</div>`;
   document.querySelectorAll('.oldP').forEach(b=>b.onclick=async()=>{
     const o=old.find(x=>x.id===b.dataset.id);
     const pin=o.pin?prompt('סיסמה של '+o.name):'';
@@ -1533,17 +1625,17 @@ function rLockScreen(showPin=false){
   const useBio=canUseBiometric()&&hasBiometric(CUR_UID);
   const pinMode=showPin||!useBio;
   cnt.innerHTML=`<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 24px">
-    <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#5b7f6b,#6f9480);display:flex;align-items:center;justify-content:center;font-size:${pinMode?'30':'36'}px;font-weight:800;color:#fff">${pinMode?'&#128274;':'&#128400;'}</div>
+    <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#527461,#4f735f);display:flex;align-items:center;justify-content:center;font-size:${pinMode?'30':'36'}px;font-weight:800;color:#fff">${pinMode?'&#128274;':'&#128400;'}</div>
     <div style="font-size:22px;font-weight:800;color:#2f2a24">${u.name}</div>
-    <div style="font-size:13px;color:#a39686">${pinMode?'הזן סיסמה כדי להמשיך':'ממתין לאימות ביומטרי'}</div>
+    <div style="font-size:13px;color:#756a5c">${pinMode?'הזן סיסמה כדי להמשיך':'ממתין לאימות ביומטרי'}</div>
     ${pinMode?`
     <input class="inp" id="lockPin" type="password" placeholder="סיסמה" style="text-align:center;font-size:22px;letter-spacing:8px;max-width:220px"/>
-    <button id="lockEnter" style="padding:13px;border-radius:12px;border:none;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer;width:100%;max-width:220px;box-shadow:0 4px 14px rgba(91,127,107,.3)">כניסה</button>
-    <div id="lockErr" style="color:#cf5a3e;font-size:12px;display:none">&#10060; סיסמה שגויה</div>`:''}
-    ${!pinMode?`<button id="lockBio" style="padding:12px 24px;border-radius:12px;border:2px solid #c9d9ce;color:#5b7f6b;font-weight:700;font-size:14px;background:#e9f0eb;cursor:pointer">נסה שוב</button>`:''}
-    ${useBio&&pinMode?`<button id="lockBioSwitch" style="background:transparent;border:none;color:#5b7f6b;font-size:13px;cursor:pointer;text-decoration:underline">&#128400; עבור לטביעת אצבע</button>`:''}
-    ${!pinMode?`<button id="lockPinSwitch" style="background:transparent;border:none;color:#a39686;font-size:13px;cursor:pointer;text-decoration:underline">השתמש בסיסמה במקום</button>`:''}
-    ${USERS.length>1?`<button id="lockSwitch" style="background:transparent;border:none;color:#a39686;font-size:13px;cursor:pointer;margin-top:4px;text-decoration:underline">כניסה עם משתמש אחר</button>`:''}
+    <button id="lockEnter" style="padding:13px;border-radius:12px;border:none;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer;width:100%;max-width:220px;box-shadow:0 4px 14px rgba(91,127,107,.3)">כניסה</button>
+    <div id="lockErr" style="color:#b0472e;font-size:12px;display:none">&#10060; סיסמה שגויה</div>`:''}
+    ${!pinMode?`<button id="lockBio" style="padding:12px 24px;border-radius:12px;border:2px solid #c9d9ce;color:#527461;font-weight:700;font-size:14px;background:#e9f0eb;cursor:pointer">נסה שוב</button>`:''}
+    ${useBio&&pinMode?`<button id="lockBioSwitch" style="background:transparent;border:none;color:#527461;font-size:13px;cursor:pointer;text-decoration:underline">&#128400; עבור לטביעת אצבע</button>`:''}
+    ${!pinMode?`<button id="lockPinSwitch" style="background:transparent;border:none;color:#756a5c;font-size:13px;cursor:pointer;text-decoration:underline">השתמש בסיסמה במקום</button>`:''}
+    ${USERS.length>1?`<button id="lockSwitch" style="background:transparent;border:none;color:#756a5c;font-size:13px;cursor:pointer;margin-top:4px;text-decoration:underline">כניסה עם משתמש אחר</button>`:''}
   </div>`;
   if(USERS.length>1&&g('lockSwitch'))g('lockSwitch').onclick=()=>rPickUser();
   if(pinMode){
@@ -1571,17 +1663,17 @@ function rUserMod(view=null,_=null,switchId=null){
     ih("m2",`<div class="overlay" id="uO"><div class="modal">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
         <div style="display:flex;align-items:center;gap:10px">
-          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#5b7f6b,#6f9480);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff">${u.name.charAt(0)}</div>
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#527461,#4f735f);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff">${u.name.charAt(0)}</div>
           <span style="font-size:16px;font-weight:800;color:#2f2a24">${u.name}</span>
         </div>
-        <button id="cU" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+        <button id="cU" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
       </div>
-      <div style="font-size:13px;color:#7d7265;margin-bottom:12px;text-align:center">&#128274; הזן סיסמה כדי להמשיך</div>
+      <div style="font-size:13px;color:#6f6457;margin-bottom:12px;text-align:center">&#128274; הזן סיסמה כדי להמשיך</div>
       <input class="inp" id="pinEnter" type="password" placeholder="סיסמה" style="margin-bottom:14px;font-size:18px;text-align:center;letter-spacing:6px"/>
-      <button id="verifyPin" style="width:100%;padding:12px;border-radius:12px;border:none;color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer">כניסה</button>
-      ${canUseBiometric()&&hasBiometric(switchId)?`<button id="swBioBtn" style="width:100%;padding:11px;border-radius:12px;border:2px solid #c9d9ce;color:#5b7f6b;font-weight:700;font-size:13px;background:#e9f0eb;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px"><span style="font-size:18px">&#128400;</span>כניסה ביומטרית</button>`:''}
-      <div id="pinErr" style="color:#cf5a3e;font-size:12px;text-align:center;margin-top:8px;display:none">&#10060; סיסמה שגויה</div>
-      <button id="backBtn" style="width:100%;padding:8px;border-radius:10px;border:none;color:#a39686;background:transparent;cursor:pointer;font-size:13px;margin-top:6px">&#8592; חזור</button>
+      <button id="verifyPin" style="width:100%;padding:12px;border-radius:12px;border:none;color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer">כניסה</button>
+      ${canUseBiometric()&&hasBiometric(switchId)?`<button id="swBioBtn" style="width:100%;padding:11px;border-radius:12px;border:2px solid #c9d9ce;color:#527461;font-weight:700;font-size:13px;background:#e9f0eb;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px"><span style="font-size:18px">&#128400;</span>כניסה ביומטרית</button>`:''}
+      <div id="pinErr" style="color:#b0472e;font-size:12px;text-align:center;margin-top:8px;display:none">&#10060; סיסמה שגויה</div>
+      <button id="backBtn" style="width:100%;padding:8px;border-radius:10px;border:none;color:#756a5c;background:transparent;cursor:pointer;font-size:13px;margin-top:6px">&#8592; חזור</button>
     </div></div>`);
     const doSwitch=()=>{CUR_UID=switchId;saveUsers();ld();loadEvents();ih("m2","");if(db){fbListen(S.year);fbLoadEvents();}setUnlocked(CUR_UID);rAll();};
     const hasBio=canUseBiometric()&&hasBiometric(switchId);
@@ -1619,63 +1711,74 @@ function rUserMod(view=null,_=null,switchId=null){
     const others=USERS.filter(u=>u.id!==CUR_UID);
     ih("m2",`<div class="overlay" id="uO"><div class="modal" style="padding:0;overflow:hidden">
       <div style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid #f3ece2">
-        <button id="backToProfile" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:17px;color:#7d7265;flex-shrink:0">&#8592;</button>
-        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#5b7f6b,#6f9480);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0">${cu.name.charAt(0)}</div>
+        <button id="backToProfile" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:17px;color:#6f6457;flex-shrink:0">&#8592;</button>
+        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#527461,#4f735f);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0">${cu.name.charAt(0)}</div>
         <span style="font-size:16px;font-weight:800;color:#2f2a24;flex:1">${cu.name}</span>
-        <button id="cU" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+        <button id="cU" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
       </div>
       <div style="max-height:72vh;overflow-y:auto;padding:14px 18px 18px">
 
-        <div style="font-size:10px;font-weight:700;color:#a39686;letter-spacing:.8px;margin-bottom:6px;margin-top:4px">שם</div>
+        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px;margin-top:4px">שם</div>
         <div style="display:flex;gap:8px;margin-bottom:18px">
-          <input class="inp" id="editUN" value="${cu.name.replace(/"/g,'&quot;')}" style="flex:1;padding:9px 12px;font-size:14px"/>
-          <button id="saveUN" style="padding:9px 14px;border-radius:10px;border:none;background:#5b7f6b;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שמור</button>
+          <input class="inp" id="editUN" aria-label="שם הפרופיל" value="${cu.name.replace(/"/g,'&quot;')}" style="flex:1;padding:9px 12px;font-size:14px"/>
+          <button id="saveUN" style="padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שמור</button>
         </div>
 
-        <div style="font-size:10px;font-weight:700;color:#a39686;letter-spacing:.8px;margin-bottom:6px">&#128274; אבטחה</div>
+        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#128274; אבטחה</div>
         <div style="display:flex;gap:8px;margin-bottom:8px">
           <input class="inp" id="pinInput" type="password" placeholder="${hasPin?'סיסמה חדשה (ריק = מחיקה)':'הגדר סיסמה'}" style="flex:1;padding:9px 12px"/>
-          <button id="savePin" style="padding:9px 14px;border-radius:10px;border:none;background:#5b7f6b;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שמור</button>
+          <button id="savePin" style="padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שמור</button>
         </div>
-        ${hasPin&&canUseBiometric()?`<button id="bioBtn" style="width:100%;padding:10px;border-radius:10px;border:${hasBiometric(CUR_UID)?'2px solid #cf5a3e':'2px solid #c9d9ce'};background:${hasBiometric(CUR_UID)?'#fbefe9':'#e9f0eb'};color:${hasBiometric(CUR_UID)?'#cf5a3e':'#5b7f6b'};font-weight:700;font-size:13px;cursor:pointer;margin-bottom:18px">&#128400; ${hasBiometric(CUR_UID)?'הסר טביעת אצבע':'רשום טביעת אצבע'}</button>`:`<div style="font-size:11px;color:#a39686;margin-bottom:18px">${hasPin?'':'הגדר סיסמה כדי לאפשר כניסה ביומטרית'}</div>`}
+        ${hasPin&&canUseBiometric()?`<button id="bioBtn" style="width:100%;padding:10px;border-radius:10px;border:${hasBiometric(CUR_UID)?'2px solid #b0472e':'2px solid #c9d9ce'};background:${hasBiometric(CUR_UID)?'#fbefe9':'#e9f0eb'};color:${hasBiometric(CUR_UID)?'#b0472e':'#527461'};font-weight:700;font-size:13px;cursor:pointer;margin-bottom:18px">&#128400; ${hasBiometric(CUR_UID)?'הסר טביעת אצבע':'רשום טביעת אצבע'}</button>`:`<div style="font-size:11px;color:#756a5c;margin-bottom:18px">${hasPin?'':'הגדר סיסמה כדי לאפשר כניסה ביומטרית'}</div>`}
 
-        <div style="font-size:10px;font-weight:700;color:#a39686;letter-spacing:.8px;margin-bottom:6px">&#9881; תצוגה</div>
+        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#9881; תצוגה</div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
           <span style="font-size:13px;color:#5e554a;flex:1">תחילת חודש ביום</span>
           <input class="inp" id="monthStartInp" type="number" min="1" max="28" value="${ms}" style="width:60px;text-align:center;padding:8px 6px;font-size:15px;font-weight:700"/>
-          <button id="saveMonthStart" style="padding:9px 14px;border-radius:10px;border:none;background:#5b7f6b;color:#fff;font-size:13px;font-weight:700;cursor:pointer">שמור</button>
+          <button id="saveMonthStart" style="padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer">שמור</button>
         </div>
-        <div style="font-size:11px;color:#a39686;margin-bottom:12px">לדוגמה: יום 15 — מה-15 עד ה-14 בחודש הבא</div>
+        <div style="font-size:11px;color:#756a5c;margin-bottom:12px">לדוגמה: יום 15 — מה-15 עד ה-14 בחודש הבא</div>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#5e554a;margin-bottom:18px;cursor:pointer">
-          <input type="checkbox" id="darkTgl" ${DARK?'checked':''} style="width:18px;height:18px;accent-color:#5b7f6b"/>
-          &#127769; מצב כהה <span style="font-size:11px;color:#a39686">(במכשיר הזה)</span>
+          <input type="checkbox" id="darkTgl" ${DARK?'checked':''} style="width:18px;height:18px;accent-color:#527461"/>
+          &#127769; מצב כהה <span style="font-size:11px;color:#756a5c">(במכשיר הזה)</span>
         </label>
 
-        ${others.length?`<div style="font-size:10px;font-weight:700;color:#a39686;letter-spacing:.8px;margin-bottom:8px">&#128100; משתמשים נוספים</div>
+        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:8px">&#9855; נגישות <span style="font-weight:400">(במכשיר הזה)</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <label for="a11ySize" style="font-size:13px;color:#5e554a">גודל טקסט</label>
+          <select class="inp" id="a11ySize" style="flex:1;padding:7px 10px;font-size:13px">
+            ${[[1,'רגיל'],[1.15,'גדול'],[1.3,'גדול מאוד']].map(([v,l])=>`<option value="${v}"${(a11yPrefs().size||1)==v?' selected':''}>${l}</option>`).join('')}
+          </select>
+        </div>
+        ${[['hc','ניגודיות גבוהה'],['rm','עצירת אנימציות'],['ul','הדגשת קישורים וכפתורים']].map(([k,l])=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#5e554a;margin-bottom:8px;cursor:pointer">
+          <input type="checkbox" class="a11yOpt" data-k="${k}" ${a11yPrefs()[k]?'checked':''} style="width:18px;height:18px;accent-color:#527461"/> ${l}</label>`).join('')}
+        <a href="accessibility.html" target="_blank" style="display:inline-block;font-size:12px;color:#527461;margin-bottom:18px">הצהרת נגישות</a>
+
+        ${others.length?`<div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:8px">&#128100; משתמשים נוספים</div>
         ${others.map(u=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:7px">
-          <div style="width:34px;height:34px;border-radius:50%;background:#ece4d8;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#7d7265;flex-shrink:0">${u.name.charAt(0)}</div>
+          <div style="width:34px;height:34px;border-radius:50%;background:#ece4d8;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#6f6457;flex-shrink:0">${u.name.charAt(0)}</div>
           <span style="flex:1;font-size:14px;font-weight:600;color:#2f2a24">${u.name}</span>
-          <button class="swUser" data-uid="${u.id}" style="padding:7px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#5b7f6b,#6f9480);color:#fff;font-size:12px;font-weight:700;cursor:pointer">החלף</button>
+          <button class="swUser" data-uid="${u.id}" style="padding:7px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#527461,#4f735f);color:#fff;font-size:12px;font-weight:700;cursor:pointer">החלף</button>
         </div>`).join('')}`:''}
 
-        <div style="font-size:10px;font-weight:700;color:#a39686;letter-spacing:.8px;margin-bottom:6px">&#128101; מי רואה את הפרופיל הזה</div>
+        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#128101; מי רואה את הפרופיל הזה</div>
         ${(cu.emails||[]).map(e=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:6px">
           <span style="flex:1;font-size:13px;color:#2f2a24;direction:ltr;text-align:left">${e}</span>
-          ${(cu.emails||[]).length>1?`<button class="rmEm" data-em="${e}" style="background:transparent;border:none;color:#cf5a3e;font-size:16px;cursor:pointer">&times;</button>`:''}
+          ${(cu.emails||[]).length>1?`<button class="rmEm" data-em="${e}" style="background:transparent;border:none;color:#b0472e;font-size:16px;cursor:pointer">&times;</button>`:''}
         </div>`).join('')}
         <div style="display:flex;gap:8px;margin-bottom:4px">
           <input class="inp" id="shareEm" type="email" placeholder="כתובת Gmail לשיתוף" style="flex:1;padding:9px 12px;direction:ltr"/>
-          <button id="addEm" style="padding:9px 14px;border-radius:10px;border:none;background:#5b7f6b;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שתף</button>
+          <button id="addEm" style="padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שתף</button>
         </div>
-        <div style="font-size:11px;color:#a39686;margin-bottom:18px">רק מי שמופיע כאן יכול לראות ולערוך את הנתונים</div>
+        <div style="font-size:11px;color:#756a5c;margin-bottom:18px">רק מי שמופיע כאן יכול לראות ולערוך את הנתונים</div>
 
-        <div style="font-size:10px;font-weight:700;color:#a39686;letter-spacing:.8px;margin-bottom:6px">&#128179; קליטת חיובים מהטלפון</div>
+        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#128179; קליטת חיובים מהטלפון</div>
         ${cu.ingestKey?`<div style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.6">ההתראות על חיובים (מקס / Google Wallet) נשלחות לכתובת הזו ומופיעות באפליקציה לאישור. הכתובת אישית — אל תשתף אותה.</div>
         <div style="display:flex;gap:6px;margin-bottom:6px">
           <input class="inp" id="ingUrl" readonly value="${location.origin}/api/ingest?key=${cu.ingestKey}" style="flex:1;min-width:0;padding:8px 10px;font-size:11px;direction:ltr"/>
-          <button id="ingCopy" style="padding:8px 12px;border-radius:10px;border:none;background:#5b7f6b;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">העתק</button>
+          <button id="ingCopy" style="padding:8px 12px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">העתק</button>
         </div>
-        <details style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.7"><summary style="cursor:pointer;color:#5b7f6b;font-weight:700">איך מגדירים באנדרואיד (MacroDroid, חינם)</summary>
+        <details style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.7"><summary style="cursor:pointer;color:#527461;font-weight:700">איך מגדירים באנדרואיד (MacroDroid, חינם)</summary>
           <ol style="padding-right:18px;margin:6px 0">
             <li>מתקינים את MacroDroid מ-Google Play ופותחים מאקרו חדש.</li>
             <li>טריגר: <b>התראה ← התראה התקבלה</b>, ובוחרים את האפליקציות max ו-Google Wallet. מאשרים ל-MacroDroid גישה להתראות.</li>
@@ -1683,19 +1786,19 @@ function rUserMod(view=null,_=null,switchId=null){
             <li>בלשונית <b>Query parameters</b> מוסיפים שני פרמטרים: <span dir="ltr">title</span> עם כותרת ההתראה, ו-<span dir="ltr">text</span> עם טקסט ההתראה (בוחרים אותם מכפתור ה-"…" של Magic Text).</li>
             <li>שומרים. מעכשיו כל חיוב יופיע כאן בפס "חיובים ממתינים".</li>
           </ol></details>
-        <button id="ingOff" style="padding:6px 12px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#cf5a3e;font-size:12px;cursor:pointer;margin-bottom:18px">בטל את הכתובת</button>`
-        :`<div style="font-size:12px;color:#a39686;margin-bottom:8px;line-height:1.6">כל תשלום בכרטיס יופיע באפליקציה לאישור, לפי ההתראה של מקס או Google Wallet בטלפון.</div>
-        <button id="ingOn" style="padding:8px 14px;border-radius:10px;border:none;background:#5b7f6b;color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:18px">הפעל קליטת חיובים</button>`}
+        <button id="ingOff" style="padding:6px 12px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#b0472e;font-size:12px;cursor:pointer;margin-bottom:18px">בטל את הכתובת</button>`
+        :`<div style="font-size:12px;color:#756a5c;margin-bottom:8px;line-height:1.6">כל תשלום בכרטיס יופיע באפליקציה לאישור, לפי ההתראה של מקס או Google Wallet בטלפון.</div>
+        <button id="ingOn" style="padding:8px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:18px">הפעל קליטת חיובים</button>`}
 
-        <div style="font-size:10px;font-weight:700;color:#a39686;letter-spacing:.8px;margin-bottom:6px">&#128231; מיילים ותזכורות</div>
+        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#128231; מיילים ותזכורות</div>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#5e554a;margin-bottom:10px;cursor:pointer">
-          <input type="checkbox" id="mailSum" ${cu.mailSummary?'checked':''} style="width:18px;height:18px;accent-color:#5b7f6b"/>
+          <input type="checkbox" id="mailSum" ${cu.mailSummary?'checked':''} style="width:18px;height:18px;accent-color:#527461"/>
           סיכום חודשי במייל ביום האחרון של החודש, עם ניתוח AI והצעות לשיפור
         </label>
         ${(cu.reminders||[]).map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;margin-bottom:6px">
           <span style="font-size:12px;color:#b45309;white-space:nowrap">${r.type==='once'?fmDate(r.date)+'/'+(r.date||'').slice(2,4):'כל '+r.day+' בחודש'}</span>
           <span style="flex:1;font-size:13px;color:#2f2a24">${(r.text||'').replace(/</g,'&lt;')}</span>
-          <button class="rmRem" data-id="${r.id}" style="background:transparent;border:none;color:#cf5a3e;font-size:16px;cursor:pointer">&times;</button>
+          <button class="rmRem" data-id="${r.id}" style="background:transparent;border:none;color:#b0472e;font-size:16px;cursor:pointer">&times;</button>
         </div>`).join('')}
         <div style="display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;border:1px dashed #d6ccbe;margin-bottom:4px">
           <input class="inp" id="remText" placeholder="תזכורת (למשל: לשלם ועד בית)" style="padding:9px 12px"/>
@@ -1706,16 +1809,16 @@ function rUserMod(view=null,_=null,switchId=null){
             <button id="addRem" style="padding:8px 12px;border-radius:10px;border:none;background:#f59e0b;color:#fff;font-size:13px;font-weight:700;cursor:pointer">+</button>
           </div>
         </div>
-        <div style="font-size:11px;color:#a39686;margin-bottom:18px">נשלח בבוקר לכל המיילים שברשימה למעלה</div>
+        <div style="font-size:11px;color:#756a5c;margin-bottom:18px">נשלח בבוקר לכל המיילים שברשימה למעלה</div>
 
 
         <div style="border-top:1px solid #f3ece2;padding-top:14px;margin-top:14px;display:flex;align-items:center;gap:8px">
-          <span style="flex:1;font-size:12px;color:#7d7265;direction:ltr;text-align:left">${myEmail()}</span>
-          <button id="signOut" style="padding:7px 14px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#cf5a3e;font-size:12px;font-weight:700;cursor:pointer">התנתק</button>
+          <span style="flex:1;font-size:12px;color:#6f6457;direction:ltr;text-align:left">${myEmail()}</span>
+          <button id="signOut" style="padding:7px 14px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#b0472e;font-size:12px;font-weight:700;cursor:pointer">התנתק</button>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px">
-          <a href="privacy.html" target="_blank" style="font-size:12px;color:#a39686">מדיניות פרטיות</a>
-          <button id="delAcc" style="padding:6px 10px;border-radius:8px;border:none;background:transparent;color:#cf5a3e;font-size:12px;cursor:pointer;text-decoration:underline">מחיקת החשבון והנתונים</button>
+          <span style="font-size:12px"><a href="privacy.html" target="_blank" style="color:#756a5c">מדיניות פרטיות</a> · <a href="accessibility.html" target="_blank" style="color:#756a5c">הצהרת נגישות</a></span>
+          <button id="delAcc" style="padding:6px 10px;border-radius:8px;border:none;background:transparent;color:#b0472e;font-size:12px;cursor:pointer;text-decoration:underline">מחיקת החשבון והנתונים</button>
         </div>
 
       </div>
@@ -1733,6 +1836,9 @@ function rUserMod(view=null,_=null,switchId=null){
       if(pin)cu.pin=pin;else delete cu.pin;
       saveUsers();rUserMod('edit');
     };
+    const setA11y=(k,v)=>{const p=a11yPrefs();p[k]=v;try{localStorage.setItem('bdg_a11y',JSON.stringify(p));}catch{}applyA11y();};
+    g("a11ySize").onchange=()=>setA11y('size',parseFloat(g("a11ySize").value)||1);
+    document.querySelectorAll(".a11yOpt").forEach(c=>c.onchange=()=>setA11y(c.dataset.k,c.checked));
     g("darkTgl").onchange=()=>{DARK=g("darkTgl").checked;try{localStorage.setItem('bdg_dark',DARK?'1':'0');}catch{}applyDark();rAll();rUserMod('edit');};
     g("saveMonthStart").onclick=()=>{
       const d=Math.max(1,Math.min(28,parseInt(g("monthStartInp").value)||1));
@@ -1795,13 +1901,13 @@ function rUserMod(view=null,_=null,switchId=null){
 
   // Profile view (default)
   ih("m2",`<div class="overlay" id="uO"><div class="modal" style="text-align:center;padding:40px 28px 32px;position:relative">
-    <button id="cU" style="position:absolute;top:14px;left:14px;background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
-    <div style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#5b7f6b,#6f9480);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#fff;margin:0 auto 16px">${cu.name.charAt(0)}</div>
+    <button id="cU" style="position:absolute;top:14px;left:14px;background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
+    <div style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#527461,#4f735f);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#fff;margin:0 auto 16px">${cu.name.charAt(0)}</div>
     <div style="font-size:26px;font-weight:800;color:#2f2a24;margin-bottom:10px">${cu.name}</div>
     <div style="display:inline-flex;align-items:center;gap:6px;background:#eef5ef;border:1px solid #d4e4d8;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:#16a34a;margin-bottom:28px">
       <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block"></span>פעיל כעת
     </div>
-    <button id="editBtn" style="width:100%;padding:13px;border-radius:13px;border:none;color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer">&#9998; עריכה והגדרות</button>
+    <button id="editBtn" style="width:100%;padding:13px;border-radius:13px;border:none;color:#fff;font-weight:700;font-size:15px;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer">&#9998; עריכה והגדרות</button>
   </div></div>`);
   g("cU").onclick=()=>ih("m2","");
   g("uO").onclick=e=>{if(e.target.id==="uO")ih("m2","");};
@@ -1858,30 +1964,30 @@ function rBudgetSuggest(){
   const applyFn=()=>{
     sugs.forEach(applyOne);ih("m2","");
   };
-  const arrow=(ch,val,note)=>ch!==0?`<span style="font-size:12px;color:#a39686">→</span><span style="font-size:13px;font-weight:700;color:${ch>0?'#cf5a3e':'#4f8a68'}">₪${fm(val)}</span><span style="font-size:10px;background:${ch>0?'#f8e4dc':'#e4efe6'};color:${ch>0?'#b91c1c':'#3f7356'};border-radius:6px;padding:1px 5px">${ch>0?'↑':'↓'}</span><span style="font-size:10px;color:#a39686;flex:1">${note}</span>`:`<span style="font-size:10px;color:#a39686;flex:1">${note}</span>`;
+  const arrow=(ch,val,note)=>ch!==0?`<span style="font-size:12px;color:#756a5c">→</span><span style="font-size:13px;font-weight:700;color:${ch>0?'#b0472e':'#3d7556'}">₪${fm(val)}</span><span style="font-size:10px;background:${ch>0?'#f8e4dc':'#e4efe6'};color:${ch>0?'#b91c1c':'#3f7356'};border-radius:6px;padding:1px 5px">${ch>0?'↑':'↓'}</span><span style="font-size:10px;color:#756a5c;flex:1">${note}</span>`:`<span style="font-size:10px;color:#756a5c;flex:1">${note}</span>`;
   const doRender=()=>{
     const ts=sugs.reduce((s,x)=>s+x.sugVar+x.sugRec,0);
     const sav=avgInc>0?avgInc-ts:null;
     const rat=avgInc>0?Math.round(ts/avgInc*100):null;
-    const rc=rat===null?'#7d7265':rat>90?'#cf5a3e':rat>80?'#f59e0b':rat>65?'#5b7f6b':'#4f8a68';
-    const sc=sav===null?'#7d7265':sav<0?'#cf5a3e':sav<avgInc*0.1?'#f59e0b':sav<avgInc*0.2?'#5b7f6b':'#4f8a68';
+    const rc=rat===null?'#6f6457':rat>90?'#b0472e':rat>80?'#f59e0b':rat>65?'#527461':'#3d7556';
+    const sc=sav===null?'#6f6457':sav<0?'#b0472e':sav<avgInc*0.1?'#f59e0b':sav<avgInc*0.2?'#527461':'#3d7556';
     const sm=sav===null?'':sav<0?'התקציב חורג מהכנסה':sav<avgInc*0.1?'מומלץ לחסוך לפחות 20%':sav<avgInc*0.2?'קרוב ליעד — מומלץ להגדיל מעט':'חיסכון מצוין!';
     const bg=sav===null||sav<0?'#fef2f2':sav<avgInc*0.2?'#fff7ed':'#eef5ef';
     const bd=sav===null||sav<0?'#f0cfc2':sav<avgInc*0.2?'#fed7aa':'#d4e4d8';
-    if(g('bsSugT')){g('bsSugT').textContent=`₪${fm(ts)}${rat!==null?` (${rat}%)`:''}`;g('bsSugT').style.color=rc;}
-    if(g('bsSavC')){g('bsSavC').style.background=bg;g('bsSavC').style.borderColor=bd;}
-    if(g('bsSavA')){g('bsSavA').textContent=`₪${fm(Math.round(Math.max(0,sav||0)))}`;g('bsSavA').style.color=sc;}
+    if(g('bsSugT')){g('bsSugT').textContent=`₪${fm(ts)}${rat!==null?` (${rat}%)`:''}`;g('bsSugT').style.color=recolor(rc);}
+    if(g('bsSavC')){g('bsSavC').style.background=recolor(bg);g('bsSavC').style.borderColor=recolor(bd);}
+    if(g('bsSavA')){g('bsSavA').textContent=`₪${fm(Math.round(Math.max(0,sav||0)))}`;g('bsSavA').style.color=recolor(sc);}
     if(g('bsSavM'))g('bsSavM').textContent=sm;
     const changed=sugs.filter(x=>x.sugVar!==x.curVar||x.sugRec!==x.curRec);
     const rowsH=sugs.map((x,idx)=>{
       const hasChg=x.sugVar!==x.curVar||x.sugRec!==x.curRec;
-      const vL=(x.curVar>0||x.sugVar>0)?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="font-size:10px;color:#a39686;width:36px;flex-shrink:0">משתנה</span><span style="font-size:12px;color:#7d7265">₪${fm(x.curVar)}</span>${arrow(x.chV,x.sugVar,x.nV)}</div>`:'';
-      const rL=(x.curRec>0||x.sugRec>0)?`<div style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:#a39686;width:36px;flex-shrink:0">קבוע</span><span style="font-size:12px;color:#7d7265">₪${fm(x.curRec)}</span>${arrow(x.chR,x.sugRec,x.nR)}</div>`:'';
+      const vL=(x.curVar>0||x.sugVar>0)?`<div style="display:flex;align-items:center;gap:5px;margin-bottom:3px"><span style="font-size:10px;color:#756a5c;width:36px;flex-shrink:0">משתנה</span><span style="font-size:12px;color:#6f6457">₪${fm(x.curVar)}</span>${arrow(x.chV,x.sugVar,x.nV)}</div>`:'';
+      const rL=(x.curRec>0||x.sugRec>0)?`<div style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:#756a5c;width:36px;flex-shrink:0">קבוע</span><span style="font-size:12px;color:#6f6457">₪${fm(x.curRec)}</span>${arrow(x.chR,x.sugRec,x.nR)}</div>`:'';
       if(!vL&&!rL)return'';
-      return`<div data-idx="${idx}" style="padding:10px;border-radius:10px;background:${hasChg?'#faf6ef':'#fff'};border:1px solid ${hasChg?'#c9d9ce':'#f3ece2'};margin-bottom:6px;${hasChg?'cursor:pointer;':''}" title="${hasChg?'לחץ להחלת הצעה זו':''}"><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:${x.cat.color};flex-shrink:0"></div><span style="font-weight:700;font-size:13px;color:#2f2a24">${x.cat.name}</span>${hasChg?'<span style="font-size:10px;background:#fff7ed;color:#d97706;border-radius:6px;padding:1px 6px">שינוי מוצע</span><span style="font-size:10px;color:#5b7f6b;margin-right:auto">← החל</span>':'<span style="font-size:10px;color:#4f8a68;margin-right:auto">✓ מאוזן</span>'}</div>${vL}${rL}</div>`;
+      return`<div data-idx="${idx}" style="padding:10px;border-radius:10px;background:${hasChg?'#faf6ef':'#fff'};border:1px solid ${hasChg?'#c9d9ce':'#f3ece2'};margin-bottom:6px;${hasChg?'cursor:pointer;':''}" title="${hasChg?'לחץ להחלת הצעה זו':''}"><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:8px;height:8px;border-radius:50%;background:${x.cat.color};flex-shrink:0"></div><span style="font-weight:700;font-size:13px;color:#2f2a24">${x.cat.name}</span>${hasChg?'<span style="font-size:10px;background:#fff7ed;color:#a14b06;border-radius:6px;padding:1px 6px">שינוי מוצע</span><span style="font-size:10px;color:#527461;margin-right:auto">← החל</span>':'<span style="font-size:10px;color:#3d7556;margin-right:auto">✓ מאוזן</span>'}</div>${vL}${rL}</div>`;
     }).filter(r=>r).join('');
-    g('bsList').innerHTML=rowsH||'<div style="text-align:center;color:#a39686;padding:24px">אין מספיק נתונים לניתוח</div>';
-    g('bsApply').innerHTML=changed.length>0?`<div style="display:flex;gap:8px"><button id="applyBS" style="flex:2;padding:12px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer">החל את כל ${changed.length} השינויים</button><button id="cBS2" style="flex:1;padding:12px;border-radius:10px;border:none;color:#7d7265;background:#f3ece2;cursor:pointer">סגור</button></div>`:`<div style="text-align:center;color:#4f8a68;font-weight:700;font-size:13px">✓ כל התקציבים מאוזנים</div>`;
+    g('bsList').innerHTML=rowsH||'<div style="text-align:center;color:#756a5c;padding:24px">אין מספיק נתונים לניתוח</div>';
+    g('bsApply').innerHTML=changed.length>0?`<div style="display:flex;gap:8px"><button id="applyBS" style="flex:2;padding:12px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer">החל את כל ${changed.length} השינויים</button><button id="cBS2" style="flex:1;padding:12px;border-radius:10px;border:none;color:#6f6457;background:#f3ece2;cursor:pointer">סגור</button></div>`:`<div style="text-align:center;color:#3d7556;font-weight:700;font-size:13px">✓ כל התקציבים מאוזנים</div>`;
     if(g('applyBS'))g('applyBS').onclick=applyFn;
     if(g('cBS2'))g('cBS2').onclick=()=>ih('m2','');
     g('bsList').querySelectorAll('[data-idx]').forEach(el=>{
@@ -1891,23 +1997,23 @@ function rBudgetSuggest(){
   };
   ih("m2",`<div class="overlay" id="bsO"><div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <div><div style="font-size:17px;font-weight:800;color:#2f2a24">&#128161; הצעות תקציב</div><div style="font-size:11px;color:#a39686">ניתוח AI של ${N} החודשים האחרונים</div></div>
-      <button id="cBS" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+      <div><div style="font-size:17px;font-weight:800;color:#2f2a24">&#128161; הצעות תקציב</div><div style="font-size:11px;color:#756a5c">ניתוח AI של ${N} החודשים האחרונים</div></div>
+      <button id="cBS" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
     </div>
     <div style="display:flex;gap:6px;margin-bottom:10px">
-      ${avgInc>0?`<div style="flex:1;background:#eef5ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #d4e4d8"><div style="font-size:10px;color:#a39686;margin-bottom:2px">הכנסה ממוצעת</div><div style="font-size:14px;font-weight:700;color:#3f7356">&#8362;${fm(Math.round(avgInc))}</div></div>`:''}
-      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#a39686;margin-bottom:2px">תקציב נוכחי</div><div style="font-size:14px;font-weight:700;color:#5b7f6b">&#8362;${fm(totalCur)}</div></div>
-      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#a39686;margin-bottom:2px">תקציב מוצע</div><div id="bsSugT" style="font-size:14px;font-weight:700;color:#5b7f6b">—</div></div>
+      ${avgInc>0?`<div style="flex:1;background:#eef5ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #d4e4d8"><div style="font-size:10px;color:#756a5c;margin-bottom:2px">הכנסה ממוצעת</div><div style="font-size:14px;font-weight:700;color:#3f7356">&#8362;${fm(Math.round(avgInc))}</div></div>`:''}
+      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#756a5c;margin-bottom:2px">תקציב נוכחי</div><div style="font-size:14px;font-weight:700;color:#527461">&#8362;${fm(totalCur)}</div></div>
+      <div style="flex:1;background:#faf6ef;border-radius:9px;padding:9px;text-align:center;border:1px solid #ece4d8"><div style="font-size:10px;color:#756a5c;margin-bottom:2px">תקציב מוצע</div><div id="bsSugT" style="font-size:14px;font-weight:700;color:#527461">—</div></div>
     </div>
     ${avgInc>0?`<div id="bsSavC" style="border-radius:10px;padding:10px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #ece4d8">
       <div style="flex:1">
-        <div style="font-size:11px;color:#7d7265;margin-bottom:3px">&#128176; יתרה חודשית מוצעת לחיסכון</div>
-        <div id="bsSavA" style="font-size:18px;font-weight:800;color:#7d7265">—</div>
-        <div id="bsSavM" style="font-size:10px;color:#a39686;margin-top:2px"></div>
+        <div style="font-size:11px;color:#6f6457;margin-bottom:3px">&#128176; יתרה חודשית מוצעת לחיסכון</div>
+        <div id="bsSavA" style="font-size:18px;font-weight:800;color:#6f6457">—</div>
+        <div id="bsSavM" style="font-size:10px;color:#756a5c;margin-top:2px"></div>
       </div>
       <div style="font-size:30px;flex-shrink:0">&#128176;</div>
     </div>`:''}
-    ${scaledForIncome?`<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:12px;color:#c2410c">&#9888; ההצעות הותאמו לשמור לפחות 20% מהכנסתך לחיסכון</div>`:''}
+    ${scaledForIncome?`<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:12px;color:#9a3412">&#9888; ההצעות הותאמו לשמור לפחות 20% מהכנסתך לחיסכון</div>`:''}
     <button id="aiBS" style="width:100%;padding:11px;border-radius:12px;border:1px solid #c9d9ce;background:linear-gradient(135deg,#eef3ef,#f3f7f4);color:#3f7356;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:10px;font-family:inherit">&#10024; ניתוח AI — הצעות חכמות</button>
     <div id="aiBox"></div>
     <div id="bsList" style="max-height:42vh;overflow-y:auto;margin-bottom:4px"></div>
@@ -1922,7 +2028,7 @@ function rBudgetSuggest(){
     // The app opens from this device's cache while the Google sign-in still loads in the background
     const user=await waitAuthUser();
     if(!g("aiBS"))return;
-    if(!user){btn.disabled=false;btn.innerHTML='&#10024; ניתוח AI — הצעות חכמות';box.innerHTML='<div style="color:#cf5a3e;font-size:12px;margin-bottom:8px">החיבור לחשבון Google עוד לא הושלם. בדוק את החיבור לאינטרנט ונסה שוב.</div>';return;}
+    if(!user){btn.disabled=false;btn.innerHTML='&#10024; ניתוח AI — הצעות חכמות';box.innerHTML='<div style="color:#b0472e;font-size:12px;margin-bottom:8px">החיבור לחשבון Google עוד לא הושלם. בדוק את החיבור לאינטרנט ונסה שוב.</div>';return;}
     try{
       const token=await user.getIdToken();
       const body={pid:CUR_UID,months:months.map(mo=>({label:MO[mo.m]+' '+mo.y,income:Math.round(mo.inc)})),
@@ -1945,8 +2051,8 @@ function rBudgetSuggest(){
       const esc=t=>String(t||'').replace(/[&<>]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]));
       const d2=s=>s?s.slice(8,10)+'/'+s.slice(5,7):'';
       box.innerHTML=(DARK?darken:(h=>h))(`<div style="background:#f3f7f4;border:1px solid #d4e4d8;border-radius:12px;padding:11px 13px;margin-bottom:10px">
-        <div style="font-size:12px;font-weight:700;color:#3f7356;margin-bottom:4px">&#10024; ניתוח AI${out.cached?` <span style="font-weight:400;color:#8a7f72">· מתאריך ${d2(out.at)}</span>`:''}</div>
-        ${out.cached?`<div style="font-size:11.5px;color:#8a7f72;margin-bottom:6px">ניתוח אחד בשבוע. ניתוח חדש יהיה אפשרי מיום ראשון ${d2(out.next)}.</div>`:''}
+        <div style="font-size:12px;font-weight:700;color:#3f7356;margin-bottom:4px">&#10024; ניתוח AI${out.cached?` <span style="font-weight:400;color:#6f6457">· מתאריך ${d2(out.at)}</span>`:''}</div>
+        ${out.cached?`<div style="font-size:11.5px;color:#6f6457;margin-bottom:6px">ניתוח אחד בשבוע. ניתוח חדש יהיה אפשרי מיום ראשון ${d2(out.next)}.</div>`:''}
         <div style="font-size:13px;color:#2f2a24;line-height:1.5">${esc(out.summary)}</div>
         ${(out.tips||[]).length?`<ul style="margin:6px 18px 0 0;font-size:12.5px;color:#5e554a;line-height:1.5">${out.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
       </div>`);
@@ -1954,7 +2060,7 @@ function rBudgetSuggest(){
       doRender();
     }catch(e){
       btn.disabled=false;btn.innerHTML='&#10024; ניתוח AI — הצעות חכמות';
-      box.innerHTML=`<div style="color:#cf5a3e;font-size:12px;margin-bottom:8px">${String(e.message).replace(/</g,'&lt;')}</div>`;
+      box.innerHTML=`<div style="color:#b0472e;font-size:12px;margin-bottom:8px">${String(e.message).replace(/</g,'&lt;')}</div>`;
     }
   };
   doRender();
@@ -1993,7 +2099,7 @@ function rEvents(){
   ih("m2",`<div class="overlay" id="evO"><div class="modal">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <div style="font-size:17px;font-weight:800;color:#2f2a24">&#127881; אירועים</div>
-      <button id="cEvt" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265">&times;</button>
+      <button id="cEvt" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
     </div>
     ${EVENTS.length?EVENTS.map(ev=>{
       const paid=(ev.expenses||[]).reduce((s,e)=>s+evPaid(e),0);
@@ -2005,25 +2111,25 @@ function rEvents(){
       return`<div class="evCard" data-eid="${ev.id}" style="padding:14px;border-radius:14px;border:1px solid ${over?'#f0cfc2':'#ece4d8'};background:${over?'#fbefe9':'#fff'};margin-bottom:10px;cursor:pointer">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
           <span style="font-size:15px;font-weight:800;color:#2f2a24">${ev.name}</span>
-          <span style="font-size:12px;color:${over?'#cf5a3e':'#4f8a68'};font-weight:700">${over?'חריגה':'נותר'} &#8362;${fm(Math.abs(ev.budget-total))}</span>
+          <span style="font-size:12px;color:${over?'#b0472e':'#3d7556'};font-weight:700">${over?'חריגה':'נותר'} &#8362;${fm(Math.abs(ev.budget-total))}</span>
         </div>
         <div style="background:#f3ece2;border-radius:6px;height:6px;margin-bottom:6px;position:relative;overflow:hidden">
-          <div style="position:absolute;right:0;top:0;height:6px;background:#5b7f6b;border-radius:6px;width:${paidPct+pendPct}%"></div>
-          <div style="position:absolute;right:0;top:0;height:6px;background:#5b7f6b;border-radius:6px;width:${paidPct}%"></div>
+          <div style="position:absolute;right:0;top:0;height:6px;background:#527461;border-radius:6px;width:${paidPct+pendPct}%"></div>
+          <div style="position:absolute;right:0;top:0;height:6px;background:#527461;border-radius:6px;width:${paidPct}%"></div>
           <div style="position:absolute;right:${paidPct}%;top:0;height:6px;background:#f59e0b;width:${pendPct}%"></div>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:#a39686">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#756a5c">
           <span>&#10003; שולם &#8362;${fm(paid)}${pending>0?` &nbsp;&#9676; ממתין &#8362;${fm(pending)}`:''}</span>
           <span>תקציב &#8362;${fm(ev.budget)}</span>
         </div>
       </div>`;
-    }).join(''):'<div style="text-align:center;padding:32px;color:#a39686;font-size:14px">אין אירועים עדיין</div>'}
+    }).join(''):'<div style="text-align:center;padding:32px;color:#756a5c;font-size:14px">אין אירועים עדיין</div>'}
     <button id="evtShow" style="width:100%;padding:12px;border-radius:12px;border:1px dashed #c9d9ce;background:#eef3ef;color:#3f7356;font-weight:600;font-size:14px;cursor:pointer;margin-top:6px;font-family:inherit">+ אירוע חדש</button>
     <div id="evtForm" style="display:none;background:#faf6ef;border-radius:14px;border:1px dashed #c9d9ce;padding:14px;margin-top:6px">
       <div style="font-size:13px;font-weight:700;color:#2f2a24;margin-bottom:10px">+ אירוע חדש</div>
       <input class="inp" id="evtName" placeholder="שם האירוע (למשל: בר מצווה)" style="margin-bottom:8px"/>
       <input class="inp" id="evtBudget" type="number" placeholder="תקציב (&#8362;)" style="margin-bottom:10px"/>
-      <button id="addEvt" style="width:100%;padding:10px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#4f8a68,#3f7356);cursor:pointer">צור אירוע</button>
+      <button id="addEvt" style="width:100%;padding:10px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#3d7556,#3f7356);cursor:pointer">צור אירוע</button>
     </div>
   </div></div>`);
   g("cEvt").onclick=()=>ih("m2","");
@@ -2051,53 +2157,53 @@ function rEventDetail(eid){
   const exps=(ev.expenses||[]).slice().reverse();
   ih("m2",`<div class="overlay" id="evdO"><div class="modal">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <button id="evdBack" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:20px;color:#7d7265;line-height:1">&#8250;</button>
+      <button id="evdBack" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:20px;color:#6f6457;line-height:1">&#8250;</button>
       <div style="flex:1;font-size:17px;font-weight:800;color:#2f2a24">${ev.name}</div>
-      <button id="evdDel" style="background:#fff0f0;border:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;color:#cf5a3e;font-weight:600">מחק</button>
+      <button id="evdDel" style="background:#fff0f0;border:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;color:#b0472e;font-weight:600">מחק</button>
     </div>
     <div style="background:#faf6ef;border:1px solid ${over?'#f0cfc2':'#ece4d8'};border-radius:18px;padding:14px 14px 12px;margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-bottom:10px">
-        <div id="evBudBox" style="min-width:0"><div style="font-size:11.5px;color:#8a7f72">תקציב האירוע</div><div style="font-size:24px;font-weight:700;color:#2f2a24;white-space:nowrap">&#8362;${fm0(ev.budget)} <button id="evBudEd" title="ערוך תקציב" style="background:transparent;border:none;cursor:pointer;font-size:14px;padding:0;color:#5b7f6b;vertical-align:middle">&#9998;</button></div></div>
-        <div style="text-align:left;flex-shrink:0"><div style="font-size:11.5px;color:${over?'#c2410c':'#8a7f72'}">${over?'חריגה':'נותר'}</div><div style="font-size:18px;font-weight:700;color:${over?'#c2410c':'#4a6b58'};white-space:nowrap">&#8362;${fm0(Math.abs(rem))}</div></div>
+        <div id="evBudBox" style="min-width:0"><div style="font-size:11.5px;color:#6f6457">תקציב האירוע</div><div style="font-size:24px;font-weight:700;color:#2f2a24;white-space:nowrap">&#8362;${fm0(ev.budget)} <button id="evBudEd" title="ערוך תקציב" style="background:transparent;border:none;cursor:pointer;font-size:14px;padding:0;color:#527461;vertical-align:middle">&#9998;</button></div></div>
+        <div style="text-align:left;flex-shrink:0"><div style="font-size:11.5px;color:${over?'#9a3412':'#6f6457'}">${over?'חריגה':'נותר'}</div><div style="font-size:18px;font-weight:700;color:${over?'#9a3412':'#4a6b58'};white-space:nowrap">&#8362;${fm0(Math.abs(rem))}</div></div>
       </div>
       <div style="background:#ece4d8;border-radius:6px;height:8px;position:relative;overflow:hidden">
-        <div style="position:absolute;right:0;top:0;height:8px;background:#4f8a68;width:${paidPct}%;border-radius:6px 0 0 6px;transition:width .3s"></div>
+        <div style="position:absolute;right:0;top:0;height:8px;background:#3d7556;width:${paidPct}%;border-radius:6px 0 0 6px;transition:width .3s"></div>
         <div style="position:absolute;right:${paidPct}%;top:0;height:8px;background:#e8b04a;width:${pendPct}%"></div>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px">
-        <div style="flex:1;min-width:0;background:#fffdf9;border-radius:12px;padding:8px 10px"><div style="font-size:11px;color:#4f8a68">&#10003; שולם</div><div style="font-size:15px;font-weight:700;color:#3f7356;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">&#8362;${fm0(paidAmt)}</div></div>
+        <div style="flex:1;min-width:0;background:#fffdf9;border-radius:12px;padding:8px 10px"><div style="font-size:11px;color:#3d7556">&#10003; שולם</div><div style="font-size:15px;font-weight:700;color:#3f7356;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">&#8362;${fm0(paidAmt)}</div></div>
         <div style="flex:1;min-width:0;background:#fffdf9;border-radius:12px;padding:8px 10px"><div style="font-size:11px;color:#c08a2e">&#9676; ממתין לתשלום</div><div style="font-size:15px;font-weight:700;color:#b07a1f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">&#8362;${fm0(pendAmt)}</div></div>
       </div>
     </div>
-    <div style="font-size:12px;font-weight:700;color:#7d7265;margin-bottom:8px">הוצאות (${(ev.expenses||[]).length})</div>
+    <div style="font-size:12px;font-weight:700;color:#6f6457;margin-bottom:8px">הוצאות (${(ev.expenses||[]).length})</div>
     <div style="max-height:30vh;overflow-y:auto;margin-bottom:12px">
       ${exps.length?exps.map(e=>{const pd=evPaid(e),amt=parseFloat(e.amount)||0,full=e.paid||pd>=amt,part=!full&&pd>0;
         return`<div style="padding:8px 10px;border-radius:12px;background:${full?'#fffdf9':'#fffbeb'};border:1px solid ${full?'#f3ece2':'#fde68a'};margin-bottom:6px">
         <div style="display:flex;align-items:center;gap:8px">
-        <button class="togPay" data-expid="${e.id}" title="${full?'סמן כלא שולם':'סמן כשולם במלואו'}" style="width:26px;height:26px;border-radius:50%;border:2px solid ${full?'#4f8a68':'#e8b04a'};background:${full?'#4f8a68':part?'#fdecc8':'transparent'};cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:${full?'#fff':'#b07a1f'};padding:0;font-weight:700">${full?'&#10003;':part?'&#189;':''}</button>
+        <button class="togPay" data-expid="${e.id}" title="${full?'סמן כלא שולם':'סמן כשולם במלואו'}" style="width:26px;height:26px;border-radius:50%;border:2px solid ${full?'#3d7556':'#e8b04a'};background:${full?'#3d7556':part?'#fdecc8':'transparent'};cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:${full?'#fff':'#b07a1f'};padding:0;font-weight:700">${full?'&#10003;':part?'&#189;':''}</button>
         <div class="edEvExp" data-expid="${e.id}" title="לחץ לעריכה" style="flex:1;min-width:0;cursor:pointer">
           <div style="font-size:13px;font-weight:700;color:${full?'#2f2a24':'#92400e'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.desc}</div>
-          <div style="font-size:11px;color:#a39686">${e.date?fmDate(e.date):''}${full?'':part?` &middot; שולם &#8362;${fm(pd)} &middot; נותר &#8362;${fm(amt-pd)}`:' &middot; ממתין לתשלום'}</div>
+          <div style="font-size:11px;color:#756a5c">${e.date?fmDate(e.date):''}${full?'':part?` &middot; שולם &#8362;${fm(pd)} &middot; נותר &#8362;${fm(amt-pd)}`:' &middot; ממתין לתשלום'}</div>
         </div>
-        <div style="text-align:left;flex-shrink:0"><div style="font-size:14px;font-weight:800;color:${full?'#5b7f6b':'#b07a1f'}">&#8362;${fm(amt)}</div>${!full?`<button class="payPart" data-expid="${e.id}" style="margin-top:2px;padding:0;border:none;background:transparent;color:#8a5a12;font-size:11.5px;font-weight:600;cursor:pointer;text-decoration:underline;font-family:inherit">+ תשלום חלקי</button>`:''}</div>
-        <button class="delEvExp" data-expid="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:18px;color:#d6ccbe;padding:2px;line-height:1">&times;</button>
+        <div style="text-align:left;flex-shrink:0"><div style="font-size:14px;font-weight:800;color:${full?'#527461':'#b07a1f'}">&#8362;${fm(amt)}</div>${!full?`<button class="payPart" data-expid="${e.id}" style="margin-top:2px;padding:0;border:none;background:transparent;color:#8a5a12;font-size:11.5px;font-weight:600;cursor:pointer;text-decoration:underline;font-family:inherit">+ תשלום חלקי</button>`:''}</div>
+        <button class="delEvExp" data-expid="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:18px;color:#756a5c;padding:2px;line-height:1">&times;</button>
         </div>
-        ${part?`<div style="height:4px;border-radius:4px;background:#f3e3c0;margin:7px 34px 0 0;overflow:hidden"><div style="height:100%;width:${Math.round(pd/amt*100)}%;background:#4f8a68"></div></div>`:''}
-      </div>`;}).join(''):'<div style="text-align:center;padding:20px;color:#d6ccbe;font-size:13px">אין הוצאות עדיין</div>'}
+        ${part?`<div style="height:4px;border-radius:4px;background:#f3e3c0;margin:7px 34px 0 0;overflow:hidden"><div style="height:100%;width:${Math.round(pd/amt*100)}%;background:#3d7556"></div></div>`:''}
+      </div>`;}).join(''):'<div style="text-align:center;padding:20px;color:#756a5c;font-size:13px">אין הוצאות עדיין</div>'}
     </div>
     <button id="expShow" style="width:100%;padding:11px;border-radius:12px;border:1px dashed #c9d9ce;background:#eef3ef;color:#3f7356;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit">+ הוסף הוצאה</button>
     <div id="expForm" style="display:none;background:#faf6ef;border-radius:12px;border:1px dashed #c9d9ce;padding:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span id="expFormTitle" style="font-size:12px;font-weight:700;color:#2f2a24">+ הוצאה חדשה</span><button id="expCancel" style="display:none;background:transparent;border:none;color:#a39686;font-size:12px;cursor:pointer;text-decoration:underline">ביטול עריכה</button></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span id="expFormTitle" style="font-size:12px;font-weight:700;color:#2f2a24">+ הוצאה חדשה</span><button id="expCancel" style="display:none;background:transparent;border:none;color:#756a5c;font-size:12px;cursor:pointer;text-decoration:underline">ביטול עריכה</button></div>
       <input class="inp" id="expDesc" placeholder="תיאור" style="margin-bottom:6px"/>
       <div style="display:flex;gap:6px;margin-bottom:6px">
         <input class="inp" id="expAmt" type="number" placeholder="סכום (&#8362;)" style="flex:1"/>
         <input class="inp" id="expDate" type="date" value="${today()}" style="flex:1"/>
       </div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer">
-        <input type="checkbox" id="expPaid" style="width:18px;height:18px;accent-color:#4f8a68;flex-shrink:0"/>
+        <input type="checkbox" id="expPaid" style="width:18px;height:18px;accent-color:#3d7556;flex-shrink:0"/>
         <span style="font-size:13px;color:#2f2a24;font-weight:600">שולמה כבר</span>
       </label>
-      <button id="addExp" style="width:100%;padding:10px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#5b7f6b,#6f9480);cursor:pointer">הוסף הוצאה</button>
+      <button id="addExp" style="width:100%;padding:10px;border-radius:10px;border:none;color:#fff;font-weight:700;background:linear-gradient(135deg,#527461,#4f735f);cursor:pointer">הוסף הוצאה</button>
     </div>
   </div></div>`);
   g("evdBack").onclick=()=>rEvents();
@@ -2108,7 +2214,7 @@ function rEventDetail(eid){
   };
   // Edit the event's total budget in place
   g("evBudEd").onclick=()=>{
-    g("evBudBox").innerHTML=`<div style="font-size:10px;color:#a39686;margin-bottom:2px">תקציב</div><div style="display:flex;gap:4px"><input class="inp" id="evBudInp" type="number" inputmode="decimal" value="${ev.budget||''}" style="width:90px;padding:4px 6px;font-size:14px;text-align:center"/><button id="evBudOk" style="border:none;background:#5b7f6b;color:#fff;border-radius:8px;padding:0 8px;cursor:pointer">&#10003;</button></div>`;
+    g("evBudBox").innerHTML=`<div style="font-size:10px;color:#756a5c;margin-bottom:2px">תקציב</div><div style="display:flex;gap:4px"><input class="inp" id="evBudInp" type="number" inputmode="decimal" value="${ev.budget||''}" style="width:90px;padding:4px 6px;font-size:14px;text-align:center"/><button id="evBudOk" style="border:none;background:#527461;color:#fff;border-radius:8px;padding:0 8px;cursor:pointer">&#10003;</button></div>`;
     const ok=()=>{const v=parseFloat(g("evBudInp").value);if(!(v>=0))return;ev.budget=v;saveEvents();rEventDetail(eid);};
     g("evBudOk").onclick=ok;g("evBudInp").onkeydown=e=>{if(e.key==="Enter")ok();};g("evBudInp").focus();g("evBudInp").select();
   };
@@ -2168,7 +2274,7 @@ function rSearch(){
     const res=[];
     for(let m=0;m<12;m++){
       (S.mData[m]?.income||[]).forEach(e=>{
-        res.push({...e,catName:'הכנסה',catColor:'#4f8a68',month:m,isIncome:true});
+        res.push({...e,catName:'הכנסה',catColor:'#3d7556',month:m,isIncome:true});
       });
       S.cats.forEach(c=>{
         (S.mData[m]?.[c.id]?.entries||[]).forEach(e=>{
@@ -2184,7 +2290,7 @@ function rSearch(){
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
       <span style="font-size:20px">&#128269;</span>
       <input class="inp" id="srchQ" placeholder="חיפוש לפי תיאור, סכום, קטגוריה..." style="flex:1;font-size:15px"/>
-      <button id="cSrch" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#7d7265;flex-shrink:0">&times;</button>
+      <button id="cSrch" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457;flex-shrink:0">&times;</button>
     </div>
     <div id="srchRes" style="max-height:65vh;overflow-y:auto"></div>
   </div></div>`);
@@ -2196,22 +2302,22 @@ function rSearch(){
   function renderResults(q){
     const el=g("srchRes");if(!el)return;
     const qL=q.trim().toLowerCase();
-    if(!qL){el.innerHTML='<div style="text-align:center;padding:28px;color:#a39686;font-size:13px">התחל להקליד כדי לחפש</div>';return;}
+    if(!qL){el.innerHTML='<div style="text-align:center;padding:28px;color:#756a5c;font-size:13px">התחל להקליד כדי לחפש</div>';return;}
     const hits=entries.filter(e=>{
       const desc=(e.desc||'').toLowerCase();
       const amt=String(e.amount||'');
       const cat=(e.catName||'').toLowerCase();
       return desc.includes(qL)||amt.includes(qL)||cat.includes(qL);
     });
-    if(!hits.length){el.innerHTML='<div style="text-align:center;padding:28px;color:#a39686;font-size:13px">לא נמצאו תוצאות</div>';return;}
+    if(!hits.length){el.innerHTML='<div style="text-align:center;padding:28px;color:#756a5c;font-size:13px">לא נמצאו תוצאות</div>';return;}
     el.innerHTML=hits.slice(0,60).map(e=>`
       <div class="srchRow" data-m="${e.month}" data-cid="${e.catId||''}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#fffdf9;border:1px solid #f3ece2;margin-bottom:6px;cursor:pointer">
         <div style="width:8px;height:8px;border-radius:50%;background:${e.catColor};flex-shrink:0"></div>
         <div style="flex:1;min-width:0">
           <div style="font-size:13px;font-weight:700;color:#2f2a24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.desc||'(ללא תיאור)'}</div>
-          <div style="font-size:11px;color:#a39686">${e.catName} &middot; ${moLabel(e.month)} ${S.year}${e.date?' &middot; '+fmDate(e.date):''}</div>
+          <div style="font-size:11px;color:#756a5c">${e.catName} &middot; ${moLabel(e.month)} ${S.year}${e.date?' &middot; '+fmDate(e.date):''}</div>
         </div>
-        <span style="font-size:14px;font-weight:800;color:${e.isIncome?'#4f8a68':'#5b7f6b'};flex-shrink:0">${e.isIncome?'+':''}&#8362;${fm(e.amount)}</span>
+        <span style="font-size:14px;font-weight:800;color:${e.isIncome?'#3d7556':'#527461'};flex-shrink:0">${e.isIncome?'+':''}&#8362;${fm(e.amount)}</span>
       </div>`).join('');
     el.querySelectorAll(".srchRow").forEach((row,i)=>{
       const hit=hits[i];
@@ -2264,8 +2370,8 @@ if('serviceWorker' in navigator){
     if(g('updateBar'))return;
     const b=document.createElement('div');
     b.id='updateBar';
-    b.style.cssText='position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#5b7f6b,#6f9480);color:#fff;padding:10px 16px;z-index:9999;display:flex;align-items:center;gap:10px;justify-content:center;direction:rtl;font-size:13px;font-weight:600;box-shadow:0 2px 12px rgba(91,127,107,.3)';
-    b.innerHTML='<span>&#128260; גרסה חדשה זמינה!</span><button onclick="location.reload()" style="padding:5px 14px;border-radius:8px;border:none;background:#fffdf9;color:#5b7f6b;font-weight:700;cursor:pointer;font-size:12px">עדכן עכשיו</button><button onclick="this.parentElement.remove()" style="background:transparent;border:none;color:rgba(255,255,255,.7);font-size:22px;cursor:pointer;padding:0;line-height:1">&times;</button>';
+    b.style.cssText='position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#527461,#4f735f);color:#fff;padding:10px 16px;z-index:9999;display:flex;align-items:center;gap:10px;justify-content:center;direction:rtl;font-size:13px;font-weight:600;box-shadow:0 2px 12px rgba(91,127,107,.3)';
+    b.innerHTML='<span>&#128260; גרסה חדשה זמינה!</span><button onclick="location.reload()" style="padding:5px 14px;border-radius:8px;border:none;background:#fffdf9;color:#527461;font-weight:700;cursor:pointer;font-size:12px">עדכן עכשיו</button><button onclick="this.parentElement.remove()" style="background:transparent;border:none;color:rgba(255,255,255,.7);font-size:22px;cursor:pointer;padding:0;line-height:1">&times;</button>';
     document.body.prepend(b);
   });
 }
@@ -2279,7 +2385,7 @@ window.rEvents=rEvents;
 window.rEventDetail=rEventDetail;
 window.rSearch=rSearch;
 
-applyDark();
+applyDark();applyA11y();
 {const t=document.getElementById('top');const set=()=>document.documentElement.style.setProperty('--topH',t.offsetHeight+'px');try{new ResizeObserver(set).observe(t);}catch{}set();}
 // Render immediately from localStorage — no Firebase dependency
 loadUsers();{const p=todayPeriod();S.month=p.month;S.year=p.year;}ld();loadEvents();
@@ -2288,7 +2394,7 @@ loadUsers();{const p=todayPeriod();S.month=p.month;S.year=p.year;}ld();loadEvent
 // Start from this device's cache only if an account was signed in here before
 const CACHED_AUTH=!!localStorage.getItem('bdg_auth')&&USERS.length>0;
 if(CACHED_AUTH)rLockScreen();
-else rCenter('<div style="color:#a39686;font-size:15px">מתחבר…</div>');
+else rCenter('<div style="color:#756a5c;font-size:15px">מתחבר…</div>');
 
 // Load Firebase asynchronously in background
 (async()=>{
