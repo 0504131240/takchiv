@@ -1,6 +1,6 @@
 // Income from another app (e.g. the business app): adds the income to the right month of the budget.
-// Authenticated with the profile's personal key (settings → "קליטת חיובים מהטלפון"), sent from that
-// app's server, never from a browser.
+// Authenticated with the profile's personal key (settings → "קליטת חיובים מהטלפון"), which the
+// user pastes into the other app; it stays on their device there.
 //
 // POST /api/income  JSON { key, id, amount, desc?, date? (YYYY-MM-DD) }
 //   id      the income's id in the other app; sending the same id again updates it instead of duplicating
@@ -24,6 +24,11 @@ function bucket(date, monthStart) {
 }
 
 module.exports = async (req, res) => {
+  // Called from the business app's page in the browser; the personal key is the authorization
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   let b = req.body;
   if (typeof b === 'string') { try { b = JSON.parse(b); } catch { b = {}; } }
