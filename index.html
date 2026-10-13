@@ -749,6 +749,11 @@ async function inboxRemove(id){
   try{await _F.runTransaction(fdb,async tx=>{const ref=pDoc('inbox'),sn=await tx.get(ref);tx.set(ref,{items:(sn.exists()?sn.data().items||[]:[]).filter(x=>x.id!==id)});});}
   catch(e){console.warn('FB inbox remove:',e);}
 }
+function addIncomeEntry(e){
+  const b=dateBucket(e.date);
+  if(b.y===S.year){if(!S.mData[b.m])S.mData[b.m]={income:[]};(S.mData[b.m].income||(S.mData[b.m].income=[])).push(e);sv();}
+  else editYear(b.y,d=>{if(!d.mData[b.m])d.mData[b.m]={income:[]};(d.mData[b.m].income||(d.mData[b.m].income=[])).push(e);});
+}
 function addExpenseEntry(catId,e){
   const b=dateBucket(e.date);
   if(b.y===S.year){
@@ -778,17 +783,18 @@ function rInbox(){
         <span style="font-size:12px;color:#756a5c">${fmDate(it.date)} · ${new Date(it.at).toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}</span>
       </div>
       <div style="font-size:11.5px;color:#756a5c;margin-bottom:8px;line-height:1.5">${esc(it.raw)}</div>
+      ${it.income?`<div style="font-size:12px;color:#3f7356;font-weight:700;margin-bottom:6px">&#127970; הכנסה מאפליקציית העסק</div>`:''}
       ${foreign?`<div style="font-size:12px;color:#b0472e;margin-bottom:6px">החיוב במטבע חוץ — עדכן את הסכום בשקלים</div>`:''}
       <div style="display:flex;gap:6px;margin-bottom:6px">
         <input class="inp ibD" value="${esc(gs.desc||it.merchant)}" placeholder="תיאור" style="flex:1;min-width:0;padding:8px 10px;font-size:13px"/>
         <input class="inp ibA" aria-label="סכום" type="number" inputmode="decimal" value="${it.amount}" style="width:90px;padding:8px 10px;font-size:13px;text-align:center"/>
       </div>
-      <select class="inp ibC" style="width:100%;padding:8px 10px;font-size:13px;margin-bottom:8px">
+      <select class="inp ibC" style="width:100%;padding:8px 10px;font-size:13px;margin-bottom:8px;${it.income?'display:none':''}">
         <option value="">בחר קטגוריה…</option>
         ${S.cats.map(c=>`<option value="${c.id}"${c.id===gs.cat?' selected':''}>${esc(c.name)}</option>`).join('')}
       </select>
       <div style="display:flex;gap:6px">
-        <button class="ibOk" style="flex:2;padding:9px;border-radius:10px;border:none;background:#527461;color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">&#10004; הוסף להוצאות</button>
+        <button class="ibOk" style="flex:2;padding:9px;border-radius:10px;border:none;background:#527461;color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">&#10004; ${it.income?'הוסף להכנסות':'הוסף להוצאות'}</button>
         <button class="ibNo" style="flex:1;padding:9px;border-radius:10px;border:1px solid #ece4d8;background:#fff;color:#6f6457;font-size:13px;cursor:pointer;font-family:inherit">התעלם</button>
       </div>
     </div>`;}).join('')}
@@ -798,9 +804,10 @@ function rInbox(){
     const it=INBOX.find(x=>String(x.id)===el.dataset.id);if(!it)return;
     el.querySelector(".ibOk").onclick=async()=>{
       const sel=el.querySelector(".ibC"),cat=parseInt(sel.value);
-      if(!cat){sel.style.borderColor='#b0472e';sel.focus();return;}
       const a=Math.round((parseFloat(el.querySelector(".ibA").value)||0)*100)/100;if(!a){el.querySelector(".ibA").focus();return;}
       const desc=el.querySelector(".ibD").value.trim()||it.merchant||'';
+      if(it.income){addIncomeEntry({id:Date.now(),desc,amount:a,date:it.date,src:'business',ext:it.ext});await inboxRemove(it.id);rInbox();return;}
+      if(!cat){sel.style.borderColor='#b0472e';sel.focus();return;}
       addExpenseEntry(cat,{id:Date.now(),desc,amount:it.credit?-Math.abs(a):a,date:it.date,recurring:false,subCat:null});
       await inboxRemove(it.id);rInbox();
     };
@@ -1135,7 +1142,7 @@ function rIncMod(){
     ?`<div style="text-align:center;color:#756a5c;font-size:14px;padding:20px 0">אין הכנסות עדיין</div>`
     :inc.map((e,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:${i%2===0?'#faf6ef':'#fff'};margin-bottom:3px">
         <span style="font-size:11px;color:#756a5c;flex-shrink:0">${fmDate(e.date)}</span>
-        <span style="font-size:13px;color:#6f6457;flex:1">${e.recurring?'<span title="הכנסה קבועה" aria-label="הכנסה קבועה">&#128260;</span> ':''}${e.desc||'—'}</span>
+        <span style="font-size:13px;color:#6f6457;flex:1">${e.recurring?'<span title="הכנסה קבועה" aria-label="הכנסה קבועה">&#128260;</span> ':''}${e.src==='business'?'<span title="מאפליקציית העסק" aria-label="מאפליקציית העסק">&#127970;</span> ':''}${e.desc||'—'}</span>
         <span style="font-size:14px;font-weight:700;color:#3f7356">&#8362;${fm(e.amount)}</span>
         <button class="eInc" data-e="${e.id}" aria-label="עריכת סכום" style="background:transparent;border:none;cursor:pointer;font-size:14px;color:#6f6457;padding:3px">&#9998;</button>
         <button class="dInc" data-e="${e.id}" style="background:transparent;border:none;cursor:pointer;font-size:15px;color:#b0472e;padding:3px">&#128465;</button>
@@ -1844,6 +1851,8 @@ function rUserMod(view=null,_=null,switchId=null){
             <li>בלשונית <b>Query parameters</b> מוסיפים שני פרמטרים: <span dir="ltr">title</span> עם כותרת ההתראה, ו-<span dir="ltr">text</span> עם טקסט ההתראה (בוחרים אותם מכפתור ה-"…" של Magic Text).</li>
             <li>שומרים. מעכשיו כל חיוב יופיע כאן בפס "חיובים ממתינים".</li>
           </ol></details>
+        <details style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.7"><summary style="cursor:pointer;color:#527461;font-weight:700">&#127970; חיבור אפליקציית העסק (הכנסות)</summary>
+          <div style="margin:6px 0">אפליקציה אחרת יכולה להוסיף הכנסות לתקציב עם אותו מפתח: בקשת POST לכתובת <span dir="ltr">${location.origin}/api/income</span> עם <span dir="ltr">key, id, amount, desc, date</span>. ההכנסה נכנסת לחודש של התאריך ומסומנת &#127970;. שליחה חוזרת עם אותו id מעדכנת אותה, ו-<span dir="ltr">delete:true</span> מוחק.</div></details>
         <button id="ingOff" style="padding:6px 12px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#b0472e;font-size:12px;cursor:pointer;margin-bottom:18px">בטל את הכתובת</button>`
         :`<div style="font-size:12px;color:#756a5c;margin-bottom:8px;line-height:1.6">כל תשלום בכרטיס יופיע באפליקציה לאישור, לפי ההתראה של מקס או Google Wallet בטלפון.</div>
         <button id="ingOn" style="padding:8px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:18px">הפעל קליטת חיובים</button>`}
