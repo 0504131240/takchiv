@@ -48,7 +48,7 @@ button,input{font-family:inherit}
 /* Keyboard focus is always visible */
 :focus-visible{outline:3px solid #1f5fbf!important;outline-offset:2px}
 html.dark :focus-visible{outline-color:#8ab4ff!important}
-.modal:focus{outline:none}
+.modal:focus,.modal:focus-visible{outline:none!important}
 .skip{position:absolute;right:8px;top:-60px;z-index:300;background:#2f2a24;color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
 .skip:focus{top:8px}
 html.hc{filter:contrast(1.35)}
@@ -248,7 +248,8 @@ function fbListen(year){
     setSyncDot(true);
   },e=>{console.warn('FB listen:',e);setSyncDot(false);});
 }
-function setSyncDot(ok){const el=g('syncDot');if(el)el.style.background=ok?'#3d7556':'#b0472e';}
+let SYNC_OK=null; // last known cloud connection state, shown in settings → סנכרון
+function setSyncDot(ok){SYNC_OK=ok;const el=g('syncDot');if(el)el.style.background=ok?'#3d7556':'#b0472e';}
 
 function getCfg(){try{return JSON.parse(localStorage.getItem('bdg_cfg_'+CUR_UID)||'{}');}catch{return{};}}
 function saveCfg(c){try{localStorage.setItem('bdg_cfg_'+CUR_UID,JSON.stringify({...getCfg(),...c}));}catch{}}
@@ -446,11 +447,13 @@ function a11yPass(){
     m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.tabIndex=-1;
     const ttl=[...m.querySelectorAll('span,div,h1,h2,h3')].find(e=>parseFloat(getComputedStyle(e).fontSize)>=16&&e.textContent.trim()&&e.children.length<=1);
     if(ttl){ttl.id=ttl.id||'dlgT'+Math.random().toString(36).slice(2,8);m.setAttribute('aria-labelledby',ttl.id);}
-    _dlgStack.push({o,back:prev?prev.back:document.activeElement});
+    const back=prev?prev.back:document.activeElement;
+    _dlgStack.push({o,back,backId:prev?prev.backId:back&&back.id});
     // Focus the window itself (not a field, so phones don't pop up the keyboard), unless the screen already focused something inside
     if(!m.contains(document.activeElement))m.focus({preventScroll:true});
   });
-  gone.forEach(d=>{if(!redrawn.has(d)&&d.back&&d.back.isConnected)d.back.focus({preventScroll:true});});
+  // The element focus returns to may have been redrawn meanwhile: find it again by id
+  gone.forEach(d=>{if(redrawn.has(d))return;const el=d.back&&d.back.isConnected?d.back:d.backId&&document.getElementById(d.backId);if(el)el.focus({preventScroll:true});});
 
 }
 document.addEventListener('keydown',e=>{
@@ -459,7 +462,7 @@ document.addEventListener('keydown',e=>{
   if((e.key==='Enter'||e.key===' ')&&t.getAttribute&&t.getAttribute('role')==='button'&&t.tagName!=='BUTTON'){e.preventDefault();t.click();return;}
   const top=_dlgStack[_dlgStack.length-1];if(!top||!top.o.isConnected)return;
   if(e.key==='Escape'){
-    const x=[...top.o.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')==='סגור'||/X$/.test(b.id));
+    const x=top.o.querySelector('[data-esc]')||[...top.o.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')==='סגור'||/X$/.test(b.id));
     if(x){e.preventDefault();x.click();}
   }else if(e.key==='Tab'){
     // Keep keyboard focus inside the open window
@@ -821,6 +824,189 @@ function rInbox(){
     };
     el.querySelector(".ibNo").onclick=async()=>{await inboxRemove(it.id);rInbox();};
   });
+}
+
+// One settings section in its own window, above the settings list
+function rSettingsSec(key){
+  const cu=USERS.find(u=>u.id===CUR_UID);if(!cu)return;
+  const refresh=()=>{rUserMod('edit');rSettingsSec(key);};
+  const H=t=>`<div style="font-size:12px;font-weight:700;color:#6f6457;margin:4px 0 8px">${t}</div>`;
+  const btn='padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit';
+  const titles={profile:'&#128100; פרופיל',security:'&#128274; אבטחה',display:'&#128197; תצוגה',share:'&#128101; שיתוף',sync:'&#128260; סנכרון וחיבורים',mail:'&#128231; מיילים ותזכורות',account:'&#128682; חשבון'};
+  let body='';
+  if(key==='profile'){
+    const others=USERS.filter(u=>u.id!==CUR_UID);
+    body=`${H('שם הפרופיל')}
+      <div style="display:flex;gap:8px;margin-bottom:18px">
+        <input class="inp" id="editUN" aria-label="שם הפרופיל" value="${cu.name.replace(/"/g,'&quot;')}" style="flex:1;padding:9px 12px;font-size:14px"/>
+        <button id="saveUN" style="${btn}">שמור</button>
+      </div>
+      ${others.length?`${H('מעבר לפרופיל אחר')}${others.map(u=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:7px">
+        <div style="width:34px;height:34px;border-radius:50%;background:#ece4d8;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#6f6457;flex-shrink:0" aria-hidden="true">${u.name.charAt(0)}</div>
+        <span style="flex:1;font-size:14px;font-weight:600;color:#2f2a24">${u.name}</span>
+        <button class="swUser" data-uid="${u.id}" style="${btn};padding:7px 14px;font-size:12px">החלף</button>
+      </div>`).join('')}`:`<div style="font-size:12px;color:#6f6457">פרופילים ששותפו איתך יופיעו כאן, ותוכל לעבור ביניהם.</div>`}`;
+  }else if(key==='security'){
+    const hasPin=!!cu.pin;
+    body=`${H('סיסמה לפתיחת הפרופיל')}
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input class="inp" id="pinInput" type="password" placeholder="${hasPin?'סיסמה חדשה (ריק = מחיקה)':'הגדר סיסמה'}" style="flex:1;padding:9px 12px"/>
+        <button id="savePin" style="${btn}">שמור</button>
+      </div>
+      <div style="font-size:12px;color:#6f6457;margin-bottom:12px">${hasPin?'הסיסמה נדרשת בכל פתיחה של הפרופיל במכשיר הזה.':'הגדר סיסמה כדי לאפשר גם כניסה ביומטרית.'}</div>
+      ${hasPin&&canUseBiometric()?`<button id="bioBtn" style="width:100%;padding:11px;border-radius:10px;border:2px solid ${hasBiometric(CUR_UID)?'#ebb9a8':'#c9d9ce'};background:${hasBiometric(CUR_UID)?'#fbefe9':'#eef3ef'};color:${hasBiometric(CUR_UID)?'#b0472e':'#3f7356'};font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">${hasBiometric(CUR_UID)?'בטל כניסה ביומטרית':'&#128070; הפעל כניסה בטביעת אצבע / פנים'}</button>`:''}`;
+  }else if(key==='display'){
+    const ms=getCfg().monthStart||1;
+    body=`${H('תחילת חודש התקציב')}
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <label for="monthStartInp" style="font-size:13px;color:#5e554a;flex:1">החודש מתחיל ביום</label>
+        <input class="inp" id="monthStartInp" type="number" min="1" max="28" value="${ms}" style="width:64px;text-align:center;padding:8px 6px;font-size:15px;font-weight:700"/>
+        <button id="saveMonthStart" style="${btn}">שמור</button>
+      </div>
+      <div style="font-size:12px;color:#6f6457;margin-bottom:18px">לדוגמה: יום 15 — מה-15 עד ה-14 בחודש הבא (למשל לפי יום המשכורת)</div>
+      ${H('מראה')}
+      <label style="display:flex;align-items:center;gap:10px;font-size:14px;color:#2f2a24;cursor:pointer">
+        <input type="checkbox" id="darkTgl" ${DARK?'checked':''} style="width:20px;height:20px;accent-color:#527461"/> &#127769; מצב כהה <span style="font-size:12px;color:#6f6457">(במכשיר הזה)</span>
+      </label>`;
+  }else if(key==='share'){
+    body=`${H('מי רואה ועורך את הפרופיל הזה')}
+      ${(cu.emails||[]).map(e=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:6px">
+        <span style="flex:1;font-size:13px;color:#2f2a24;direction:ltr;text-align:left">${e}</span>
+        ${(cu.emails||[]).length>1?`<button class="rmEm" data-em="${e}" aria-label="הסרת ${e}" style="background:transparent;border:none;color:#b0472e;font-size:16px;cursor:pointer">&times;</button>`:''}
+      </div>`).join('')}
+      <div style="display:flex;gap:8px;margin:10px 0 6px">
+        <input class="inp" id="shareEm" type="email" placeholder="כתובת Gmail לשיתוף" style="flex:1;padding:9px 12px;direction:ltr"/>
+        <button id="addEm" style="${btn}">שתף</button>
+      </div>
+      <div style="font-size:12px;color:#6f6457">מי שתוסיף כאן יראה את הפרופיל ברשימת הפרופילים שלו אחרי שיתחבר עם Google.</div>`;
+  }else if(key==='sync'){
+    const pend=Object.keys(getPend()).length;
+    body=`${H('סנכרון לענן')}
+      <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;background:${SYNC_OK===false?'#fbefe9':'#eef5ef'};border:1px solid ${SYNC_OK===false?'#f0cfc2':'#d4e4d8'};margin-bottom:6px">
+        <span style="width:10px;height:10px;border-radius:50%;background:${SYNC_OK===false?'#b0472e':'#3d7556'};flex-shrink:0" aria-hidden="true"></span>
+        <span style="font-size:13.5px;color:#2f2a24;font-weight:600">${SYNC_OK===false?'אין חיבור לענן — השינויים נשמרים במכשיר':'מסונכרן — הנתונים שמורים בענן'}</span>
+      </div>
+      <div style="font-size:12px;color:#6f6457;margin-bottom:18px">${pend?'יש שינויים שנשמרו בלי חיבור; הם יעלו לענן אוטומטית כשהחיבור יחזור.':'כל מכשיר שמחובר לאותו חשבון רואה את אותם נתונים.'}</div>
+      ${H('&#128179; קליטת חיובים ואפליקציות מחוברות')}
+      ${cu.ingestKey?`<div style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.6">ההתראות על חיובים (מקס / Google Wallet) והכנסות מאפליקציית העסק נכנסות לפרופיל הזה דרך הכתובת האישית. אל תשתף אותה.</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <input class="inp" id="ingUrl" readonly aria-label="הכתובת האישית" value="${location.origin}/api/ingest?key=${cu.ingestKey}" style="flex:1;min-width:0;padding:8px 10px;font-size:11px;direction:ltr"/>
+        <button id="ingCopy" style="${btn};padding:8px 12px;font-size:12px">העתק</button>
+      </div>
+      <details style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.7"><summary style="cursor:pointer;color:#527461;font-weight:700">איך מגדירים באנדרואיד (MacroDroid)</summary>
+        <ol style="padding-right:18px;margin:6px 0">
+          <li>מתקינים את MacroDroid מ-Google Play ופותחים מאקרו חדש.</li>
+          <li>טריגר: <b>התראה ← התראה התקבלה</b>, ובוחרים את max ו-Google Wallet, עם טקסט להתאמה <b>*</b> וצליל "הכל".</li>
+          <li>פעולה: <b>בקשת HTTP</b>, שיטה POST, וב-URL מדביקים את הכתובת.</li>
+          <li>בלשונית <b>Query Params</b>: <span dir="ltr">title</span> = כותרת ההתראה, <span dir="ltr">text</span> = טקסט ההתראה (מכפתור ה-Magic Text).</li>
+        </ol></details>
+      <details style="font-size:12px;color:#5e554a;margin-bottom:10px;line-height:1.7"><summary style="cursor:pointer;color:#527461;font-weight:700">&#127970; אפליקציית העסק (קלינו)</summary>
+        <div style="margin:6px 0">בקלינו: תפריט ההגדרות ← "חיבור לאפליקציית התקציב", מדביקים את הכתובת ולוחצים "חבר". כל תשלום ייכנס כאן כהכנסה, מסומן &#127970;.</div></details>
+      <button id="ingOff" style="padding:7px 12px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#b0472e;font-size:12px;cursor:pointer;font-family:inherit">בטל את הכתובת</button>`
+      :`<div style="font-size:12px;color:#6f6457;margin-bottom:10px;line-height:1.6">כתובת אישית שדרכה חיובים מהטלפון (מקס / Google Wallet) והכנסות מאפליקציית העסק נכנסים לתקציב.</div>
+      <button id="ingOn" style="${btn}">הפעל קליטת חיובים</button>`}`;
+  }else if(key==='mail'){
+    body=`${H('סיכום חודשי')}
+      <label style="display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:#2f2a24;margin-bottom:18px;cursor:pointer">
+        <input type="checkbox" id="mailSum" ${cu.mailSummary?'checked':''} style="width:20px;height:20px;accent-color:#527461;flex-shrink:0"/>
+        <span>סיכום במייל ביום האחרון של החודש, עם ניתוח AI והצעות לשיפור</span>
+      </label>
+      ${H('תזכורות במייל')}
+      ${(cu.reminders||[]).map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;margin-bottom:6px">
+        <span style="font-size:12px;color:#92400e;white-space:nowrap">${r.type==='once'?fmDate(r.date)+'/'+(r.date||'').slice(2,4):'כל '+r.day+' בחודש'}</span>
+        <span style="flex:1;font-size:13px;color:#2f2a24">${(r.text||'').replace(/</g,'&lt;')}</span>
+        <button class="rmRem" data-id="${r.id}" aria-label="מחיקת תזכורת" style="background:transparent;border:none;color:#b0472e;font-size:16px;cursor:pointer">&times;</button>
+      </div>`).join('')}
+      <div style="display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;border:1px dashed #d6ccbe;margin-bottom:6px">
+        <input class="inp" id="remText" placeholder="תזכורת (למשל: לשלם ועד בית)" style="padding:9px 12px"/>
+        <div style="display:flex;gap:6px">
+          <select class="inp" id="remType" aria-label="מתי" style="padding:8px;flex:1"><option value="monthly">כל חודש ביום</option><option value="once">בתאריך</option></select>
+          <input class="inp" id="remDay" type="number" min="1" max="31" placeholder="יום" style="width:70px;padding:8px;text-align:center"/>
+          <input class="inp" id="remDate" type="date" aria-label="תאריך" style="flex:1;padding:8px;display:none"/>
+          <button id="addRem" aria-label="הוספת תזכורת" style="padding:8px 12px;border-radius:10px;border:none;background:#a14b06;color:#fff;font-size:13px;font-weight:700;cursor:pointer">+</button>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#6f6457">נשלח בבוקר לכל המיילים שברשימת השיתוף של הפרופיל.</div>`;
+  }else if(key==='account'){
+    body=`${H('מחובר/ת עם Google')}
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:16px">
+        <span style="flex:1;font-size:13px;color:#2f2a24;direction:ltr;text-align:left">${myEmail()}</span>
+        <button id="signOut" style="padding:7px 14px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#b0472e;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">התנתק</button>
+      </div>
+      ${H('מידע')}
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;font-size:13.5px">
+        <a href="privacy.html" target="_blank" style="color:#527461">מדיניות פרטיות</a>
+        <a href="accessibility.html" target="_blank" style="color:#527461">הצהרת נגישות</a>
+      </div>
+      <button id="delAcc" style="width:100%;padding:11px;border-radius:10px;border:1px solid #f0cfc2;background:#fff;color:#b0472e;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">מחיקת החשבון והנתונים</button>`;
+  }
+  ih("m3",`<div class="overlay" id="secO"><div class="modal">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <button id="secBack" data-esc aria-label="חזרה להגדרות" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:17px;color:#6f6457;flex-shrink:0">&#8594;</button>
+      <span style="font-size:17px;font-weight:800;color:#2f2a24;flex:1">${titles[key]}</span>
+    </div>
+    ${body}
+  </div></div>`);
+  const close=()=>ih("m3","");
+  g("secBack").onclick=close;
+  g("secO").onclick=e=>{if(e.target.id==="secO")close();};
+  // profile
+  if(g("saveUN"))g("saveUN").onclick=()=>{const name=(g("editUN").value||"").trim();if(!name)return;cu.name=name;saveUsers();rHdr();refresh();};
+  document.querySelectorAll(".swUser").forEach(b=>b.onclick=()=>{
+    close();
+    const u=USERS.find(u=>u.id===b.dataset.uid);
+    if(u?.pin){rUserMod(null,null,b.dataset.uid);}
+    else{CUR_UID=b.dataset.uid;saveUsers();ld();loadEvents();ih("m2","");if(db){fbListen(S.year);fbLoadEvents();fbListenInbox();}setUnlocked(CUR_UID);rAll();}
+  });
+  // security
+  if(g("savePin"))g("savePin").onclick=()=>{const pin=(g("pinInput").value||"").trim();if(pin)cu.pin=pin;else delete cu.pin;saveUsers();refresh();};
+  if(g("bioBtn"))g("bioBtn").onclick=async()=>{
+    if(hasBiometric(CUR_UID)){localStorage.removeItem('bdg_cred_'+CUR_UID);refresh();}
+    else{g("bioBtn").disabled=true;await registerBiometric(CUR_UID,refresh,msg=>{g("bioBtn").disabled=false;alert('לא ניתן לרשום: '+(msg||'שגיאה'));});}
+  };
+  // display
+  if(g("darkTgl"))g("darkTgl").onchange=()=>{DARK=g("darkTgl").checked;try{localStorage.setItem('bdg_dark',DARK?'1':'0');}catch{}applyDark();rAll();refresh();};
+  if(g("saveMonthStart"))g("saveMonthStart").onclick=()=>{
+    const d=Math.max(1,Math.min(28,parseInt(g("monthStartInp").value)||1));
+    saveCfg({monthStart:d});cu.monthStart=d;saveUsers();
+    S.mData=migrateToStartDay(S.mData,S.cats,d);
+    sv();const p=todayPeriod();S.month=p.month;S.year=p.year;
+    ld();fbListen(S.year);ih("m3","");ih("m2","");rAll();
+  };
+  // share
+  if(g("addEm"))g("addEm").onclick=()=>{
+    const em=(g("shareEm").value||"").trim().toLowerCase();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){g("shareEm").focus();return;}
+    cu.emails=[...new Set([...(cu.emails||[myEmail()]),em])];saveUsers();refresh();
+  };
+  document.querySelectorAll(".rmEm").forEach(b=>b.onclick=()=>{
+    if(!confirm('להסיר את '+b.dataset.em+' מהפרופיל?'))return;
+    cu.emails=(cu.emails||[]).filter(e=>e!==b.dataset.em);saveUsers();
+    if(b.dataset.em===myEmail())location.reload();else refresh();
+  });
+  // sync: personal key for /api/ingest and /api/income, kept on the profile (only its members can read it)
+  const setIngest=async k=>{
+    if(!db){alert('צריך חיבור לאינטרנט');return;}
+    try{await _setDoc(_doc(fdb,'profiles',cu.id),{ingestKey:k||_F.deleteField()},{merge:true});}catch(e){alert('השמירה נכשלה');return;}
+    if(k)cu.ingestKey=k;else delete cu.ingestKey;saveUsers();refresh();
+  };
+  if(g("ingOn"))g("ingOn").onclick=()=>{const b=crypto.getRandomValues(new Uint8Array(24));setIngest([...b].map(x=>x.toString(16).padStart(2,'0')).join(''));};
+  if(g("ingOff"))g("ingOff").onclick=()=>{if(confirm('לבטל את הכתובת? הטלפון ואפליקציית העסק יפסיקו לשלוח עד שתגדיר כתובת חדשה.'))setIngest(null);};
+  if(g("ingCopy"))g("ingCopy").onclick=async()=>{const i=g("ingUrl");try{await navigator.clipboard.writeText(i.value);}catch{i.select();document.execCommand('copy');}g("ingCopy").textContent='הועתק ✓';};
+  // mail
+  if(g("mailSum"))g("mailSum").onchange=()=>{cu.mailSummary=g("mailSum").checked;saveUsers();rUserMod('edit');};
+  if(g("remType"))g("remType").onchange=()=>{const once=g("remType").value==='once';g("remDay").style.display=once?'none':'';g("remDate").style.display=once?'':'none';};
+  if(g("addRem"))g("addRem").onclick=()=>{
+    const text=(g("remText").value||"").trim();if(!text){g("remText").focus();return;}
+    const type=g("remType").value,r={id:Date.now(),text,type};
+    if(type==='once'){r.date=g("remDate").value;if(!r.date){g("remDate").focus();return;}}
+    else{r.day=Math.max(1,Math.min(31,parseInt(g("remDay").value)||0));if(!parseInt(g("remDay").value)){g("remDay").focus();return;}}
+    cu.reminders=[...(cu.reminders||[]),r];saveUsers();refresh();
+  };
+  document.querySelectorAll(".rmRem").forEach(b=>b.onclick=()=>{cu.reminders=(cu.reminders||[]).filter(r=>String(r.id)!==b.dataset.id);saveUsers();refresh();});
+  // account
+  if(g("signOut"))g("signOut").onclick=fbSignOut;
+  if(g("delAcc"))g("delAcc").onclick=deleteAccount;
 }
 
 // Accessibility window (opened from settings): display preferences for this device + the statement
@@ -1811,188 +1997,34 @@ function rUserMod(view=null,_=null,switchId=null){
 
   // Edit / settings view
   if(view==='edit'){
-    const hasPin=!!cu.pin,ms=getCfg().monthStart||1;
-    const others=USERS.filter(u=>u.id!==CUR_UID);
+    const ms=getCfg().monthStart||1,others=USERS.filter(u=>u.id!==CUR_UID);
+    const row=(id,ic,title,sub)=>`<button class="setRow" id="${id}" style="width:100%;display:flex;align-items:center;gap:12px;padding:13px 14px;border:none;border-bottom:1px solid #f3ece2;background:transparent;color:#2f2a24;cursor:pointer;font-family:inherit;text-align:right">
+        <span style="width:36px;height:36px;border-radius:10px;background:#f3ece2;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0" aria-hidden="true">${ic}</span>
+        <span style="flex:1;min-width:0"><span style="display:block;font-size:14.5px;font-weight:700">${title}</span><span style="display:block;font-size:12px;color:#6f6457;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sub}</span></span>
+        <span style="color:#6f6457;font-size:15px" aria-hidden="true">&#8249;</span></button>`;
+    const rems=(cu.reminders||[]).length;
     ih("m2",`<div class="overlay" id="uO"><div class="modal" style="padding:0;overflow:hidden">
       <div style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid #f3ece2">
         <button id="backToProfile" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:17px;color:#6f6457;flex-shrink:0">&#8592;</button>
-        <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#527461,#4f735f);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0">${cu.name.charAt(0)}</div>
-        <span style="font-size:16px;font-weight:800;color:#2f2a24;flex:1">${cu.name}</span>
+        <span style="font-size:17px;font-weight:800;color:#2f2a24;flex:1">&#9881; הגדרות</span>
         <button id="cU" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
       </div>
-      <div style="max-height:72vh;overflow-y:auto;padding:14px 18px 18px">
-
-        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px;margin-top:4px">שם</div>
-        <div style="display:flex;gap:8px;margin-bottom:18px">
-          <input class="inp" id="editUN" aria-label="שם הפרופיל" value="${cu.name.replace(/"/g,'&quot;')}" style="flex:1;padding:9px 12px;font-size:14px"/>
-          <button id="saveUN" style="padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שמור</button>
-        </div>
-
-        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#128274; אבטחה</div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <input class="inp" id="pinInput" type="password" placeholder="${hasPin?'סיסמה חדשה (ריק = מחיקה)':'הגדר סיסמה'}" style="flex:1;padding:9px 12px"/>
-          <button id="savePin" style="padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שמור</button>
-        </div>
-        ${hasPin&&canUseBiometric()?`<button id="bioBtn" style="width:100%;padding:10px;border-radius:10px;border:${hasBiometric(CUR_UID)?'2px solid #b0472e':'2px solid #c9d9ce'};background:${hasBiometric(CUR_UID)?'#fbefe9':'#e9f0eb'};color:${hasBiometric(CUR_UID)?'#b0472e':'#527461'};font-weight:700;font-size:13px;cursor:pointer;margin-bottom:18px">&#128400; ${hasBiometric(CUR_UID)?'הסר טביעת אצבע':'רשום טביעת אצבע'}</button>`:`<div style="font-size:11px;color:#756a5c;margin-bottom:18px">${hasPin?'':'הגדר סיסמה כדי לאפשר כניסה ביומטרית'}</div>`}
-
-        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#9881; תצוגה</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span style="font-size:13px;color:#5e554a;flex:1">תחילת חודש ביום</span>
-          <input class="inp" id="monthStartInp" type="number" min="1" max="28" value="${ms}" style="width:60px;text-align:center;padding:8px 6px;font-size:15px;font-weight:700"/>
-          <button id="saveMonthStart" style="padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer">שמור</button>
-        </div>
-        <div style="font-size:11px;color:#756a5c;margin-bottom:12px">לדוגמה: יום 15 — מה-15 עד ה-14 בחודש הבא</div>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#5e554a;margin-bottom:18px;cursor:pointer">
-          <input type="checkbox" id="darkTgl" ${DARK?'checked':''} style="width:18px;height:18px;accent-color:#527461"/>
-          &#127769; מצב כהה <span style="font-size:11px;color:#756a5c">(במכשיר הזה)</span>
-        </label>
-
-        <button id="oA11y" style="width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid #ece4d8;background:#faf6ef;color:#2f2a24;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:18px;font-family:inherit;text-align:right">
-          <span style="font-size:18px">&#9855;</span><span style="flex:1">נגישות</span><span style="font-size:12px;color:#6f6457;font-weight:400">גודל טקסט, ניגודיות ועוד &#8592;</span>
-        </button>
-
-        ${others.length?`<div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:8px">&#128100; משתמשים נוספים</div>
-        ${others.map(u=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:7px">
-          <div style="width:34px;height:34px;border-radius:50%;background:#ece4d8;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#6f6457;flex-shrink:0">${u.name.charAt(0)}</div>
-          <span style="flex:1;font-size:14px;font-weight:600;color:#2f2a24">${u.name}</span>
-          <button class="swUser" data-uid="${u.id}" style="padding:7px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#527461,#4f735f);color:#fff;font-size:12px;font-weight:700;cursor:pointer">החלף</button>
-        </div>`).join('')}`:''}
-
-        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#128101; מי רואה את הפרופיל הזה</div>
-        ${(cu.emails||[]).map(e=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:6px">
-          <span style="flex:1;font-size:13px;color:#2f2a24;direction:ltr;text-align:left">${e}</span>
-          ${(cu.emails||[]).length>1?`<button class="rmEm" data-em="${e}" style="background:transparent;border:none;color:#b0472e;font-size:16px;cursor:pointer">&times;</button>`:''}
-        </div>`).join('')}
-        <div style="display:flex;gap:8px;margin-bottom:4px">
-          <input class="inp" id="shareEm" type="email" placeholder="כתובת Gmail לשיתוף" style="flex:1;padding:9px 12px;direction:ltr"/>
-          <button id="addEm" style="padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">שתף</button>
-        </div>
-        <div style="font-size:11px;color:#756a5c;margin-bottom:18px">רק מי שמופיע כאן יכול לראות ולערוך את הנתונים</div>
-
-        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#128179; קליטת חיובים מהטלפון</div>
-        ${cu.ingestKey?`<div style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.6">ההתראות על חיובים (מקס / Google Wallet) נשלחות לכתובת הזו ומופיעות באפליקציה לאישור. הכתובת אישית — אל תשתף אותה.</div>
-        <div style="display:flex;gap:6px;margin-bottom:6px">
-          <input class="inp" id="ingUrl" readonly value="${location.origin}/api/ingest?key=${cu.ingestKey}" style="flex:1;min-width:0;padding:8px 10px;font-size:11px;direction:ltr"/>
-          <button id="ingCopy" style="padding:8px 12px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">העתק</button>
-        </div>
-        <details style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.7"><summary style="cursor:pointer;color:#527461;font-weight:700">איך מגדירים באנדרואיד (MacroDroid, חינם)</summary>
-          <ol style="padding-right:18px;margin:6px 0">
-            <li>מתקינים את MacroDroid מ-Google Play ופותחים מאקרו חדש.</li>
-            <li>טריגר: <b>התראה ← התראה התקבלה</b>, ובוחרים את האפליקציות max ו-Google Wallet. מאשרים ל-MacroDroid גישה להתראות.</li>
-            <li>פעולה: <b>אינטרנט ← בקשת HTTP</b>. שיטה POST, וב-URL מדביקים את הכתובת שהעתקת.</li>
-            <li>בלשונית <b>Query parameters</b> מוסיפים שני פרמטרים: <span dir="ltr">title</span> עם כותרת ההתראה, ו-<span dir="ltr">text</span> עם טקסט ההתראה (בוחרים אותם מכפתור ה-"…" של Magic Text).</li>
-            <li>שומרים. מעכשיו כל חיוב יופיע כאן בפס "חיובים ממתינים".</li>
-          </ol></details>
-        <details style="font-size:12px;color:#5e554a;margin-bottom:6px;line-height:1.7"><summary style="cursor:pointer;color:#527461;font-weight:700">&#127970; חיבור אפליקציית העסק (הכנסות)</summary>
-          <div style="margin:6px 0">אפליקציה אחרת יכולה להוסיף הכנסות לתקציב עם אותו מפתח: בקשת POST לכתובת <span dir="ltr">${location.origin}/api/income</span> עם <span dir="ltr">key, id, amount, desc, date</span>. ההכנסה נכנסת לחודש של התאריך ומסומנת &#127970;. שליחה חוזרת עם אותו id מעדכנת אותה, ו-<span dir="ltr">delete:true</span> מוחק.</div></details>
-        <button id="ingOff" style="padding:6px 12px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#b0472e;font-size:12px;cursor:pointer;margin-bottom:18px">בטל את הכתובת</button>`
-        :`<div style="font-size:12px;color:#756a5c;margin-bottom:8px;line-height:1.6">כל תשלום בכרטיס יופיע באפליקציה לאישור, לפי ההתראה של מקס או Google Wallet בטלפון.</div>
-        <button id="ingOn" style="padding:8px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:18px">הפעל קליטת חיובים</button>`}
-
-        <div style="font-size:10px;font-weight:700;color:#756a5c;letter-spacing:.8px;margin-bottom:6px">&#128231; מיילים ותזכורות</div>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#5e554a;margin-bottom:10px;cursor:pointer">
-          <input type="checkbox" id="mailSum" ${cu.mailSummary?'checked':''} style="width:18px;height:18px;accent-color:#527461"/>
-          סיכום חודשי במייל ביום האחרון של החודש, עם ניתוח AI והצעות לשיפור
-        </label>
-        ${(cu.reminders||[]).map(r=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;margin-bottom:6px">
-          <span style="font-size:12px;color:#b45309;white-space:nowrap">${r.type==='once'?fmDate(r.date)+'/'+(r.date||'').slice(2,4):'כל '+r.day+' בחודש'}</span>
-          <span style="flex:1;font-size:13px;color:#2f2a24">${(r.text||'').replace(/</g,'&lt;')}</span>
-          <button class="rmRem" data-id="${r.id}" style="background:transparent;border:none;color:#b0472e;font-size:16px;cursor:pointer">&times;</button>
-        </div>`).join('')}
-        <div style="display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;border:1px dashed #d6ccbe;margin-bottom:4px">
-          <input class="inp" id="remText" placeholder="תזכורת (למשל: לשלם ועד בית)" style="padding:9px 12px"/>
-          <div style="display:flex;gap:6px">
-            <select class="inp" id="remType" style="padding:8px;flex:1"><option value="monthly">כל חודש ביום</option><option value="once">בתאריך</option></select>
-            <input class="inp" id="remDay" type="number" min="1" max="31" placeholder="יום" style="width:70px;padding:8px;text-align:center"/>
-            <input class="inp" id="remDate" type="date" style="flex:1;padding:8px;display:none"/>
-            <button id="addRem" style="padding:8px 12px;border-radius:10px;border:none;background:#f59e0b;color:#fff;font-size:13px;font-weight:700;cursor:pointer">+</button>
-          </div>
-        </div>
-        <div style="font-size:11px;color:#756a5c;margin-bottom:18px">נשלח בבוקר לכל המיילים שברשימה למעלה</div>
-
-
-        <div style="border-top:1px solid #f3ece2;padding-top:14px;margin-top:14px;display:flex;align-items:center;gap:8px">
-          <span style="flex:1;font-size:12px;color:#6f6457;direction:ltr;text-align:left">${myEmail()}</span>
-          <button id="signOut" style="padding:7px 14px;border-radius:8px;border:1px solid #f0cfc2;background:#fbefe9;color:#b0472e;font-size:12px;font-weight:700;cursor:pointer">התנתק</button>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px">
-          <span style="font-size:12px"><a href="privacy.html" target="_blank" style="color:#756a5c">מדיניות פרטיות</a> · <a href="accessibility.html" target="_blank" style="color:#756a5c">הצהרת נגישות</a></span>
-          <button id="delAcc" style="padding:6px 10px;border-radius:8px;border:none;background:transparent;color:#b0472e;font-size:12px;cursor:pointer;text-decoration:underline">מחיקת החשבון והנתונים</button>
-        </div>
-
+      <div style="max-height:calc(76vh / var(--z,1));overflow-y:auto">
+        ${row('sProfile','&#128100;','פרופיל',cu.name+(others.length?' · '+(others.length+1)+' פרופילים':''))}
+        ${row('sSecurity','&#128274;','אבטחה',cu.pin?'סיסמה מוגדרת'+(hasBiometric(CUR_UID)?' · טביעת אצבע':''):'ללא סיסמה')}
+        ${row('sDisplay','&#128197;','תצוגה','החודש מתחיל ב-'+ms+(DARK?' · מצב כהה':''))}
+        ${row('oA11y','&#9855;','נגישות','גודל טקסט, ניגודיות ועוד')}
+        ${row('sShare','&#128101;','שיתוף',(cu.emails||[]).length>1?(cu.emails.length)+' אנשים רואים את הפרופיל':'רק את/ה')}
+        ${row('sSync','&#128260;','סנכרון וחיבורים',(SYNC_OK===false?'אין חיבור לענן':'מסונכרן')+(cu.ingestKey?' · קליטת חיובים פעילה':''))}
+        ${row('sMail','&#128231;','מיילים ותזכורות',(cu.mailSummary?'סיכום חודשי פעיל':'סיכום חודשי כבוי')+(rems?' · '+rems+' תזכורות':''))}
+        ${row('sAccount','&#128682;','חשבון',myEmail())}
       </div>
     </div></div>`);
-
     g("cU").onclick=()=>ih("m2","");
     g("uO").onclick=e=>{if(e.target.id==="uO")ih("m2","");};
     g("backToProfile").onclick=()=>rUserMod();
-    g("saveUN").onclick=()=>{
-      const name=(g("editUN").value||"").trim();if(!name)return;
-      cu.name=name;saveUsers();rUserMod('edit');rHdr();
-    };
-    g("savePin").onclick=()=>{
-      const pin=(g("pinInput").value||"").trim();
-      if(pin)cu.pin=pin;else delete cu.pin;
-      saveUsers();rUserMod('edit');
-    };
     g("oA11y").onclick=()=>rA11yMod();
-    g("darkTgl").onchange=()=>{DARK=g("darkTgl").checked;try{localStorage.setItem('bdg_dark',DARK?'1':'0');}catch{}applyDark();rAll();rUserMod('edit');};
-    g("saveMonthStart").onclick=()=>{
-      const d=Math.max(1,Math.min(28,parseInt(g("monthStartInp").value)||1));
-      saveCfg({monthStart:d});cu.monthStart=d;saveUsers();
-      S.mData=migrateToStartDay(S.mData,S.cats,d);
-      sv();const p=todayPeriod();S.month=p.month;S.year=p.year;
-      ld();fbListen(S.year);ih("m2","");rAll();
-    };
-    g("addEm").onclick=()=>{
-      const em=(g("shareEm").value||"").trim().toLowerCase();
-      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return;
-      cu.emails=[...new Set([...(cu.emails||[myEmail()]),em])];saveUsers();rUserMod('edit');
-    };
-    document.querySelectorAll(".rmEm").forEach(b=>b.onclick=()=>{
-      if(!confirm('להסיר את '+b.dataset.em+' מהפרופיל?'))return;
-      cu.emails=(cu.emails||[]).filter(e=>e!==b.dataset.em);saveUsers();
-      if(b.dataset.em===myEmail())location.reload();else rUserMod('edit');
-    });
-    g("signOut").onclick=fbSignOut;
-    g("delAcc").onclick=deleteAccount;
-    g("mailSum").onchange=()=>{cu.mailSummary=g("mailSum").checked;saveUsers();};
-    // Personal key for /api/ingest, kept on the profile (only its members can read it)
-    const setIngest=async k=>{
-      if(!db){alert('צריך חיבור לאינטרנט');return;}
-      try{await _setDoc(_doc(fdb,'profiles',cu.id),{ingestKey:k||_F.deleteField()},{merge:true});}catch(e){alert('השמירה נכשלה');return;}
-      if(k)cu.ingestKey=k;else delete cu.ingestKey;saveUsers();rUserMod('edit');
-    };
-    if(g("ingOn"))g("ingOn").onclick=()=>{const b=crypto.getRandomValues(new Uint8Array(24));setIngest([...b].map(x=>x.toString(16).padStart(2,'0')).join(''));};
-    if(g("ingOff"))g("ingOff").onclick=()=>{if(confirm('לבטל את הכתובת? הטלפון יפסיק לשלוח חיובים עד שתגדיר כתובת חדשה.'))setIngest(null);};
-    if(g("ingCopy"))g("ingCopy").onclick=async()=>{const i=g("ingUrl");try{await navigator.clipboard.writeText(i.value);}catch{i.select();document.execCommand('copy');}g("ingCopy").textContent='הועתק ✓';};
-    g("remType").onchange=()=>{const once=g("remType").value==='once';g("remDay").style.display=once?'none':'';g("remDate").style.display=once?'':'none';};
-    g("addRem").onclick=()=>{
-      const text=(g("remText").value||"").trim();if(!text){g("remText").focus();return;}
-      const type=g("remType").value,r={id:Date.now(),text,type};
-      if(type==='once'){r.date=g("remDate").value;if(!r.date){g("remDate").focus();return;}}
-      else{r.day=Math.max(1,Math.min(31,parseInt(g("remDay").value)||0));if(!parseInt(g("remDay").value)){g("remDay").focus();return;}}
-      cu.reminders=[...(cu.reminders||[]),r];saveUsers();rUserMod('edit');
-    };
-    document.querySelectorAll(".rmRem").forEach(b=>b.onclick=()=>{
-      cu.reminders=(cu.reminders||[]).filter(r=>String(r.id)!==b.dataset.id);saveUsers();rUserMod('edit');
-    });
-    if(g("bioBtn")){
-      g("bioBtn").onclick=async()=>{
-        if(hasBiometric(CUR_UID)){
-          localStorage.removeItem('bdg_cred_'+CUR_UID);rUserMod('edit');
-        }else{
-          g("bioBtn").disabled=true;
-          await registerBiometric(CUR_UID,()=>rUserMod('edit'),msg=>{g("bioBtn").disabled=false;alert('לא ניתן לרשום: '+(msg||'שגיאה'));});
-        }
-      };
-    }
-    document.querySelectorAll(".swUser").forEach(b=>b.onclick=()=>{
-      const u=USERS.find(u=>u.id===b.dataset.uid);
-      if(u?.pin){rUserMod(null,null,b.dataset.uid);}
-      else{CUR_UID=b.dataset.uid;saveUsers();ld();loadEvents();ih("m2","");if(db){fbListen(S.year);fbLoadEvents();}setUnlocked(CUR_UID);rAll();}
-    });
-    requestAnimationFrame(()=>{const el=g("editUN");if(el)el.focus();});
+    [['sProfile','profile'],['sSecurity','security'],['sDisplay','display'],['sShare','share'],['sSync','sync'],['sMail','mail'],['sAccount','account']].forEach(([id,k])=>g(id).onclick=()=>rSettingsSec(k));
     return;
   }
 
