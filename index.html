@@ -832,9 +832,23 @@ function rInbox(){
 }
 
 // One settings section in its own window, above the settings list
+// Visible + announced confirmation on a save button
+function flashSaved(id){
+  const b=g(id);if(!b)return;
+  const txt=b.innerHTML,bg=b.style.background;
+  b.innerHTML='נשמר &#10003;';b.style.background='#3d7556';b.disabled=true;
+  announce('נשמר');
+  setTimeout(()=>{if(b.isConnected){b.innerHTML=txt;b.style.background=bg;b.disabled=false;}},1800);
+}
+function announce(t){
+  let r=document.getElementById('srLive');
+  if(!r){r=document.createElement('div');r.id='srLive';r.setAttribute('role','status');r.setAttribute('aria-live','polite');r.style.cssText='position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap';document.body.appendChild(r);}
+  r.textContent='';setTimeout(()=>{r.textContent=t;},50);
+}
 function rSettingsSec(key){
   const cu=USERS.find(u=>u.id===CUR_UID);if(!cu)return;
-  const refresh=()=>{rUserMod('edit');rSettingsSec(key);};
+  // Redraw the section and the list; a save button then shows "נשמר ✓" for a moment
+  const refresh=flash=>{rUserMod('edit');rSettingsSec(key);if(flash)flashSaved(flash);};
   const H=t=>`<div style="font-size:12px;font-weight:700;color:#6f6457;margin:4px 0 8px">${t}</div>`;
   const btn='padding:9px 14px;border-radius:10px;border:none;background:#527461;color:#fff;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit';
   const titles={profile:'&#128100; פרופיל',security:'&#128274; אבטחה',display:'&#128197; תצוגה',share:'&#128101; שיתוף',sync:'&#128260; סנכרון וחיבורים',mail:'&#128231; מיילים ותזכורות',account:'&#128682; חשבון'};
@@ -956,7 +970,7 @@ function rSettingsSec(key){
   g("secBack").onclick=close;
   g("secO").onclick=e=>{if(e.target.id==="secO")close();};
   // profile
-  if(g("saveUN"))g("saveUN").onclick=()=>{const name=(g("editUN").value||"").trim();if(!name)return;cu.name=name;saveUsers();rHdr();refresh();};
+  if(g("saveUN"))g("saveUN").onclick=()=>{const name=(g("editUN").value||"").trim();if(!name){g("editUN").focus();return;}cu.name=name;saveUsers();rHdr();refresh('saveUN');};
   document.querySelectorAll(".swUser").forEach(b=>b.onclick=()=>{
     close();
     const u=USERS.find(u=>u.id===b.dataset.uid);
@@ -964,7 +978,7 @@ function rSettingsSec(key){
     else{CUR_UID=b.dataset.uid;saveUsers();ld();loadEvents();ih("m2","");if(db){fbListen(S.year);fbLoadEvents();fbListenInbox();}setUnlocked(CUR_UID);rAll();}
   });
   // security
-  if(g("savePin"))g("savePin").onclick=()=>{const pin=(g("pinInput").value||"").trim();if(pin)cu.pin=pin;else delete cu.pin;saveUsers();refresh();};
+  if(g("savePin"))g("savePin").onclick=()=>{const pin=(g("pinInput").value||"").trim();if(pin)cu.pin=pin;else delete cu.pin;saveUsers();refresh('savePin');};
   if(g("bioBtn"))g("bioBtn").onclick=async()=>{
     if(hasBiometric(CUR_UID)){localStorage.removeItem('bdg_cred_'+CUR_UID);refresh();}
     else{g("bioBtn").disabled=true;await registerBiometric(CUR_UID,refresh,msg=>{g("bioBtn").disabled=false;alert('לא ניתן לרשום: '+(msg||'שגיאה'));});}
@@ -976,13 +990,13 @@ function rSettingsSec(key){
     saveCfg({monthStart:d});cu.monthStart=d;saveUsers();
     S.mData=migrateToStartDay(S.mData,S.cats,d);
     sv();const p=todayPeriod();S.month=p.month;S.year=p.year;
-    ld();fbListen(S.year);ih("m3","");ih("m2","");rAll();
+    ld();fbListen(S.year);rAll();refresh('saveMonthStart');
   };
   // share
   if(g("addEm"))g("addEm").onclick=()=>{
     const em=(g("shareEm").value||"").trim().toLowerCase();
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){g("shareEm").focus();return;}
-    cu.emails=[...new Set([...(cu.emails||[myEmail()]),em])];saveUsers();refresh();
+    cu.emails=[...new Set([...(cu.emails||[myEmail()]),em])];saveUsers();refresh('addEm');
   };
   document.querySelectorAll(".rmEm").forEach(b=>b.onclick=()=>{
     if(!confirm('להסיר את '+b.dataset.em+' מהפרופיל?'))return;
@@ -1006,7 +1020,7 @@ function rSettingsSec(key){
     const type=g("remType").value,r={id:Date.now(),text,type};
     if(type==='once'){r.date=g("remDate").value;if(!r.date){g("remDate").focus();return;}}
     else{r.day=Math.max(1,Math.min(31,parseInt(g("remDay").value)||0));if(!parseInt(g("remDay").value)){g("remDay").focus();return;}}
-    cu.reminders=[...(cu.reminders||[]),r];saveUsers();refresh();
+    cu.reminders=[...(cu.reminders||[]),r];saveUsers();refresh('addRem');
   };
   document.querySelectorAll(".rmRem").forEach(b=>b.onclick=()=>{cu.reminders=(cu.reminders||[]).filter(r=>String(r.id)!==b.dataset.id);saveUsers();refresh();});
   // account
