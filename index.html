@@ -703,6 +703,11 @@ function rCharts(){
 
 function installApp(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;g('installBar').style.display='none';});}
 
+// Round avatar: the signed-in Google account's photo, or the profile's first letter
+function avatarHtml(name,size,fs){
+  const ph=AUTH_USER?.photoURL,ini=(name||'?').charAt(0);
+  return ph?`<img src="${ph.replace(/"/g,'')}" alt="" referrerpolicy="no-referrer" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;display:block" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${ini.replace(/'/g,'')}'}))"/>`:ini;
+}
 function rHdr(){
   const un=USERS.find(u=>u.id===CUR_UID)?.name||'';
   const seg=on=>`padding:5px 12px;border-radius:9px;border:none;font-size:12.5px;font-weight:600;cursor:pointer;background:${on?'#fffdf9':'transparent'};color:${on?'#2f2a24':'#6f6457'};${on?'box-shadow:0 1px 3px rgba(90,70,40,.12)':''}`;
@@ -720,10 +725,10 @@ function rHdr(){
         <button id="vm" style="${seg(S.view==='monthly')}">חודשי</button>
         <button id="vy" style="${seg(S.view==='yearly')}">שנתי</button>
       </div>
-      <button id="userBtn" title="${un||'משתמש'}" style="width:38px;height:38px;border-radius:50%;background:#527461;border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer">${(un||'?').charAt(0)}</button>
+      <button id="userBtn" title="הגדרות" aria-label="הגדרות — ${un||'משתמש'}" style="width:38px;height:38px;border-radius:50%;background:#527461;border:none;color:#fff;font-size:15px;font-weight:700;cursor:pointer;padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center">${avatarHtml(un,38)}</button>
     </div>
   </div>`);
-  g("userBtn").onclick=()=>rUserMod();
+  g("userBtn").onclick=()=>rUserMod('edit');
   g("vm").onclick=()=>{S.view="monthly";rAll();};
   g("vy").onclick=()=>{S.view="yearly";rAll();};
   if(g("yp"))g("yp").onclick=()=>{S.year--;ld();rAll();fbListen(S.year);};
@@ -2005,8 +2010,8 @@ function rUserMod(view=null,_=null,switchId=null){
     const rems=(cu.reminders||[]).length;
     ih("m2",`<div class="overlay" id="uO"><div class="modal" style="padding:0;overflow:hidden">
       <div style="display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid #f3ece2">
-        <button id="backToProfile" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:17px;color:#6f6457;flex-shrink:0">&#8592;</button>
-        <span style="font-size:17px;font-weight:800;color:#2f2a24;flex:1">&#9881; הגדרות</span>
+        <div style="width:40px;height:40px;border-radius:50%;background:#527461;color:#fff;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0" aria-hidden="true">${avatarHtml(cu.name,40)}</div>
+        <span style="flex:1;min-width:0"><span style="display:block;font-size:16px;font-weight:800;color:#2f2a24">${cu.name}</span><span style="display:block;font-size:12px;color:#6f6457">הגדרות</span></span>
         <button id="cU" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
       </div>
       <div style="max-height:calc(76vh / var(--z,1));overflow-y:auto">
@@ -2022,7 +2027,6 @@ function rUserMod(view=null,_=null,switchId=null){
     </div></div>`);
     g("cU").onclick=()=>ih("m2","");
     g("uO").onclick=e=>{if(e.target.id==="uO")ih("m2","");};
-    g("backToProfile").onclick=()=>rUserMod();
     g("oA11y").onclick=()=>rA11yMod();
     [['sProfile','profile'],['sSecurity','security'],['sDisplay','display'],['sShare','share'],['sSync','sync'],['sMail','mail'],['sAccount','account']].forEach(([id,k])=>g(id).onclick=()=>rSettingsSec(k));
     return;
