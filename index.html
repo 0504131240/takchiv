@@ -2538,19 +2538,13 @@ cntEl.addEventListener("touchend",e=>{
   }
 },{passive:true});
 
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;const b=g('installBar');if(b)b.style.display='flex';});
+// Install banner on phones and tablets only; on a computer the browser's own install icon is enough
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;if(!matchMedia('(pointer:coarse)').matches)return;const b=g('installBar');if(b)b.style.display='flex';});
 window.addEventListener('appinstalled',()=>{deferredPrompt=null;const b=g('installBar');if(b)b.style.display='none';});
 
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js');
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{
-    if(g('updateBar'))return;
-    const b=document.createElement('div');
-    b.id='updateBar';
-    b.style.cssText='position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#527461,#4f735f);color:#fff;padding:10px 16px;z-index:9999;display:flex;align-items:center;gap:10px;justify-content:center;direction:rtl;font-size:13px;font-weight:600;box-shadow:0 2px 12px rgba(91,127,107,.3)';
-    b.innerHTML='<span>&#128260; גרסה חדשה זמינה!</span><button onclick="location.reload()" style="padding:5px 14px;border-radius:8px;border:none;background:#fffdf9;color:#527461;font-weight:700;cursor:pointer;font-size:12px">עדכן עכשיו</button><button onclick="this.parentElement.remove()" style="background:transparent;border:none;color:rgba(255,255,255,.7);font-size:22px;cursor:pointer;padding:0;line-height:1">&times;</button>';
-    document.body.prepend(b);
-  });
+  // No "new version" banner: pages load from the network first, so the next open already has the new version
 }
 
 // Expose to global scope for inline onclick handlers in module context
