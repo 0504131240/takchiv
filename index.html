@@ -179,13 +179,20 @@ async function fbLoadProfiles(){
   if(!USERS.find(u=>u.id===CUR_UID))CUR_UID=USERS[0].id;
   try{localStorage.setItem('bdg_cur_user',CUR_UID);}catch{}
   db=fdb;reloadCurUser();
-  // The mail job reads the cycle start day from the profile; copy this device's setting there
-  {const cu=USERS.find(u=>u.id===CUR_UID),ms=parseInt(getCfg().monthStart)||0;if(cu&&ms>1&&cu.monthStart!==ms){cu.monthStart=ms;saveUsers();}}
   if(!hadCur&&USERS.length>1)rPickUser();else rLockScreen();
 }
 function reloadCurUser(){
+  syncMonthStart();
   ld();loadEvents();
   if(db){fbListen(S.year);fbLoadBudgets();fbLoadEvents();fbListenInbox();}
+}
+// The cycle start day belongs to the profile, so every device (and the income coming from other apps) uses the same months.
+// Older versions kept it only on the device: a profile without it takes this device's setting.
+function syncMonthStart(){
+  const cu=USERS.find(u=>u.id===CUR_UID);if(!cu)return;
+  const ms=parseInt(getCfg().monthStart)||1,pm=parseInt(cu.monthStart)||0;
+  if(pm&&pm!==ms){saveCfg({monthStart:pm});const p=todayPeriod();S.month=p.month;S.year=p.year;}
+  else if(!pm&&ms>1&&db){cu.monthStart=ms;saveUsers();}
 }
 function fbListenInbox(){
   if(unsubInbox){unsubInbox();unsubInbox=null;}
