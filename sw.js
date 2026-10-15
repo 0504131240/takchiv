@@ -1,5 +1,5 @@
-const CACHE='budget-v17';
-const ASSETS=['./index.html','./manifest.json','./icon.svg'];
+const CACHE='budget-v18';
+const ASSETS=['./index.html','./manifest.json','./icon.svg','./favicon.svg','./icon-192.png'];
 
 self.addEventListener('install',e=>{
   e.waitUntil(
