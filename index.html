@@ -140,9 +140,16 @@ function saveUsers(){
   fbSaveUsers();
 }
 // Fields the app owns on a profile doc; merged so server-side fields (lastMailDay) are kept
+const escH=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// The signed-in person's name on a profile: set in sharing, else the first name of their Google account
+function myName(u){
+  const n=u?.members?.[myEmail()];
+  return (n||(AUTH_USER?.displayName||'').trim().split(/\s+/)[0]||'').trim();
+}
 function profData(u){
   const d={name:u.name,emails:u.emails||[myEmail()],reminders:u.reminders||[],mailSummary:!!u.mailSummary,pin:u.pin||_F.deleteField()};
   if(u.monthStart)d.monthStart=u.monthStart;
+  if(u.members)d.members=u.members; // display names of the people sharing the profile: {email: name}
   return d;
 }
 function fbSaveUsers(){
@@ -717,7 +724,8 @@ function rHdr(){
         <h1 style="font-size:21px;font-weight:700;color:#2f2a24;letter-spacing:-.3px">תקציב משפחתי</h1>
         <div id="syncDot" role="img" aria-label="מצב סנכרון ענן" title="סנכרון ענן" style="width:7px;height:7px;border-radius:50%;background:#756a5c;flex-shrink:0;transition:background .4s"></div>
       </div>
-      <div style="font-size:12.5px;color:#6f6457;margin-top:1px">${un?'שלום '+un:'ניהול חכם של ההוצאות'}</div>
+      ${un?`<div style="font-size:13.5px;font-weight:700;color:#527461;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escH(un)}</div>`:''}
+      <div style="font-size:12.5px;color:#6f6457;margin-top:1px">${(()=>{const me=myName(USERS.find(u=>u.id===CUR_UID));return me?'שלום '+escH(me):un?'':'ניהול חכם של ההוצאות';})()}</div>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
       ${S.view==='yearly'?`<button id="yp" class="qbtn" style="width:28px;height:28px;font-size:15px">&#8249;</button><span style="font-size:14px;font-weight:600;color:#527461">${S.year}</span><button id="yn" class="qbtn" style="width:28px;height:28px;font-size:15px">&#8250;</button>`:''}
@@ -889,15 +897,23 @@ function rSettingsSec(key){
       </label>`;
   }else if(key==='share'){
     body=`${H('מי רואה ועורך את הפרופיל הזה')}
-      ${(cu.emails||[]).map(e=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:6px">
-        <span style="flex:1;font-size:13px;color:#2f2a24;direction:ltr;text-align:left">${e}</span>
-        ${(cu.emails||[]).length>1?`<button class="rmEm" data-em="${e}" aria-label="הסרת ${e}" style="background:transparent;border:none;color:#b0472e;font-size:16px;cursor:pointer">&times;</button>`:''}
+      ${(cu.emails||[]).map((e,i)=>`<div style="padding:9px 10px;border-radius:10px;background:#faf6ef;border:1px solid #ece4d8;margin-bottom:7px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <input class="inp memName" data-em="${escH(e)}" value="${escH(cu.members?.[e]||'')}" placeholder="שם${e===myEmail()?' (את/ה)':''}" aria-label="שם עבור ${escH(e)}" style="flex:1;min-width:0;padding:7px 10px;font-size:13.5px;font-weight:600"/>
+          ${(cu.emails||[]).length>1?`<button class="rmEm" data-em="${escH(e)}" aria-label="הסרת ${escH(e)}" style="background:transparent;border:none;color:#b0472e;font-size:17px;cursor:pointer">&times;</button>`:''}
+        </div>
+        <div style="font-size:12px;color:#6f6457;direction:ltr;text-align:left;margin-top:4px">${escH(e)}</div>
       </div>`).join('')}
-      <div style="display:flex;gap:8px;margin:10px 0 6px">
-        <input class="inp" id="shareEm" type="email" placeholder="כתובת Gmail לשיתוף" style="flex:1;padding:9px 12px;direction:ltr"/>
-        <button id="addEm" style="${btn}">שתף</button>
+      <button id="saveNames" style="${btn};width:100%;margin-bottom:16px">שמור שמות</button>
+      ${H('הוספת שותף')}
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px">
+        <input class="inp" id="shareName" placeholder="שם (למשל: טובי)" aria-label="שם השותף" style="padding:9px 12px"/>
+        <div style="display:flex;gap:8px">
+          <input class="inp" id="shareEm" type="email" placeholder="כתובת Gmail" aria-label="כתובת Gmail לשיתוף" style="flex:1;padding:9px 12px;direction:ltr"/>
+          <button id="addEm" style="${btn}">שתף</button>
+        </div>
       </div>
-      <div style="font-size:12px;color:#6f6457">מי שתוסיף כאן יראה את הפרופיל ברשימת הפרופילים שלו אחרי שיתחבר עם Google.</div>`;
+      <div style="font-size:12px;color:#6f6457">השם מופיע בברכה "שלום …" למעלה. מי שתוסיף יראה את הפרופיל ברשימת הפרופילים שלו אחרי שיתחבר עם Google.</div>`;
   }else if(key==='sync'){
     const pend=Object.keys(getPend()).length;
     body=`${H('סנכרון לענן')}
@@ -996,13 +1012,22 @@ function rSettingsSec(key){
   if(g("addEm"))g("addEm").onclick=()=>{
     const em=(g("shareEm").value||"").trim().toLowerCase();
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){g("shareEm").focus();return;}
-    cu.emails=[...new Set([...(cu.emails||[myEmail()]),em])];saveUsers();refresh('addEm');
+    cu.emails=[...new Set([...(cu.emails||[myEmail()]),em])];
+    const nm=(g("shareName").value||"").trim().slice(0,30);if(nm)cu.members={...(cu.members||{}),[em]:nm};
+    saveUsers();rHdr();refresh('addEm');
   };
   document.querySelectorAll(".rmEm").forEach(b=>b.onclick=()=>{
     if(!confirm('להסיר את '+b.dataset.em+' מהפרופיל?'))return;
-    cu.emails=(cu.emails||[]).filter(e=>e!==b.dataset.em);saveUsers();
+    cu.emails=(cu.emails||[]).filter(e=>e!==b.dataset.em);
+    if(cu.members){const m={...cu.members};delete m[b.dataset.em];cu.members=m;}
+    saveUsers();
     if(b.dataset.em===myEmail())location.reload();else refresh();
   });
+  if(g("saveNames"))g("saveNames").onclick=()=>{
+    const m={...(cu.members||{})};
+    document.querySelectorAll(".memName").forEach(i=>{const v=i.value.trim().slice(0,30);if(v)m[i.dataset.em]=v;else delete m[i.dataset.em];});
+    cu.members=m;saveUsers();rHdr();refresh('saveNames');
+  };
   // sync: personal key for /api/ingest and /api/income, kept on the profile (only its members can read it)
   const setIngest=async k=>{
     if(!db){alert('צריך חיבור לאינטרנט');return;}
