@@ -694,14 +694,14 @@ function rIncVsExp(){
   const max=Math.max(...iv,...ev,1);
   const W=300,H=110,px=6,py=8,bh=16,iw=288,ih=H-py-bh;
   const slot=iw/6,bw=(slot-6)/2;
-  const bars=idxs.map((m,i)=>{const x=px+i*slot;const h1=(iv[i]/max)*ih,h2=(ev[i]/max)*ih;return`<rect x="${(x+1).toFixed(1)}" y="${(py+ih-h1).toFixed(1)}" width="${bw.toFixed(1)}" height="${h1.toFixed(1)}" fill="#3d7556" rx="2" opacity="${m===S.month?1:.7}"/><rect x="${(x+bw+4).toFixed(1)}" y="${(py+ih-h2).toFixed(1)}" width="${bw.toFixed(1)}" height="${h2.toFixed(1)}" fill="#527461" rx="2" opacity="${m===S.month?1:.7}"/>`;}).join('');
+  const bars=idxs.map((m,i)=>{const x=px+i*slot;const h1=(iv[i]/max)*ih,h2=(ev[i]/max)*ih;return`<rect x="${(x+1).toFixed(1)}" y="${(py+ih-h1).toFixed(1)}" width="${bw.toFixed(1)}" height="${h1.toFixed(1)}" fill="#3d7556" rx="2" opacity="${m===S.month?1:.7}"/><rect x="${(x+bw+4).toFixed(1)}" y="${(py+ih-h2).toFixed(1)}" width="${bw.toFixed(1)}" height="${h2.toFixed(1)}" fill="#b0472e" rx="2" opacity="${m===S.month?1:.7}"/>`;}).join('');
   const lbls=idxs.map((m,i)=>`<text x="${(px+i*slot+slot/2).toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="9" fill="${m===S.month?'#527461':'#756a5c'}">${MO[m].substring(0,3)}</text>`).join('');
   return`<div style="background:#f3f7f4;border-radius:14px;padding:10px 12px;border:1px solid #d5e2d9">
     <div style="font-size:12px;color:#527461;font-weight:700;margin-bottom:8px">&#128176; הכנסות מול הוצאות</div>
     <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" style="display:block">${bars}${lbls}</svg>
     <div style="display:flex;gap:12px;justify-content:center;margin-top:6px">
       <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:#3d7556"></div><span style="font-size:10px;color:#6f6457">הכנסה</span></div>
-      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:#527461"></div><span style="font-size:10px;color:#6f6457">הוצאה</span></div>
+      <div style="display:flex;align-items:center;gap:4px"><div style="width:10px;height:10px;border-radius:2px;background:#b0472e"></div><span style="font-size:10px;color:#6f6457">הוצאה</span></div>
     </div>
   </div>`;
 }
