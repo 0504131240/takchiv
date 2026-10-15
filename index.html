@@ -12,9 +12,14 @@
 <title>תקציב משפחתי</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script>
+// Windows 10 draws emoji in an old, flat style; use Google's color emoji there (downloaded per glyph, only what's shown)
+if(/Windows/.test(navigator.userAgent)){document.documentElement.classList.add('win');const l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap';document.head.appendChild(l);}
+</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#f5efe6;min-height:100vh;font-family:'Rubik','Segoe UI',Arial,sans-serif;color:#2f2a24;direction:rtl;font-variant-numeric:tabular-nums}
+.win body{font-family:'Rubik','Segoe UI',Arial,'Noto Color Emoji',sans-serif}
 /* Header, toolbar and month navigator stay pinned while scrolling */
 #top{position:sticky;top:0;z-index:50;background:#f5efe6}
 .catList>div:last-child{border-bottom:none!important}
