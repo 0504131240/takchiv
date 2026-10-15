@@ -1,4 +1,4 @@
-const CACHE='budget-v22';
+const CACHE='budget-v23';
 const ASSETS=['./index.html','./manifest.json','./icon.svg','./favicon.svg','./icon-192.png'];
 
 self.addEventListener('install',e=>{
