@@ -801,6 +801,36 @@ function addExpenseEntry(catId,e){
     if(!d.cats.find(c=>c.id===catId)){const c=S.cats.find(c=>c.id===catId);if(c)d.cats.push({...c});}
   });
 }
+// Split one purchase into n monthly payments "desc (k/n)" in consecutive budget months,
+// starting with the month of `date` (the same series instInfo/forInstSeries work on)
+function addInstExpense(catId,{desc,amount,date,subCat=null},n,baseId=Date.now()){
+  const b=dateBucket(date),perMonth=Math.round(amount/n*100)/100,later={};
+  for(let i=0;i<n;i++){
+    const abs=b.y*12+b.m+i,tMonth=abs%12,tYear=Math.floor(abs/12);
+    const e={id:baseId+i*1000,desc:instDesc(desc,i+1,n),amount:perMonth,date:bucketDate(date,tYear,tMonth),recurring:false,subCat,inst:{base:baseId,n,i}};
+    if(tYear===S.year){
+      if(!S.mData[tMonth])S.mData[tMonth]={};
+      if(!S.mData[tMonth][catId])S.mData[tMonth][catId]={entries:[]};
+      S.mData[tMonth][catId].entries.push(e);
+    } else (later[tYear]=later[tYear]||[]).push({m:tMonth,e});
+  }
+  sv();
+  Object.keys(later).forEach(y=>editYear(+y,d=>{
+    later[y].forEach(({m,e})=>{if(!d.mData[m])d.mData[m]={income:[]};if(!d.mData[m][catId])d.mData[m][catId]={entries:[]};d.mData[m][catId].entries.push(e);});
+    if(!d.cats.find(c=>c.id===catId)){const c=S.cats.find(c=>c.id===catId);if(c)d.cats.push({...c});}
+  }));
+}
+// A charge recorded on an event: a paid event expense; with installments, its payments
+// fall in consecutive months (so each month's event total counts only its own payment)
+function addEventCharge(ev,{desc,amount,date},n){
+  const pays=[];
+  if(n>1){
+    const per=Math.round(amount/n*100)/100,b=dateBucket(date);
+    for(let i=0;i<n;i++){const abs=b.y*12+b.m+i;pays.push({amt:i<n-1?per:Math.round((amount-per*(n-1))*100)/100,date:bucketDate(date,Math.floor(abs/12),abs%12)});}
+  }
+  (ev.expenses||(ev.expenses=[])).push({id:Date.now(),desc:n>1?desc+' ('+n+' תשלומים)':desc,amount,date,paid:true,...(n>1?{pays}:{})});
+  saveEvents();
+}
 function rInbox(){
   if(!INBOX.length){ih("m2","");rAll();return;}
   const esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -811,7 +841,7 @@ function rInbox(){
       <span style="font-size:17px;font-weight:800;color:#2f2a24">&#128276; חיובים ממתינים</span>
       <button id="inbX" style="background:#f3ece2;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:#6f6457">&times;</button>
     </div>
-    <div style="font-size:12px;color:#756a5c;margin-bottom:12px">התקבלו מההתראות בטלפון. בדוק, בחר קטגוריה ואשר.</div>
+    <div style="font-size:12px;color:#756a5c;margin-bottom:12px">התקבלו מההתראות בטלפון. בדוק, בחר קטגוריה או אירוע, ואם צריך — מספר תשלומים, ואשר.</div>
     ${items.map(it=>{const gs=guessCharge(it.merchant);const foreign=it.cur&&it.cur!=='ILS';
       return`<div class="inbIt" data-id="${it.id}" style="border:1px solid #ece4d8;border-radius:14px;padding:12px;margin-bottom:10px;background:#fffdf9">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px">
@@ -825,10 +855,14 @@ function rInbox(){
         <input class="inp ibD" value="${esc(gs.desc||it.merchant)}" placeholder="תיאור" style="flex:1;min-width:0;padding:8px 10px;font-size:13px"/>
         <input class="inp ibA" aria-label="סכום" type="number" inputmode="decimal" value="${it.amount}" style="width:90px;padding:8px 10px;font-size:13px;text-align:center"/>
       </div>
-      <select class="inp ibC" style="width:100%;padding:8px 10px;font-size:13px;margin-bottom:8px;${it.income?'display:none':''}">
-        <option value="">בחר קטגוריה…</option>
-        ${S.cats.map(c=>`<option value="${c.id}"${c.id===gs.cat?' selected':''}>${esc(c.name)}</option>`).join('')}
-      </select>
+      <div style="display:flex;gap:6px;margin-bottom:8px;${it.income?'display:none':''}">
+        <select class="inp ibC" aria-label="קטגוריה או אירוע" style="flex:1;min-width:0;padding:8px 10px;font-size:13px">
+          <option value="">בחר קטגוריה או אירוע…</option>
+          <optgroup label="קטגוריות">${S.cats.map(c=>`<option value="${c.id}"${c.id===gs.cat?' selected':''}>${esc(c.name)}</option>`).join('')}</optgroup>
+          ${EVENTS.length?`<optgroup label="&#127881; אירועים">${EVENTS.map(ev=>`<option value="ev:${ev.id}">${esc(ev.name)}</option>`).join('')}</optgroup>`:''}
+        </select>
+        ${it.credit?'':`<label style="display:flex;align-items:center;gap:4px;font-size:12px;color:#756a5c;flex-shrink:0">תשלומים<input class="inp ibN" type="number" inputmode="numeric" min="1" max="60" value="1" style="width:52px;padding:8px 4px;font-size:13px;text-align:center"/></label>`}
+      </div>
       <div style="display:flex;gap:6px">
         <button class="ibOk" style="flex:2;padding:9px;border-radius:10px;border:none;background:#527461;color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">&#10004; ${it.income?'הוסף להכנסות':'הוסף להוצאות'}</button>
         <button class="ibNo" style="flex:1;padding:9px;border-radius:10px;border:1px solid #ece4d8;background:#fff;color:#6f6457;font-size:13px;cursor:pointer;font-family:inherit">התעלם</button>
@@ -840,11 +874,19 @@ function rInbox(){
     const it=INBOX.find(x=>String(x.id)===el.dataset.id);if(!it)return;
     el.querySelector(".ibOk").onclick=async()=>{
       const sel=el.querySelector(".ibC"),cat=parseInt(sel.value);
+      const n=Math.min(60,Math.max(1,parseInt(el.querySelector(".ibN")?.value)||1));
       const a=Math.round((parseFloat(el.querySelector(".ibA").value)||0)*100)/100;if(!a){el.querySelector(".ibA").focus();return;}
       const desc=el.querySelector(".ibD").value.trim()||it.merchant||'';
       if(it.income){addIncomeEntry({id:Date.now(),desc,amount:a,date:it.date,src:'business',ext:it.ext});await inboxRemove(it.id);rInbox();return;}
+      const amount=it.credit?-Math.abs(a):a;
+      if(sel.value.startsWith('ev:')){
+        const ev=EVENTS.find(e=>String(e.id)===sel.value.slice(3));if(!ev)return;
+        addEventCharge(ev,{desc,amount,date:it.date},n);
+        await inboxRemove(it.id);rInbox();return;
+      }
       if(!cat){sel.style.borderColor='#b0472e';sel.focus();return;}
-      addExpenseEntry(cat,{id:Date.now(),desc,amount:it.credit?-Math.abs(a):a,date:it.date,recurring:false,subCat:null});
+      if(n>1)addInstExpense(cat,{desc,amount,date:it.date},n);
+      else addExpenseEntry(cat,{id:Date.now(),desc,amount,date:it.date,recurring:false,subCat:null});
       await inboxRemove(it.id);rInbox();
     };
     el.querySelector(".ibNo").onclick=async()=>{await inboxRemove(it.id);rInbox();};
@@ -1373,24 +1415,7 @@ function rExpMod(){
           return[...entries,{id:relId,desc,amount:a,date:adjDate(date,m,fy),recurring:true,subCat}];
         });
       } else if(inst>1){
-        const perMonth=Math.round(a/inst*100)/100,later={};
-        for(let i=0;i<inst;i++){
-          const abs=b.y*12+b.m+i,tMonth=abs%12,tYear=Math.floor(abs/12);
-          const entryDate=bucketDate(date,tYear,tMonth);
-          const entryDesc=desc?(desc+' ('+(i+1)+'/'+inst+')'):(''+(i+1)+'/'+inst);
-          if(tYear===S.year){
-            if(!S.mData[tMonth])S.mData[tMonth]={};
-            if(!S.mData[tMonth][selCat])S.mData[tMonth][selCat]={entries:[]};
-            S.mData[tMonth][selCat].entries.push({id:baseId+i*1000,desc:entryDesc,amount:perMonth,date:entryDate,recurring:false,subCat,inst:{base:baseId,n:inst,i}});
-          } else {
-            (later[tYear]=later[tYear]||[]).push({m:tMonth,e:{id:baseId+i*1000,desc:entryDesc,amount:perMonth,date:entryDate,recurring:false,subCat,inst:{base:baseId,n:inst,i}}});
-          }
-        }
-        sv();
-        Object.keys(later).forEach(y=>editYear(+y,d=>{
-          later[y].forEach(({m,e})=>{if(!d.mData[m])d.mData[m]={income:[]};if(!d.mData[m][selCat])d.mData[m][selCat]={entries:[]};d.mData[m][selCat].entries.push(e);});
-          if(!d.cats.find(c=>c.id===selCat)){const c=S.cats.find(c=>c.id===selCat);if(c)d.cats.push({...c});}
-        }));
+        addInstExpense(selCat,{desc,amount:a,date,subCat},inst,baseId);
       } else if(b.y===S.year){
         S.mData[b.m][selCat].entries.push({id:baseId,desc,amount:a,date,recurring:false,subCat});
         sv();
