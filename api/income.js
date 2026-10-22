@@ -5,6 +5,8 @@
 // POST /api/income  JSON { key, id, amount, desc?, date? (YYYY-MM-DD) }
 //   id      the income's id in the other app; sending the same id again updates it instead of duplicating
 // POST /api/income  JSON { key, id, delete: true }   removes it (when it was deleted in the other app)
+// POST /api/income  JSON { key, ping: true }         only checks the key
+// Every answer names the profile ("profile"), so the other app can show where its income goes.
 const admin = require('firebase-admin');
 const { israelToday } = require('./_lib/notify');
 
@@ -36,12 +38,14 @@ module.exports = async (req, res) => {
   const key = String(b.key || req.headers['x-budget-key'] || '');
   if (!/^[A-Za-z0-9]{20,64}$/.test(key)) return res.status(401).json({ error: 'key' });
   const ext = clip(b.id, 80);
-  if (!ext) return res.status(400).json({ error: 'id is required' });
+  if (!ext && !b.ping) return res.status(400).json({ error: 'id is required' });
 
   const fdb = db();
   const qs = await fdb.collection('profiles').where('ingestKey', '==', key).limit(1).get();
   if (qs.empty) return res.status(401).json({ error: 'key' });
   const prof = qs.docs[0];
+  const profile = clip(prof.data().name, 40);
+  if (b.ping) return res.status(200).json({ ok: true, profile });
   const data = prof.ref.collection('data');
 
   // Delete: look for it in this year and last year
@@ -63,7 +67,7 @@ module.exports = async (req, res) => {
         return n;
       });
     }
-    return res.status(200).json({ ok: true, removed });
+    return res.status(200).json({ ok: true, removed, profile });
   }
 
   const amount = Math.round((parseFloat(b.amount) || 0) * 100) / 100;
@@ -99,7 +103,7 @@ module.exports = async (req, res) => {
       if (!items.some(i => i.ext === ext)) items.push({ id: Date.now(), at: Date.now(), date, amount, cur: 'ILS', merchant: desc, credit: false, income: true, ext, raw: desc });
       tx.set(inbox, { items: items.slice(-100) });
     });
-    return res.status(202).json({ ok: true, pending: true });
+    return res.status(202).json({ ok: true, pending: true, profile });
   }
-  return res.status(200).json({ ok: true, month: m + 1, year: y, updated: out.updated });
+  return res.status(200).json({ ok: true, month: m + 1, year: y, updated: out.updated, profile });
 };
