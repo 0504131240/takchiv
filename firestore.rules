@@ -31,12 +31,9 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Old data from before login. Readable by signed-in users only so profiles
-    // can be moved over; never writable. Once every profile has been moved,
-    // change "signedIn()" below to "false" to close it completely.
+    // Old data from before login: closed now that every profile has been moved
     match /budget/{docId} {
-      allow read: if signedIn();
-      allow write: if false;
+      allow read, write: if false;
     }
   }
 }
