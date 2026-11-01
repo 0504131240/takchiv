@@ -102,6 +102,9 @@ const FB_CFG={apiKey:"AIzaSyDU4O_IGPDLc7VkHR5ZvRbLzU6HKSa1C_E",authDomain:"moti1
 // profiles/{id}/data/*, readable only by the emails listed on the profile.
 let db=null,fdb=null,auth=null,AUTH_USER=null,unsubFire=null,_doc=null,_setDoc=null,_onSnapshot=null,_getDoc=null,_F=null,_A=null;
 function pDoc(name,pid){return _doc(fdb,'profiles',pid||CUR_UID,'data',name);}
+// Counts each app open per signed-in email for the owner's dashboard (logins/{email}; see firestore.rules)
+function logLogin(u){try{const em=myEmail();if(!em||sessionStorage.getItem('bdg_login')===em)return;sessionStorage.setItem('bdg_login',em);
+  _F.setDoc(_F.doc(fdb,'logins',em),{email:em,name:u.displayName||'',lastSeen:Date.now(),count:_F.increment(1)},{merge:true}).catch(()=>{});}catch{}}
 function myEmail(){return(AUTH_USER?.email||'').toLowerCase();}
 let USERS=[],CUR_UID='u1';
 let EVENTS=[];
@@ -2615,6 +2618,7 @@ else rCenter('<div style="color:#756a5c;font-size:15px">מתחבר…</div>');
       if(!user){db=null;if(unsubFire){unsubFire();unsubFire=null;}rLogin();return;}
       if(localStorage.getItem('bdg_auth')!==myEmail()){USERS=[];}
       fbLoadProfiles();
+      logLogin(user);
     });
   }catch(e){
     console.warn('Firebase unavailable:',e);

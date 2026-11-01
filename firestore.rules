@@ -1,5 +1,6 @@
 rules_version = '2';
-// Paste into Firebase console → Firestore Database → Rules → Publish.
+// Paste into Firebase console → Firestore Database → Rules → Publish,
+// with __OWNER_EMAILS__ replaced by the owner's Google email in quotes, e.g. 'a@gmail.com' (kept out of this public repo).
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null && request.auth.token.email_verified == true; }
@@ -19,6 +20,15 @@ service cloud.firestore {
       match /data/{docId} {
         allow read, write: if isMember(pid);
       }
+    }
+
+    // Sign-in counts for the owner's dashboard: each user writes only their own entry, only the owner reads them
+    match /logins/{em} {
+      allow read: if signedIn() && me() in [__OWNER_EMAILS__];
+      allow create, update: if signedIn() && em == me()
+                            && request.resource.data.keys().hasOnly(['email', 'name', 'lastSeen', 'count'])
+                            && request.resource.data.email == me();
+      allow delete: if false;
     }
 
     // Old data from before login. Readable by signed-in users only so profiles
