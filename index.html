@@ -1270,7 +1270,7 @@ function rMon(){
   // Event cards for this month (paid expenses only)
   const evtCards=EVENTS.map(ev=>{
     const monthExps=(ev.expenses||[]).flatMap(e=>{const ps=evPays(e),part=ps.length>1||(!e.paid&&ps.length);
-      return ps.filter(p=>expCycleMonth(p.date)===S.month).map(p=>({desc:e.desc+(part?' (תשלום)':''),amount:p.amt,date:p.date}));});
+      return ps.filter(p=>inCycle(p.date,S.month,S.year)).map(p=>({desc:e.desc+(part?' (תשלום)':''),amount:p.amt,date:p.date}));});
     if(!monthExps.length)return'';
     const tot=monthExps.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
     return`<div style="padding:14px 16px;border-bottom:1px solid #f0e8dc">
@@ -2476,8 +2476,14 @@ function expCycleMonth(dateStr){
   if(m===null)m=dateStr?parseInt(dateStr.split('-')[1])-1:S.month;
   return(m>=0&&m<=11)?m:S.month;
 }
-function evtMonthTotal(mo){
-  return EVENTS.reduce((tot,ev)=>tot+(ev.expenses||[]).reduce((s,e)=>s+evPays(e).filter(p=>expCycleMonth(p.date)===mo).reduce((a,p)=>a+p.amt,0),0),0);
+// Whether a payment date falls in budget month mo of year y. Events are not kept per year, so the year counts too
+// (a cycle never moves a date out of its calendar year: early January stays in January, as in expCycleMonth)
+function inCycle(dateStr,mo,y){
+  const dy=dateStr?parseInt(dateStr.split('-')[0]):S.year;
+  return expCycleMonth(dateStr)===mo&&(dy||S.year)===y;
+}
+function evtMonthTotal(mo,y=S.year){
+  return EVENTS.reduce((tot,ev)=>tot+(ev.expenses||[]).reduce((s,e)=>s+evPays(e).filter(p=>inCycle(p.date,mo,y)).reduce((a,p)=>a+p.amt,0),0),0);
 }
 
 function rSearch(){
